@@ -1,24 +1,30 @@
 'use client';
 
 import { MagnifyingGlass, MusicNote, Rss } from "phosphor-react";
+import HeaderActionButton from "./action-button";
+import Link from "next/link";
 
 function HeaderActions() {
     return (
         <div className="flex gap-4">
-            <div className="flex gap-1 items-center h-8 cursor-pointer hover:bg-[#D7A090] px-2 rounded-[6px]">
-                <MusicNote size={16} />
-                <span>Music catalog</span>
-            </div>
+            <Link href="/music-catalog">
+                <HeaderActionButton>
+                    <MusicNote size={16} />
+                    <span>Music catalog</span>
+                </HeaderActionButton>
+            </Link>
 
-            <div className="flex gap-1 items-center h-8 cursor-pointer hover:bg-[#D7A090] px-2 rounded-[6px]">
+            <HeaderActionButton>
                 <MagnifyingGlass size={16} />
                 <span>Search</span>
-            </div>
+            </HeaderActionButton>
 
-            <div className="flex gap-1 items-center h-8 cursor-pointer hover:bg-[#D7A090] px-2 rounded-[6px]">
-                <Rss size={16} />
-                <span>Feed</span>
-            </div>
+            <Link href="/feed">
+                <HeaderActionButton>
+                        <Rss size={16} />
+                        <span>Feed</span>
+                </HeaderActionButton>
+            </Link>
         </div>
     )
 }
