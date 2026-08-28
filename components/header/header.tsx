@@ -1,5 +1,5 @@
 import Link from "next/link"
-import HeaderActions from "./actions"
+import HeaderLinks from "./header-links"
 
 function Header() {
     return (
@@ -8,7 +8,7 @@ function Header() {
                 <b className="select-none transition-all">Graphophone</b>
             </Link>
 
-            <HeaderActions />
+            <HeaderLinks />
         </div>
     )
 }
