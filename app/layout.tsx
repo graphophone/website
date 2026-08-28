@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import GpHeader from "@/components/gp-header";
+import Header from "@/components/header/header";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -32,7 +32,7 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
     >
       <body className="min-h-full overflow-x-hidden flex flex-col gap-2">
-        <GpHeader />
+        <Header />
 
         <div className="w-full md:px-[9vw]">
           {children}
