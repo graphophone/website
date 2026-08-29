@@ -1,8 +1,9 @@
 "use client"
 
 import Image from 'next/image';
-import { BellSimple, List, Plus } from 'phosphor-react'
+import { BellSimple, List } from 'phosphor-react'
 import React, { useState } from 'react'
+import AddAction from './add-action';
 
 function HeaderActions() {
     const [notificationsCount, setNotificationCount] = useState(15);
@@ -12,7 +13,7 @@ function HeaderActions() {
     return (
         <div className="flex gap-2 items-center">
             <HeaderActionButton>
-                <Plus size={16} weight="bold" />
+                <AddAction />
             </HeaderActionButton>
 
             <HeaderActionButton>
