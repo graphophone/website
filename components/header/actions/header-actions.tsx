@@ -1,14 +1,14 @@
 "use client"
 
 import Image from 'next/image';
-import { BellSimple, List } from 'phosphor-react'
+import { List } from 'phosphor-react'
 import React, { useState } from 'react'
 import AddAction from './add-action';
+import NotificationsAction from './notifications-action';
 
 function HeaderActions() {
-    const [notificationsCount, setNotificationCount] = useState(15);
+
     const [avatarUrl, setAvatarUrl] = useState('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.squarespace-cdn.com%2Fcontent%2Fv1%2F630285fccc5e0e5bfa0578af%2F410402b3-8eb9-4979-9628-603caef4d3c3%2Flambda480blue.png&f=1&nofb=1&ipt=181efa5954c43528236d0d36f8e231df7ab61c15bdc7d36d26410b9c23bf9971');
-    const [isNotificationsHovered, setIsNotificationsHovered] = useState(false);
 
     return (
         <div className="flex gap-2 items-center">
@@ -17,23 +17,7 @@ function HeaderActions() {
             </HeaderActionButton>
 
             <HeaderActionButton>
-                <div
-                    onMouseEnter={() => { setIsNotificationsHovered(true) }}
-                    onMouseLeave={() => { setIsNotificationsHovered(false) }}
-                    className="w-full h-full flex items-center justify-center relative"
-                >
-                    <BellSimple weight="fill" size={16} />
-                    { notificationsCount === 0 ? <></> :
-                        <div
-                            className={`${isNotificationsHovered ? "scale-0" : "scale-100"} transition-all
-                                bg-red-500 w-4 h-4 absolute text-[10px] text-white font-bold
-                                flex items-center justify-center rounded-full -top-px -right-px`
-                            }
-                        >
-                            { notificationsCount > 9 ? '9+' : notificationsCount }
-                        </div>
-                    }
-                </div>
+                <NotificationsAction />
             </HeaderActionButton>
 
             <HeaderActionButton>
