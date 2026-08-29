@@ -20,8 +20,8 @@ function HeaderLinks() {
 
             <Link href="/feed">
                 <HeaderLink>
-                        <Rss size={16} />
-                        <span>Feed</span>
+                    <Rss size={16} />
+                    <span>Feed</span>
                 </HeaderLink>
             </Link>
         </div>
@@ -30,7 +30,7 @@ function HeaderLinks() {
 
 function HeaderLink({ children }: { children: React.ReactNode }) {
     return (
-        <div className="select-none flex gap-1 items-center h-8 cursor-pointer hover:bg-[#D7A090] px-2 rounded-[6px] transition-all">
+        <div className="select-none flex gap-1 items-center h-8 cursor-pointer hover:bg-[#FFDFB3] px-2 rounded-[6px] transition-all">
             {children}
         </div>
     )

@@ -1,5 +1,6 @@
 import Link from "next/link"
 import HeaderLinks from "./header-links"
+import HeaderActions from "./header-actions"
 
 function Header() {
     return (
@@ -9,6 +10,8 @@ function Header() {
             </Link>
 
             <HeaderLinks />
+
+            <HeaderActions />
         </div>
     )
 }
