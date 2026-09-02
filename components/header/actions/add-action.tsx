@@ -1,5 +1,3 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
@@ -9,12 +7,12 @@ function AddAction() {
     const actions = [
         {
             label: "Upload track",
-            icon: <MusicNote />,
+            icon: <MusicNote weight="fill" />,
             href: "/upload-track",
         },
         {
             label: "Create new playlist",
-            icon: <Playlist />,
+            icon: <Playlist weight="fill" />,
             href: "/create-playlist",
         },
     ]

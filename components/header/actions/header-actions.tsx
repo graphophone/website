@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import AddAction from './add-action';
 import NotificationsAction from './notifications-action';
 import UserAction from './user-action';
+import ListAction from './list-action';
 
 function HeaderActions() {
     return (
@@ -23,7 +24,7 @@ function HeaderActions() {
             </HeaderActionButton>
 
             <HeaderActionButton>
-                <List size={16} weight="bold" />
+                <ListAction />
             </HeaderActionButton>
         </div>
     )
