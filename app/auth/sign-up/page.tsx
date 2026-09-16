@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 
-function Login() {
+function SignUp() {
   return (
-    <Card className="w-full max-w-sm">
+        <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Login to your account</CardTitle>
+        <CardTitle>Create an account</CardTitle>
       </CardHeader>
       <CardContent>
         <form>
@@ -19,7 +19,17 @@ function Login() {
                 className="placeholder:text-foreground/50"
                 id="username"
                 type="text"
-                placeholder="your_username"
+                placeholder="my_username"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                className="placeholder:text-foreground/50"
+                id="email"
+                type="email"
+                placeholder="m@example.com"
                 required
               />
             </div>
@@ -33,22 +43,18 @@ function Login() {
                   Forgot your password?
                 </a>
               </div>
-              <Input
-                id="password"
-                type="password"
-                required
-              />
+              <Input id="password" type="password" required />
             </div>
           </div>
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
         <Button type="submit" className="w-full cursor-pointer">
-          Login
+          Sign up
         </Button>
-        <Link href="/auth/sign-up" className="w-full" >
+        <Link href="/auth/login" className="w-full" >
           <Button className="w-full cursor-pointer" variant="outline">
-            Sign Up
+            Login
           </Button>
         </Link>
       </CardFooter>
@@ -56,4 +62,4 @@ function Login() {
   )
 }
 
-export default Login
+export default SignUp
