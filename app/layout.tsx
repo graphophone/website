@@ -3,6 +3,7 @@ import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header/header";
+import { UserContextProvider } from "@/context/userContext";
 
 const font = Open_Sans({
   variable: "--font-sans",
@@ -25,11 +26,13 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", font.variable, "font-sans")}
     >
       <body className="min-h-full overflow-x-hidden flex flex-col gap-2">
-        <Header />
+        <UserContextProvider>
+          <Header />
 
-        <div className="w-full grow md:px-[9vw] flex">
-          {children}
-        </div>
+          <div className="w-full grow md:px-[9vw] flex">
+            {children}
+          </div>
+        </UserContextProvider>
       </body>
     </html>
   );
