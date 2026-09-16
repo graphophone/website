@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className="min-h-full overflow-x-hidden flex flex-col gap-2">
         <Header />
 
-        <div className="w-full md:px-[9vw]">
+        <div className="w-full grow md:px-[9vw] flex">
           {children}
         </div>
       </body>
