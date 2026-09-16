@@ -34,16 +34,30 @@ function SignUp() {
               />
             </div>
             <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                <a
-                  href="#"
-                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                >
-                  Forgot your password?
-                </a>
-              </div>
+              <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" required />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="grid gap-2">
+                <Label htmlFor="first_name">First name (optional)</Label>
+                <Input
+                  className="placeholder:text-foreground/50"
+                  placeholder="Alina"
+                  id="first_name"
+                  type="first_name"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="last_name">Last name (optional)</Label>
+                <Input
+                  className="placeholder:text-foreground/50"
+                  placeholder="Smith"
+                  id="last_name"
+                  type="last_name"
+                />
+              </div>
             </div>
           </div>
         </form>
