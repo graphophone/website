@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Bell, ChatCircle, List, MusicNote, Playlist, SignOut, ThumbsUp, User, UsersThree } from 'phosphor-react'
@@ -13,7 +15,7 @@ export function ListAction() {
     <DropdownMenu>
       <DropdownMenuTrigger render={
         <Button variant="link" className="cursor-pointer">
-          <List size={16} />
+          <List color="var(--foreground)" size={16} />
         </Button>
       } />
 
@@ -56,9 +58,9 @@ export function ListAction() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <ListActionItem>
-            <SignOut color="#FF5353" />
-            <span className="text-sm text-[#FF5353]">Logout</span>
+          <ListActionItem variant="destructive">
+            <SignOut color="var(--destructive)" />
+            <span className="text-sm text-destructive">Logout</span>
           </ListActionItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
@@ -69,12 +71,15 @@ export function ListAction() {
 interface ListActionItemProps {
   children: React.ReactNode,
   onClick?: () => void,
+  variant?: "default" | "destructive",
 }
 
-function ListActionItem({ children, onClick }: ListActionItemProps) {
+function ListActionItem({ children, onClick, variant }: ListActionItemProps) {
   return (
     <DropdownMenuItem
-      className="w-full flex gap-4 items-center cursor-pointer rounded-[6px]"
+      variant={variant}
+      className="w-full flex gap-4 items-center cursor-pointer
+        rounded-[6px] hover:bg-primary-foreground"
       onClick={() => {
         if (onClick !== undefined) {
           onClick();

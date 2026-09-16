@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
@@ -22,7 +24,7 @@ function AddAction() {
             <DropdownMenu>
                 <DropdownMenuTrigger render={
                     <Button variant="link" className="cursor-pointer">
-                        <Plus size={16} weight="bold" />
+                        <Plus color="var(--foreground)" size={16} weight="bold" />
                     </Button>
                 } />
                 <DropdownMenuContent className="w-40" align="end">

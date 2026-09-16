@@ -48,11 +48,11 @@ function NotificationsAction() {
                         onMouseLeave={() => { setIsNotificationsHovered(false) }}
                         className="w-full h-full flex items-center justify-center relative cursor-pointer"
                     >
-                        <BellSimple weight="fill" size={16} />
+                        <BellSimple color="var(--foreground)" weight="fill" size={16} />
                         { notifications.length === 0 ? <></> :
                             <div
                                 className={`${isNotificationsHovered ? "scale-0" : "scale-100"} transition-all
-                                    bg-red-500 w-4 h-4 absolute text-[10px] text-white font-bold
+                                    bg-destructive w-4 h-4 absolute text-[10px] text-background font-bold
                                     flex items-center justify-center rounded-full -top-px -right-px`
                                 }
                             >
@@ -67,9 +67,22 @@ function NotificationsAction() {
                     <div>
                         {notifications.slice((currentPage - 1) * pageSize, currentPage * pageSize)
                             .map((notification, i) => (
-                            <div key={i} className="p-2 rounded-[6px] cursor-pointer flex flex-col items-baseline gap-1 hover:bg-gray-100 transition-all">
-                                <span className="font-semibold max-w-[50%] text-ellipsis">{notification.title}</span>
-                                <div className="text-ellipsis line-clamp-2">{notification.description}</div>
+                            <div
+                                key={i}
+                                className="p-2 rounded-[6px] cursor-pointer
+                                flex flex-col items-baseline gap-1
+                                hover:bg-primary-foreground transition-all"
+                            >
+                                <span 
+                                    className="font-semibold max-w-[50%] text-ellipsis"
+                                >
+                                    {notification.title}
+                                </span>
+                                <div
+                                    className="text-ellipsis line-clamp-2"
+                                >
+                                    {notification.description}
+                                </div>
                             </div>
                         ))}
                     </div>

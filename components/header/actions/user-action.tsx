@@ -6,7 +6,9 @@ function UserAction() {
 
     return (
         <Link href={`/me`}>
-            <div className="hover:brightness-85 transition-all rounded-[6px] overflow-clip">
+            <div className="hover:brightness-85 transition-all
+                rounded-[6px] overflow-clip"
+            >
                 { avatarUrl ?
                     <Image src={avatarUrl} alt="user avatar" width={32} height={32} /> :
                     <Image src="/images/empty_avatar.jpg" alt="empty avatar" width={32} height={32} />

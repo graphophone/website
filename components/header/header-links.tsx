@@ -30,7 +30,7 @@ function HeaderLinks() {
 
 function HeaderLink({ children }: { children: React.ReactNode }) {
     return (
-        <div className="select-none flex gap-1 items-center h-8 cursor-pointer hover:bg-[#FFDFB3] px-2 rounded-[6px] transition-all">
+        <div className="select-none flex gap-1 items-center h-8 cursor-pointer hover:bg-secondary px-2 rounded-[6px] transition-all">
             {children}
         </div>
     )
