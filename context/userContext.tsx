@@ -70,6 +70,9 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
         const res = await fetch(login_endpoint, {
             method: "POST",
             body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
 
         if (res.status === 200) {
@@ -82,6 +85,9 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
         const res = await fetch(sign_up_endpoint, {
             method: "POST",
             body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
 
         if (res.status === 200) {
