@@ -1,4 +1,4 @@
-const api_url = process.env.API_URL;
+const api_url = process.env.NEXT_PUBLIC_API_URL;
 
 export const auth_endpoints = `${api_url}/auth`;
 export const login_endpoint = `${auth_endpoints}/login`;

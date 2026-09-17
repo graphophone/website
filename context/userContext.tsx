@@ -1,6 +1,7 @@
 "use client"
 
 import { login_endpoint, logout_endpoint, refresh_endpoint, sign_up_endpoint } from "@/constants/api";
+import { SignUpForm } from "@/types/auth/forms";
 import React, { createContext, useEffect, useState } from "react";
 
 export interface User {
@@ -12,14 +13,6 @@ export interface User {
 export interface LoginForm {
     username: string;
     password: string;
-}
-
-export interface SignUpForm {
-    username: string;
-    email: string;
-    password: string;
-    firstName?: string;
-    lastName?: string;
 }
 
 export interface IUserContext {
