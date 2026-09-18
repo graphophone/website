@@ -2,13 +2,22 @@
 
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { UserContext } from '@/context/userContext'
+import { useRouter } from 'next/navigation'
 import { Bell, ChatCircle, List, MusicNote, Playlist, SignOut, ThumbsUp, User, UsersThree } from 'phosphor-react'
-import React from 'react'
+import React, { useContext } from 'react'
 
 export function ListAction() {
-  const userData = {
-    id: 123,
-    username: "forget-me-not",
+  const router = useRouter();
+  const userContext = useContext(UserContext);
+  
+  const handleLogout = async () => {
+    const status = await userContext.logout();
+    if (status === 200) {
+      router.push('/');
+    } else {
+      console.log('Failed to logout');
+    }
   }
 
   return (
@@ -25,7 +34,7 @@ export function ListAction() {
             <User weight="fill" />
             <div className="flex flex-col w-full">
               <span className="opacity-50 text-2xs">My profile</span>
-              <span className="text-sm line-clamp-1">{userData.username}</span>
+              <span className="text-sm line-clamp-1">{userContext.user?.username}</span>
             </div>
           </ListActionItem>
         </DropdownMenuGroup>
@@ -58,7 +67,10 @@ export function ListAction() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <ListActionItem variant="destructive">
+          <ListActionItem
+            variant="destructive"
+            onClick={handleLogout}
+          >
             <SignOut color="var(--destructive)" />
             <span className="text-sm text-destructive">Logout</span>
           </ListActionItem>

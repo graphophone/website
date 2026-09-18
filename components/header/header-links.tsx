@@ -9,19 +9,19 @@ function HeaderLinks() {
             <Link href="/music-catalog">
                 <HeaderLink>
                     <MusicNote size={16} />
-                    <span>Music catalog</span>
+                    <span className="text-md">Music catalog</span>
                 </HeaderLink>
             </Link>
 
             <HeaderLink>
                 <MagnifyingGlass size={16} />
-                <span>Search</span>
+                <span className="text-md">Search</span>
             </HeaderLink>
 
             <Link href="/feed">
                 <HeaderLink>
                     <Rss size={16} />
-                    <span>Feed</span>
+                    <span className="text-md">Feed</span>
                 </HeaderLink>
             </Link>
         </div>

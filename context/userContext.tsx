@@ -93,26 +93,39 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
         if (res.status === 200) {
             await loadUser();
         }
+        console.log({ headers: res.headers });
         return res.status;
     }
 
     const logout = async () => {
         const res = await fetch(logout_endpoint, {
             method: "DELETE",
+            credentials: "include",
         });
+        
+        if (res.status === 200) {
+            setUser(null);
+        }
         return res.status;
     }
 
     const refreshTokens = async () => {
         const res = await fetch(refresh_endpoint, {
             method: "PATCH",
+            credentials: "include",
         });
         
         if (res.status === 200) {
             await loadUser();
+        } else if (res.status === 401) {
+            setUser(null);
         }
         return res.status;
     }
+
+    useEffect(() => {
+        refreshTokens();
+    }, []);
 
     return (
         <UserContext.Provider value={{
