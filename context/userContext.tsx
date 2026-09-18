@@ -18,6 +18,10 @@ export interface IUserContext {
     signUp: (data: SignUpForm) => Promise<number>,
     logout: () => Promise<number>;
     refreshTokens: () => Promise<number>;
+    protectedFetch: (
+        input: string | URL | Request,
+        init?: RequestInit,
+    ) => Promise<Response>;
 }
 
 export const UserContext = createContext<IUserContext>({
@@ -36,6 +40,9 @@ export const UserContext = createContext<IUserContext>({
         throw new Error("Function not implemented.");
     },
     refreshTokens: function (): Promise<number> {
+        throw new Error("Function not implemented.");
+    },
+    protectedFetch: function (input: string | URL | Request, init?: RequestInit): Promise<Response> {
         throw new Error("Function not implemented.");
     }
 })
@@ -124,6 +131,21 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
         refreshTokens();
     }, []);
 
+    const protectedFetch = async (
+        input: string | URL | Request,
+        init?: RequestInit,
+    ) => {
+        const res = await fetch(input, init);
+        if (res.status !== 401) {
+            return res;
+        }
+        const refreshStatus = await refreshTokens();
+        if (refreshStatus === 401) {
+            return res;
+        }
+        return await fetch(input, init);
+    }
+
     return (
         <UserContext.Provider value={{
             user,
@@ -133,6 +155,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
             signUp,
             logout,
             refreshTokens,
+            protectedFetch,
         }}>
             {children}
         </UserContext.Provider>
