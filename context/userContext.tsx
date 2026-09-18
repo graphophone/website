@@ -1,18 +1,13 @@
 "use client"
 
 import { login_endpoint, logout_endpoint, refresh_endpoint, sign_up_endpoint } from "@/constants/api";
-import { SignUpForm } from "@/types/auth/forms";
+import { LoginForm, SignUpForm } from "@/types/auth/forms";
 import React, { createContext, useEffect, useState } from "react";
 
 export interface User {
     id: number;
     username: string;
     avatarUrl: string;
-}
-
-export interface LoginForm {
-    username: string;
-    password: string;
 }
 
 export interface IUserContext {
@@ -52,14 +47,16 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
     const loadUser = async () => {
         setIsLoading(true);
 
-        const newUser: User = {
-            id: 1,
-            username: "test user",
-            avatarUrl: "https://elevatebaby.com/wp-content/uploads/HowtoChoosetheRightSurrogacyAgency.jpeg.webp",
-        };
-        setUser(newUser);
-
-        setIsLoading(false);
+        setTimeout(() => {
+            const newUser: User = {
+                id: 1,
+                username: "test user",
+                avatarUrl: "https://elevatebaby.com/wp-content/uploads/HowtoChoosetheRightSurrogacyAgency.jpeg.webp",
+            };
+            setUser(newUser);
+    
+            setIsLoading(false);
+        }, 3000);
     }
 
     useEffect(() => {

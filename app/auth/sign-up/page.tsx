@@ -31,14 +31,14 @@ function SignUp() {
     mode: 'onTouched',
   });
 
-  const handleSignUp = async (form: SignUpForm) => {
-    const status = await userContext.signUp(signUpForm.getValues());
+  const handleSignUp = async (data: SignUpForm) => {
+    const status = await userContext.signUp(data);
     if (status === 200) {
       router.push('/');
     } else if (status === 201) {
       router.push('/auth/login');
     } else {
-      console.log("Failed to create account");
+      console.error("failed to create account");
     }
   }
 

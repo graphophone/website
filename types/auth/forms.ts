@@ -29,3 +29,10 @@ export const signUpSchema = z.object({
 });
 
 export type SignUpForm = z.infer<typeof signUpSchema>;
+
+export const loginSchema = z.object({
+    username: z.string(),
+    password: z.string(),
+})
+
+export type LoginForm = z.infer<typeof loginSchema>;
