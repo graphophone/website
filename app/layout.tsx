@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header/header";
 import { UserContextProvider } from "@/context/userContext";
+import { ToastContextProvider } from "@/context/toastContext";
 
 const font = Open_Sans({
   variable: "--font-sans",
@@ -26,6 +27,7 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", font.variable, "font-sans")}
     >
       <body className="min-h-full overflow-x-hidden flex flex-col gap-2">
+        <ToastContextProvider>
         <UserContextProvider>
           <Header />
 
@@ -33,6 +35,7 @@ export default function RootLayout({
             {children}
           </div>
         </UserContextProvider>
+        </ToastContextProvider>
       </body>
     </html>
   );

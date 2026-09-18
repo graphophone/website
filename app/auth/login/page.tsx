@@ -6,6 +6,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input"
 import { InputGroup, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label"
+import { ToastContext } from "@/context/toastContext";
 import { UserContext } from "@/context/userContext";
 import { LoginForm, loginSchema } from "@/types/auth/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +19,7 @@ import { Controller, useForm } from "react-hook-form";
 function Login() {
   const router = useRouter();
   const userContext = useContext(UserContext);
+  const toastContext = useContext(ToastContext);
   const [showPassword, setShowPassword] = useState(false);
 
   const loginForm = useForm<LoginForm>({
@@ -32,9 +34,19 @@ function Login() {
   const handleLogin = async (data: LoginForm) => {
     const status = await userContext.login(data);
     if (status === 200) {
+      toastContext.show({
+        title: "Logged in successfully",
+        type: "success",
+      });
       router.push("/");
     } else {
-      console.error("failed to login");
+      toastContext.show({
+        title: "Failed to login",
+        description: status === 401 ?
+          "Incorrect credentials" :
+          "Unknown error",
+        type: "error",
+      });
     }
   }
 

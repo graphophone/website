@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { InputGroup, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
+import { ToastContext } from "@/context/toastContext"
 import { UserContext } from "@/context/userContext"
 import { SignUpForm, signUpSchema } from "@/types/auth/forms"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -16,6 +17,7 @@ import { Controller, useForm } from "react-hook-form"
 
 function SignUp() {
   const router = useRouter();
+  const toastContext = useContext(ToastContext);
   const userContext = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,11 +36,25 @@ function SignUp() {
   const handleSignUp = async (data: SignUpForm) => {
     const status = await userContext.signUp(data);
     if (status === 200) {
+      toastContext.show({
+        title: "Signed up successfully",
+        type: "success",
+      });
       router.push('/');
     } else if (status === 201) {
+      toastContext.show({
+        title: "Created account successfully",
+        type: "success",
+      });
       router.push('/auth/login');
     } else {
-      console.error("failed to create account");
+      toastContext.show({
+        title: "Failed to login",
+        description: status === 409 ?
+          "Credentials are already used" :
+          "Unknown error",
+        type: "error",
+      });
     }
   }
 
