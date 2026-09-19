@@ -1,6 +1,6 @@
 "use client"
 
-import { login_endpoint, logout_endpoint, refresh_endpoint, sign_up_endpoint } from "@/constants/api";
+import { loginEndpoint, logoutEndpoint, refreshEndpoint, signUpEndpoint } from "@/constants/api";
 import { LoginForm, SignUpForm } from "@/types/auth/forms";
 import React, { createContext, useEffect, useState } from "react";
 
@@ -71,7 +71,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
     }, [user]);
 
     const login = async (data: LoginForm) => {
-        const res = await fetch(login_endpoint, {
+        const res = await fetch(loginEndpoint, {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
@@ -86,7 +86,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
     };
 
     const signUp = async (data: SignUpForm) => {
-        const res = await fetch(sign_up_endpoint, {
+        const res = await fetch(signUpEndpoint, {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
@@ -102,7 +102,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
     }
 
     const logout = async () => {
-        const res = await fetch(logout_endpoint, {
+        const res = await fetch(logoutEndpoint, {
             method: "DELETE",
             credentials: "include",
         });
@@ -114,7 +114,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
     }
 
     const refreshTokens = async () => {
-        const res = await fetch(refresh_endpoint, {
+        const res = await fetch(refreshEndpoint, {
             method: "PATCH",
             credentials: "include",
         });
