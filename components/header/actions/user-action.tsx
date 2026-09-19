@@ -9,13 +9,24 @@ function UserAction() {
     const userContext = useContext(UserContext);
 
     return (
-        <Link href={`/me`}>
+        <Link href={`/me`} className="w-full h-full flex justify-center items-center">
             <div className="hover:brightness-85 transition-all
-                rounded-[6px] overflow-clip"
+                w-full h-full flex justify-center items-center
+                rounded-[6px] overflow-clip relative"
             >
                 { userContext.user?.avatarUrl ?
-                    <Image src={userContext.user.avatarUrl} alt="user avatar" width={32} height={32} /> :
-                    <Image src="/images/empty_avatar.jpg" alt="empty avatar" width={32} height={32} />
+                    <Image
+                        src={userContext.user.avatarUrl}
+                        alt="user avatar"
+                        fill={true}
+                        objectFit="cover"
+                    /> :
+                    <Image
+                        src="/images/empty_avatar.jpg"
+                        width={32}
+                        height={32}
+                        alt="empty avatar"
+                    />
                 }
             </div>
         </Link>

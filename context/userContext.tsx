@@ -7,7 +7,7 @@ import React, { createContext, useEffect, useState } from "react";
 export interface User {
     id: number;
     username: string;
-    avatarUrl: string;
+    avatarUrl?: string;
 }
 
 export interface IUserContext {
@@ -63,7 +63,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
             setUser(newUser);
     
             setIsLoading(false);
-        }, 3000);
+        }, 1000);
     }
 
     useEffect(() => {
