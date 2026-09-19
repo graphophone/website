@@ -10,8 +10,6 @@ async function UserProfile({ params }: { params: Promise<{ userId: number }> }) 
   }
   const profile: IUserProfile = await res.json();
 
-  console.log({ profile })
-
   return (
     <div className="w-full">
       <UserProfileView profile={profile} />

@@ -9,7 +9,7 @@ function UserAction() {
     const userContext = useContext(UserContext);
 
     return (
-        <Link href={`/user/${userContext.user?.id}`} className="w-full h-full flex justify-center items-center">
+        <Link href={`/user/${userContext.user?.userId}`} className="w-full h-full flex justify-center items-center">
             <div className="hover:brightness-85 transition-all
                 w-full h-full flex justify-center items-center
                 rounded-[6px] overflow-clip relative"

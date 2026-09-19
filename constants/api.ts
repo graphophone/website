@@ -7,3 +7,4 @@ export const logoutEndpoint = `${authBase}/logout`;
 export const refreshEndpoint = `${authBase}/refresh`;
 
 const userBase = '/api/user';
+export const meEndpoint = `${userBase}/me`;

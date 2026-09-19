@@ -1,11 +1,11 @@
 "use client"
 
-import { loginEndpoint, logoutEndpoint, refreshEndpoint, signUpEndpoint } from "@/constants/api";
+import { loginEndpoint, logoutEndpoint, meEndpoint, refreshEndpoint, signUpEndpoint } from "@/constants/api";
 import { LoginForm, SignUpForm } from "@/types/auth/forms";
 import React, { createContext, useEffect, useState } from "react";
 
 export interface User {
-    id: number;
+    userId: number;
     username: string;
     avatarUrl?: string;
 }
@@ -13,7 +13,6 @@ export interface User {
 export interface IUserContext {
     user: User | null;
     isLoading: boolean;
-    loadUser: () => Promise<void>;
     login: (data: LoginForm) => Promise<number>,
     signUp: (data: SignUpForm) => Promise<number>,
     logout: () => Promise<number>;
@@ -27,9 +26,6 @@ export interface IUserContext {
 export const UserContext = createContext<IUserContext>({
     user: null,
     isLoading: false,
-    loadUser: function (): Promise<void> {
-        throw new Error("Function not implemented.");
-    },
     login: function (data: LoginForm): Promise<number> {
         throw new Error("Function not implemented.");
     },
@@ -50,21 +46,6 @@ export const UserContext = createContext<IUserContext>({
 export function UserContextProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-
-    const loadUser = async () => {
-        setIsLoading(true);
-
-        setTimeout(() => {
-            const newUser: User = {
-                id: 1,
-                username: "test user",
-                avatarUrl: "https://elevatebaby.com/wp-content/uploads/HowtoChoosetheRightSurrogacyAgency.jpeg.webp",
-            };
-            setUser(newUser);
-    
-            setIsLoading(false);
-        }, 1000);
-    }
 
     useEffect(() => {
         console.log({ user });
@@ -127,15 +108,14 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
         return res.status;
     }
 
-    useEffect(() => {
-        refreshTokens();
-    }, []);
-
     const protectedFetch = async (
         input: string | URL | Request,
         init?: RequestInit,
     ) => {
-        const res = await fetch(input, init);
+        const res = await fetch(input, {
+            ...init,
+            credentials: "include",
+        });
         if (res.status !== 401) {
             return res;
         }
@@ -143,14 +123,38 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
         if (refreshStatus === 401) {
             return res;
         }
-        return await fetch(input, init);
+        return await fetch(input, {
+            ...init,
+            credentials: "include",
+        });
     }
+
+    const loadUser = async () => {
+        setIsLoading(true);
+
+        const res = await protectedFetch(meEndpoint, {
+            method: "GET",
+            credentials: "include",
+        });
+        
+        if (res.status !== 200) {
+            setUser(null);
+        } else {
+            const user: User = await res.json();
+            setUser(user);
+        }
+
+        setIsLoading(false);
+    }
+
+    useEffect(() => {
+        loadUser();
+    }, []);
 
     return (
         <UserContext.Provider value={{
             user,
             isLoading,
-            loadUser,
             login,
             signUp,
             logout,
