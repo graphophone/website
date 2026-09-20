@@ -4,14 +4,14 @@ import { loginEndpoint, logoutEndpoint, meEndpoint, refreshEndpoint, signUpEndpo
 import { LoginForm, SignUpForm } from "@/types/auth/forms";
 import React, { createContext, useEffect, useState } from "react";
 
-export interface User {
+export interface BasicProfile {
     userId: number;
     username: string;
     avatarUrl?: string;
 }
 
 export interface IUserContext {
-    user: User | null;
+    user: BasicProfile | null;
     isLoading: boolean;
     login: (data: LoginForm) => Promise<number>,
     signUp: (data: SignUpForm) => Promise<number>,
@@ -44,8 +44,8 @@ export const UserContext = createContext<IUserContext>({
 })
 
 export function UserContextProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [user, setUser] = useState<BasicProfile | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         console.log({ user });
@@ -140,7 +140,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
         if (res.status !== 200) {
             setUser(null);
         } else {
-            const user: User = await res.json();
+            const user: BasicProfile = await res.json();
             setUser(user);
         }
 

@@ -26,13 +26,15 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", font.variable, "font-sans")}
     >
-      <body className="min-h-full overflow-x-hidden flex flex-col gap-2">
+      <body className="min-h-screen overflow-x-hidden">
         <ToastContextProvider>
         <UserContextProvider>
-          <Header />
+          <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
+            <Header />
 
-          <div className="w-full grow md:px-[9vw] flex">
-            {children}
+            <div className="w-full grow md:px-[9vw] flex">
+              {children}
+            </div>
           </div>
         </UserContextProvider>
         </ToastContextProvider>

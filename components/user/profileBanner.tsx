@@ -1,13 +1,14 @@
 "use client"
 
 import { UserContext } from "@/context/userContext";
-import { UserProfile } from "@/types/user/profile";
+import { Profile } from "@/types/user/profile";
 import Image from "next/image";
 import { useContext } from "react";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 interface Params {
-  profile: UserProfile;
+  profile: Profile;
 }
 
 function UserProfileBanner({ profile }: Params) {
@@ -77,12 +78,14 @@ function UserProfileBanner({ profile }: Params) {
             </Button>
 
             { canEdit ?
-              <Button
-                className="md:min-w-32 rounded-[6px] cursor-pointer
-                  bg-foreground/85 hover:bg-foreground text-background text-[14px]"
-              >
-                Edit profile
-              </Button> :
+              <Link href="/settings/profile">
+                <Button
+                  className="md:min-w-32 rounded-[6px] cursor-pointer
+                    bg-foreground/85 hover:bg-foreground text-background text-[14px]"
+                >
+                  Edit profile
+                </Button>
+              </Link> :
               <></>
             }
           </div>

@@ -153,7 +153,7 @@ function SignUp() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="firstName">
-                      First name
+                      First name (optional)
                     </FieldLabel>
                     <Input
                       {...field}
@@ -175,7 +175,7 @@ function SignUp() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="lastName">
-                      Last name
+                      Last name (optional)
                     </FieldLabel>
                     <Input
                       {...field}
