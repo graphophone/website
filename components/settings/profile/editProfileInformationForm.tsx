@@ -5,15 +5,70 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group"
-import { EditProfileForm } from "@/types/settings/forms"
-import { Controller, UseFormReturn } from "react-hook-form"
+import { editProfileEndpoint } from "@/constants/api"
+import { ToastContext } from "@/context/toastContext"
+import { UserContext } from "@/context/userContext"
+import { EditProfileForm, editProfileSchema } from "@/types/settings/forms"
+import { FullProfile } from "@/types/user/profile"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useContext } from "react"
+import { Controller, useForm } from "react-hook-form"
 
 interface Params {
-  editProfileForm: UseFormReturn<EditProfileForm>,
-  resetEditProfileForm: () => void,
+  fullProfile: FullProfile,
 };
 
-function EditProfileInformationForm({ editProfileForm, resetEditProfileForm }: Params) {
+function EditProfileInformationForm({ fullProfile }: Params) {
+  const userContext = useContext(UserContext);
+  const toastContext = useContext(ToastContext);
+
+  const editProfileFormDefaultValues: EditProfileForm = {
+    username: fullProfile.username,
+    email: fullProfile.email,
+    firstName: fullProfile.firstName ?? '',
+    lastName: fullProfile.lastName ?? '',
+    bio: fullProfile.bio ?? '',
+    country: fullProfile.country ?? '',
+    city: fullProfile.city ?? '',
+  };
+  const editProfileForm = useForm<EditProfileForm>({
+    resolver: zodResolver(editProfileSchema),
+    defaultValues: { ...editProfileFormDefaultValues },
+    mode: "onTouched",
+  });
+  const resetEditProfileForm = () => {
+    editProfileForm.setValues({ ...editProfileFormDefaultValues });
+  }
+
+  const handleEditProfile = async () => {
+    const res = await userContext.protectedFetch(editProfileEndpoint, {
+      method: "PUT",
+      body: JSON.stringify(editProfileForm.getValues()),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.status === 409) {
+      toastContext.show({
+        title: "Credentials are already used",
+        description: "Try using another username or email",
+        type: "error",
+      });
+    } else if (res.status !== 200) {
+      toastContext.show({
+        title: "Failed to save profile information",
+        description: "Unknown error",
+        type: "error",
+      });
+    } else {
+      toastContext.show({
+        title: "Successfully saved profile information",
+        type: "success",
+      });
+    }
+  };
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -174,13 +229,13 @@ function EditProfileInformationForm({ editProfileForm, resetEditProfileForm }: P
                       {...field}
                       id="bio"
                       placeholder="Tell something about yourself"
-                      rows={4}
-                      className="min-h-16 resize-none placeholder:text-foreground/50"
+                      rows={3}
+                      className="resize-none placeholder:text-foreground/50"
                       aria-invalid={fieldState.invalid}
                     />
                     <InputGroupAddon align="block-end">
                       <InputGroupText className="tabular-nums text-foreground/50">
-                        {field.value?.length ?? 0}/100 characters
+                        {field.value?.length ?? 0}/120 characters
                       </InputGroupText>
                     </InputGroupAddon>
                   </InputGroup>
@@ -193,9 +248,16 @@ function EditProfileInformationForm({ editProfileForm, resetEditProfileForm }: P
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter className="flex-col gap-2">
+      <CardFooter className="w-full flex gap-2 justify-end">
         <Button
-          className="w-full cursor-pointer"
+          className="cursor-pointer"
+          disabled={!editProfileForm.formState.isValid}
+          onClick={handleEditProfile}
+        >
+          Save
+        </Button>
+        <Button
+          className="cursor-pointer"
           variant="outline"
           onClick={resetEditProfileForm}
         >
