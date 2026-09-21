@@ -18,10 +18,10 @@ function SettingsLayout({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute>
       <div className="w-full grid grid-cols-12 gap-4.5 min-h-full">
-        <div className="col-span-3">
+        <div className="col-span-2">
           <SettingsSidebar entries={sidebarEntries} />
         </div>
-        <div className="col-span-9 min-h-full">
+        <div className="col-span-10 min-h-full">
           {children}
         </div>
       </div>
