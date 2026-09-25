@@ -12,10 +12,9 @@ interface Params {
   profile: Profile;
 }
 
-function UserProfileBanner({ profile }: Params) {
+function UserProfileCard({ profile }: Params) {
   const userContext = useContext(UserContext);
   const canEdit = userContext.user?.userId === profile.userId;
-  const bannerUrl: string | null = "https://livedoor.blogimg.jp/newstimes_001/imgs/4/8/4865061a.jpg";
 
   const displayName = profile.firstName ?
     `${profile.firstName} ${profile.lastName}`.trimEnd() :
@@ -29,14 +28,19 @@ function UserProfileBanner({ profile }: Params) {
     <div className="w-full bg-background relative h-45
       rounded-tl-[8px] rounded-tr-[8px] overflow-clip"
     >
-      { bannerUrl ?
-        <Image
-          src={bannerUrl}
+      { profile.bannerUrl ?
+        <S3Image
+          src={profile.bannerUrl}
           alt={`${profile.username} banner`}
           fill={true}
           style={{objectFit: "cover"}}
         /> :
-        <></>
+        <Image
+          src="/images/empty_banner.jpg"
+          alt="empty avatar"
+          fill={true}
+          style={{objectFit: "cover"}}
+        />
       }
 
       <div className="w-full h-full flex items-center px-16 py-4.5 gap-4.5">
@@ -114,4 +118,4 @@ function UserProfileBannerLabel({ text, isMain }: UserProfileBannerLabelParams) 
   )
 }
 
-export default UserProfileBanner
+export default UserProfileCard

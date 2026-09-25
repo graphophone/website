@@ -1,4 +1,5 @@
-import UserProfileBanner from "@/components/user/profileBanner";
+import { Card } from "@/components/ui/card";
+import UserProfileCard from "@/components/user/profileCard";
 import { Profile } from "@/types/user/profile";
 import { notFound } from "next/navigation";
 
@@ -12,9 +13,9 @@ async function UserProfilePage({ params }: { params: Promise<{ userId: number }>
 
   return (
     <div className="w-full">
-      <div className="w-full flex flex-col items-center justify-center">
-        <UserProfileBanner profile={profile} />
-      </div>
+      <Card className="w-full pt-0 flex flex-col items-center justify-center">
+        <UserProfileCard profile={profile} />
+      </Card>
     </div>
   )
 }
