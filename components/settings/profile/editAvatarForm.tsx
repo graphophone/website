@@ -1,36 +1,75 @@
 "use client"
 
+import S3Image from "@/components/s3Image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { editAvatarEndpoint } from "@/constants/api";
+import { UserContext } from "@/context/userContext";
 import Image from "next/image";
 import { Trash, UploadSimple } from "phosphor-react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 interface Params {
   avatarUrl: string | null;
 }
 
 function EditAvatarForm({ avatarUrl }: Params) {
-  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(avatarUrl);
+  const userContext = useContext(UserContext);
+  const [selectedAvatar, setSelectedAvatar] = useState<File | null>(null);
+  const [resolvedAvatar, setResolvedAvatar] = useState<string | null>(null);
   const [isAvatarHovered, setIsAvatarHovered] = useState(false);
 
-  const handleInputAvatar = (image: File | null) => {
-    if (image === null) {
-      setSelectedAvatar(null);
+  useEffect(() => {
+    if (selectedAvatar === null) {
+      setResolvedAvatar(null);
       return;
     }
-
     const fileReader = new FileReader();
-    fileReader.readAsDataURL(image);
+    fileReader.readAsDataURL(selectedAvatar);
     fileReader.onload = () => {
       const imageBase64 = fileReader.result;
       if (imageBase64 instanceof ArrayBuffer) {
-        console.log('Image is array buffer ...');
+        console.warn('Image is array buffer ...');
       } else {
-        setSelectedAvatar(imageBase64);
+        setResolvedAvatar(imageBase64);
       }
     };
+  }, [selectedAvatar]);
+
+  const handleEditAvatar = async () => {
+    let body = null;
+    if (selectedAvatar !== null) {
+      const formData = new FormData();
+      formData.append('avatar', selectedAvatar);
+      body = formData;
+    }
+    const res = await userContext.protectedFetch(editAvatarEndpoint, {
+      method: "PUT",
+      body,
+    });
+
+    if (res.status !== 200) {
+      console.error(res);
+    }
   };
+
+  const resolvedAvatarElement = (
+    resolvedAvatar ?
+      <Image
+        src={resolvedAvatar}
+        alt="Your current avatar"
+        fill={true}
+        style={{ objectFit: "cover" }}
+      /> : (
+        avatarUrl ?
+          <S3Image
+            src={avatarUrl}
+            alt="Your current avatar"
+            fill={true}
+            style={{ objectFit: "cover" }}
+          /> : <></>
+      )
+  );
 
   return (
     <Card className="w-full">
@@ -41,7 +80,7 @@ function EditAvatarForm({ avatarUrl }: Params) {
         <div className="flex gap-4.5 items-center">
           <div className="w-32 h-32 relative">
             <input
-              onChange={event => handleInputAvatar(event.target.files?.item(0) ?? null)}
+              onChange={event => setSelectedAvatar(event.target.files?.item(0) ?? null)}
               className="w-full h-full absolute opacity-0 z-10 cursor-pointer"
               accept="image/png, image/jpeg"
               type="file"
@@ -59,7 +98,7 @@ function EditAvatarForm({ avatarUrl }: Params) {
               </CardContent>
             </Card>
           </div>
-          { selectedAvatar ?
+          { (resolvedAvatar ?? avatarUrl) ?
             <div
               className="w-32 h-32 relative rounded-[6px] overflow-clip"
               onMouseEnter={() => setIsAvatarHovered(true)}
@@ -75,26 +114,22 @@ function EditAvatarForm({ avatarUrl }: Params) {
                   <Trash weight="fill" />
                 </Button> : <></>
               }
-              <Image
-                src={selectedAvatar}
-                alt="Your current avatar"
-                fill={true}
-                style={{ objectFit: "cover" }}
-              />
+              {resolvedAvatarElement}
             </div> : <></>
           }
         </div>
       </CardContent>
       <CardFooter className="w-full flex justify-end gap-2">
         <Button
-          disabled={selectedAvatar === avatarUrl}
+          onClick={handleEditAvatar}
+          disabled={selectedAvatar === null}
           className="cursor-pointer"
         >
           Save
         </Button>
         <Button
           className="cursor-pointer"
-          onClick={() => setSelectedAvatar(avatarUrl)}
+          onClick={() => setSelectedAvatar(null)}
           variant="outline"
         >
           Reset

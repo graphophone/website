@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useContext } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import S3Image from "../s3Image";
 
 interface Params {
   profile: Profile;
@@ -41,7 +42,7 @@ function UserProfileBanner({ profile }: Params) {
       <div className="w-full h-full flex items-center px-16 py-4.5 gap-4.5">
         <div className="w-36 h-36 relative rounded-full overflow-clip z-0">
           { profile.avatarUrl ?
-            <Image
+            <S3Image
               src={profile.avatarUrl}
               alt={`${profile.username} avatar`}
               fill={true}

@@ -1,5 +1,6 @@
 "use client"
 
+import S3Image from '@/components/s3Image';
 import { UserContext } from '@/context/userContext';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,7 +16,7 @@ function UserAction() {
                 rounded-[6px] overflow-clip relative"
             >
                 { userContext.user?.avatarUrl ?
-                    <Image
+                    <S3Image
                         src={userContext.user.avatarUrl}
                         alt="user avatar"
                         fill={true}

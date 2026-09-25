@@ -10,3 +10,4 @@ const userBase = '/api/user';
 export const meEndpoint = `${userBase}/me`;
 export const myFullProfileEndpoint = `${userBase}/full-profile`;
 export const editProfileEndpoint = `${userBase}/edit-profile`;
+export const editAvatarEndpoint = `${userBase}/edit-avatar`;
