@@ -1,88 +1,42 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group"
-import { Spinner } from "@/components/ui/spinner"
-import { editProfileEndpoint } from "@/constants/api"
-import { ToastContext } from "@/context/toastContext"
-import { UserContext } from "@/context/userContext"
-import { isRequestError } from "@/lib/error"
-import { EditProfileForm, editProfileSchema } from "@/types/settings/forms"
-import { FullProfile } from "@/types/user/profile"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useContext, useState } from "react"
-import { Controller, useForm } from "react-hook-form"
+import { CategoryInfo } from '@/types/category/category';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useEffect, useState } from 'react';
+import { searchCategoriesEndpoint } from '@/constants/api';
+import { isRequestError } from '@/lib/error';
+import { FieldGroup } from '@/components/ui/field';
+import { Controller } from 'react-hook-form';
 
-interface Params {
-  fullProfile: FullProfile,
-};
+async function UploadTrackInformationPage() {
+  const [categories, setCategories] = useState<CategoryInfo[]>([]);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
+  const [categoriesSearchToken, setCategoriesSearchToken] = useState('');
 
-function EditProfileInformationForm({ fullProfile }: Params) {
-  const [isLoading, setIsLoading] = useState(false);
-  const userContext = useContext(UserContext);
-  const toastContext = useContext(ToastContext);
-
-  const editProfileFormDefaultValues: EditProfileForm = {
-    username: fullProfile.username,
-    email: fullProfile.email,
-    firstName: fullProfile.firstName ?? '',
-    lastName: fullProfile.lastName ?? '',
-    bio: fullProfile.bio ?? '',
-    country: fullProfile.country ?? '',
-    city: fullProfile.city ?? '',
-  };
-  const editProfileForm = useForm<EditProfileForm>({
-    resolver: zodResolver(editProfileSchema),
-    defaultValues: { ...editProfileFormDefaultValues },
-    mode: "onTouched",
-  });
-  const resetEditProfileForm = () => {
-    editProfileForm.setValues({ ...editProfileFormDefaultValues });
-  }
-
-  const handleEditProfile = async () => {
-    setIsLoading(true);
-
-    const res = await userContext.protectedFetch(editProfileEndpoint, {
-      method: "PUT",
-      body: JSON.stringify(editProfileForm.getValues()),
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const searchCategories = async () => {
+    setIsCategoriesLoading(false);
+    const res = await fetch(searchCategoriesEndpoint, {
+      method: "GET",
     });
-
-    if (res.status === 409) {
-      toastContext.show({
-        title: "Credentials are already used",
-        description: "Try using another username or email",
-        type: "error",
-      });
-    } else if (isRequestError(res)) {
-      toastContext.show({
-        title: "Failed to save profile information",
-        description: "Unknown error",
-        type: "error",
-      });
+    if (isRequestError(res)) {
+      const categories: CategoryInfo[] = await res.json();
+      setCategories(categories);
     } else {
-      toastContext.show({
-        title: "Successfully saved profile information",
-        type: "success",
-      });
+      setCategories([]);
     }
-
-    setIsLoading(false);
+    setIsCategoriesLoading(false);
   };
+
+  useEffect(() => {
+  }, [categoriesSearchToken]);
 
   return (
-    <Card className="w-full">
+    <Card className="w-[80vh] md:w-full">
       <CardHeader>
-        <CardTitle>Edit profile information</CardTitle>
+        <CardTitle>Enter track data</CardTitle>
       </CardHeader>
       <CardContent>
-        <fieldset disabled={isLoading}>
+        <fieldset disabled={false}>
           <form id="edit-profile-form">
             <FieldGroup>
               <div className="flex gap-2">
@@ -257,29 +211,8 @@ function EditProfileInformationForm({ fullProfile }: Params) {
           </form>
         </fieldset>
       </CardContent>
-      <CardFooter className="w-full flex gap-2 justify-end">
-        <Button
-          className="cursor-pointer relative"
-          disabled={!editProfileForm.formState.isValid}
-          onClick={handleEditProfile}
-        >
-          { isLoading ?
-            <div className="absolute w-full h-full flex items-center justify-center">
-              <Spinner />
-            </div> : <></>
-          }
-          <span className={isLoading ? "opacity-0" : ""}>Save</span>
-        </Button>
-        <Button
-          className="cursor-pointer"
-          variant="outline"
-          onClick={resetEditProfileForm}
-        >
-          Reset
-        </Button>
-      </CardFooter>
     </Card>
   )
 }
 
-export default EditProfileInformationForm
+export default UploadTrackInformationPage

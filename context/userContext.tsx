@@ -1,6 +1,7 @@
 "use client"
 
 import { loginEndpoint, logoutEndpoint, meEndpoint, refreshEndpoint, signUpEndpoint } from "@/constants/api";
+import { isRequestError } from "@/lib/error";
 import { LoginForm, SignUpForm } from "@/types/auth/forms";
 import React, { createContext, useEffect, useState } from "react";
 
@@ -60,7 +61,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
             },
         });
 
-        if (res.status === 200) {
+        if (!isRequestError(res)) {
             await loadUser();
         }
         return res.status;
@@ -75,7 +76,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
             },
         });
 
-        if (res.status === 200) {
+        if (!isRequestError(res)) {
             await loadUser();
         }
         console.log({ headers: res.headers });
@@ -88,7 +89,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
             credentials: "include",
         });
         
-        if (res.status === 200) {
+        if (!isRequestError(res)) {
             setUser(null);
         }
         return res.status;
@@ -100,7 +101,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
             credentials: "include",
         });
         
-        if (res.status === 200) {
+        if (!isRequestError(res)) {
             await loadUser();
         } else if (res.status === 401) {
             setUser(null);
@@ -137,7 +138,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
             credentials: "include",
         });
         
-        if (res.status !== 200) {
+        if (isRequestError(res)) {
             setUser(null);
         } else {
             const user: BasicProfile = await res.json();

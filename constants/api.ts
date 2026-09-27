@@ -1,5 +1,3 @@
-
-
 const authBase = '/api/auth';
 export const loginEndpoint = `${authBase}/login`;
 export const signUpEndpoint = `${authBase}/sign-up`;
@@ -12,3 +10,6 @@ export const myFullProfileEndpoint = `${userBase}/full-profile`;
 export const editProfileEndpoint = `${userBase}/edit-profile`;
 export const editAvatarEndpoint = `${userBase}/edit-avatar`;
 export const editBannerEndpoint = `${userBase}/edit-banner`;
+
+const categoriesBase = '/api/categories';
+export const searchCategoriesEndpoint = `${categoriesBase}`;

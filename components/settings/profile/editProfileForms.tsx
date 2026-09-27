@@ -7,6 +7,7 @@ import { useContext } from "react";
 import { UserContext } from "@/context/userContext";
 import { editAvatarEndpoint, editBannerEndpoint } from "@/constants/api";
 import { ToastContext } from "@/context/toastContext";
+import { isRequestError } from "@/lib/error";
 
 interface Params {
   fullProfile: FullProfile,
@@ -28,7 +29,7 @@ function EditProfileForms({ fullProfile }: Params) {
       body,
     });
 
-    if (res.status !== 200) {
+    if (isRequestError(res)) {
       toastContext.show({
         title: "Failed to save avatar",
         type: 'error',
@@ -54,7 +55,7 @@ function EditProfileForms({ fullProfile }: Params) {
       body,
     });
 
-    if (res.status !== 200) {
+    if (isRequestError(res)) {
       toastContext.show({
         title: "Failed to save banner",
         type: 'error',

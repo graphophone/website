@@ -5,6 +5,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { myFullProfileEndpoint } from "@/constants/api";
 import { ToastContext } from "@/context/toastContext";
 import { UserContext } from "@/context/userContext"
+import { isRequestError } from "@/lib/error";
 import { FullProfile } from "@/types/user/profile";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react"
@@ -24,7 +25,7 @@ function ProfileSettingsPage() {
         method: "GET",
       });
     
-      if (res.status !== 200) {
+      if (isRequestError(res)) {
         toastContext.show({
           title: "Failed to get profile data",
           description: "Try again later",
