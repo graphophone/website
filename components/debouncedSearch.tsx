@@ -5,7 +5,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Spinner } from "./ui/spinner";
 
 interface Params extends React.ComponentProps<"input"> {
-  request: (searchToken: string) => Promise<Response>;
+  request: (searchToken: string) => Promise<void>;
   isLoading: boolean,
   timeout?: number,
 }

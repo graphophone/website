@@ -5,17 +5,33 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useEffect, useState } from 'react';
 import { searchCategoriesEndpoint } from '@/constants/api';
 import { isRequestError } from '@/lib/error';
-import { FieldGroup } from '@/components/ui/field';
-import { Controller } from 'react-hook-form';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Controller, useForm } from 'react-hook-form';
+import { UploadTrackForm, uploadTrackSchema } from '@/types/upload-track/forms';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Input } from '@/components/ui/input';
+import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from '@/components/ui/input-group';
 
-async function UploadTrackInformationPage() {
+function UploadTrackInformationPage() {
+  const uploadTrackForm = useForm<UploadTrackForm>({
+    resolver: zodResolver(uploadTrackSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+      categories: [],
+      thumbnail: undefined,
+    },
+    mode: 'onTouched',
+  });
+
   const [categories, setCategories] = useState<CategoryInfo[]>([]);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
-  const [categoriesSearchToken, setCategoriesSearchToken] = useState('');
 
-  const searchCategories = async () => {
+  const searchCategories = async (searchToken: string) => {
     setIsCategoriesLoading(false);
-    const res = await fetch(searchCategoriesEndpoint, {
+    const url = new URL(searchCategoriesEndpoint);
+    url.searchParams.append("searchToken", searchToken);
+    const res = await fetch(url, {
       method: "GET",
     });
     if (isRequestError(res)) {
@@ -27,9 +43,6 @@ async function UploadTrackInformationPage() {
     setIsCategoriesLoading(false);
   };
 
-  useEffect(() => {
-  }, [categoriesSearchToken]);
-
   return (
     <Card className="w-[80vh] md:w-full">
       <CardHeader>
@@ -39,158 +52,63 @@ async function UploadTrackInformationPage() {
         <fieldset disabled={false}>
           <form id="edit-profile-form">
             <FieldGroup>
-              <div className="flex gap-2">
-                <Controller
-                  name="username"
-                  control={editProfileForm.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="username">
-                        Username
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="username"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="my_username"
-                        autoComplete="off"
-                        className="placeholder:text-foreground/50"
-                      />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="email"
-                  control={editProfileForm.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="email">
-                        Email
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="email"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="my@mail.tutu"
-                        className="placeholder:text-foreground/50"
-                      />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-              </div>
-
-              <div className="flex gap-2">
-                <Controller
-                  name="firstName"
-                  control={editProfileForm.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="firstName">
-                        First name (Optional)
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="firstName"
-                        placeholder="Alina"
-                        aria-invalid={fieldState.invalid}
-                        className="placeholder:text-foreground/50"
-                      />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="lastName"
-                  control={editProfileForm.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="lastName">
-                        Last name (Optional)
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="lastName"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="Smith"
-                        className="placeholder:text-foreground/50"
-                      />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-              </div>
-
-              <div className="flex gap-2">
-                <Controller
-                  name="country"
-                  control={editProfileForm.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="country">
-                        Country (optional)
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="country"
-                        placeholder="Poland"
-                        aria-invalid={fieldState.invalid}
-                        className="placeholder:text-foreground/50"
-                      />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="city"
-                  control={editProfileForm.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="city">
-                        City (optional)
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="city"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="Warsaw"
-                        className="placeholder:text-foreground/50"
-                      />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-              </div>
-
               <Controller
-                name="bio"
-                control={editProfileForm.control}
+                name="title"
+                control={uploadTrackForm.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="bio">
-                      Bio (optional)
+                    <FieldLabel htmlFor="title">
+                      Title
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id="title"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Track title"
+                      autoComplete="off"
+                      className="placeholder:text-foreground/50"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="categories"
+                control={uploadTrackForm.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="categories">
+                      Select categories of your track
+                    </FieldLabel>
+                    <Input
+                      id="categories"
+                      placeholder="e.g. Lo-Fi, Jazz, Religious"
+                      aria-invalid={fieldState.invalid}
+                      className="placeholder:text-foreground/50"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="description"
+                control={uploadTrackForm.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="description">
+                      Description (optional)
                     </FieldLabel>
                     <InputGroup>
                       <InputGroupTextarea
                         {...field}
-                        id="bio"
-                        placeholder="Tell something about yourself"
+                        id="description"
+                        placeholder="Tell something the track"
                         rows={3}
                         className="resize-none placeholder:text-foreground/50"
                         aria-invalid={fieldState.invalid}
