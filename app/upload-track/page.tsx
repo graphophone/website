@@ -1,10 +1,7 @@
 "use client"
 
-import { CategoryInfo } from '@/types/category/category';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useEffect, useState } from 'react';
-import { searchCategoriesEndpoint } from '@/constants/api';
-import { isRequestError } from '@/lib/error';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Controller, useForm } from 'react-hook-form';
 import { UploadTrackForm, uploadTrackSchema } from '@/types/upload-track/forms';
@@ -14,6 +11,7 @@ import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from 
 import { Trash, UploadSimple } from 'phosphor-react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import CategoriesSelect from '@/components/upload-track/categoriesSelect';
 
 function UploadTrackInformationPage() {
   const uploadTrackForm = useForm<UploadTrackForm>({
@@ -30,24 +28,6 @@ function UploadTrackInformationPage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [resolvedImage, setResolvedImage] = useState<string | null>(null);
   const [isThumbnailHovered, setIsThumbnailHovered] = useState(false);
-  const [categories, setCategories] = useState<CategoryInfo[]>([]);
-  const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
-
-  const searchCategories = async (searchToken: string) => {
-    setIsCategoriesLoading(false);
-    const url = new URL(searchCategoriesEndpoint);
-    url.searchParams.append("searchToken", searchToken);
-    const res = await fetch(url, {
-      method: "GET",
-    });
-    if (isRequestError(res)) {
-      const categories: CategoryInfo[] = await res.json();
-      setCategories(categories);
-    } else {
-      setCategories([]);
-    }
-    setIsCategoriesLoading(false);
-  };
 
   useEffect(() => {
     if (selectedImage === null) {
@@ -155,12 +135,7 @@ function UploadTrackInformationPage() {
                         <FieldLabel htmlFor="categories">
                           Categories for the track
                         </FieldLabel>
-                        <Input
-                          id="categories"
-                          placeholder="e.g. Lo-Fi, Jazz, Religious"
-                          aria-invalid={fieldState.invalid}
-                          className="placeholder:text-foreground/50"
-                        />
+                        <CategoriesSelect />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}

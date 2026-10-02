@@ -12,7 +12,9 @@ export const uploadTrackSchema = z.object({
             id: z.number(),
             name: z.string(),
         }),
-    ),
+    )
+        .max(3)
+        .min(1),
     thumbnail: z.instanceof(File)
         .refine(
             file => [

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { FocusEvent, useEffect, useState } from "react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Spinner } from "./ui/spinner";
 
@@ -10,10 +10,10 @@ interface Params extends React.ComponentProps<"input"> {
   timeout?: number,
 }
 
-function DebouncedSearch({ request, isLoading, timeout, ...props }: Params) {
+function DebouncedSearch({ request, isLoading, timeout, onFocus, ...props }: Params) {
   const [_, setDebounceTimeout] =
     useState<ReturnType<typeof setTimeout> | null>(null);
-  const [searchToken, setSearchToken] = useState<string>('');
+  const [searchToken, setSearchToken] = useState('');
 
   useEffect(() => {
     setDebounceTimeout(prev => {
@@ -28,6 +28,12 @@ function DebouncedSearch({ request, isLoading, timeout, ...props }: Params) {
     <InputGroup>
       <InputGroupInput
         onChange={(e) => setSearchToken(e.target.value)}
+        onFocus={(e: FocusEvent<HTMLInputElement, Element>) => {
+          request(searchToken);
+          if (onFocus) {
+            onFocus(e);
+          }
+        }}
         {...props}
       />
       <InputGroupAddon align="inline-end">
