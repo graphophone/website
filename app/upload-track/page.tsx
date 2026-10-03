@@ -1,19 +1,22 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useEffect, useState } from 'react';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Controller, useForm } from 'react-hook-form';
 import { UploadTrackForm, uploadTrackSchema } from '@/types/upload-track/forms';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from '@/components/ui/input-group';
-import { Trash, UploadSimple } from 'phosphor-react';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
 import CategoriesSelect from '@/components/upload-track/categoriesSelect';
+import ThumbnailUpload from '@/components/upload-track/thumbnailUpload';
+import { CategoryData } from '@/types/category/category';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { Spinner } from '@/components/ui/spinner';
 
 function UploadTrackInformationPage() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const uploadTrackForm = useForm<UploadTrackForm>({
     resolver: zodResolver(uploadTrackSchema),
     defaultValues: {
@@ -25,26 +28,21 @@ function UploadTrackInformationPage() {
     mode: 'onTouched',
   });
 
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [resolvedImage, setResolvedImage] = useState<string | null>(null);
-  const [isThumbnailHovered, setIsThumbnailHovered] = useState(false);
+  const handleSubmit = async (data: UploadTrackForm) => {
+    setIsLoading(true);
 
-  useEffect(() => {
-    if (selectedImage === null) {
-      setResolvedImage(null);
-      return;
-    }
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(selectedImage);
-    fileReader.onload = () => {
-      let imageBase64 = fileReader.result;
-      if (imageBase64 instanceof ArrayBuffer) {
-        imageBase64 = btoa(String.fromCharCode(...new Uint8Array(imageBase64)));
-      }
-      console.log('read image');
-      setResolvedImage(imageBase64);
-    };
-  }, [selectedImage]);
+
+    setIsLoading(false);
+  };
+
+  const resetForm = () => {
+    uploadTrackForm.setValues({
+      title: '',
+      description: '',
+      categories: [],
+      thumbnail: undefined,
+    });
+  }
 
   return (
     <Card className="w-[80vh] md:w-full">
@@ -53,54 +51,27 @@ function UploadTrackInformationPage() {
       </CardHeader>
       <CardContent>
         <fieldset disabled={false}>
-          <form id="edit-profile-form">
+          <form id="edit-profile-form" onSubmit={uploadTrackForm.handleSubmit(handleSubmit)}>
             <FieldGroup className="flex flex-col md:flex-row gap-4.5">
-              <div className="h-full flex gap-4.5 items-center">
-                <div className="h-48 relative">
-                  <input
-                    onChange={e => setSelectedImage(e.target?.files?.item(0) ?? null)}
-                    className="w-full h-full absolute opacity-0 z-10 cursor-pointer"
-                    accept="image/png, image/jpeg"
-                    type="file"
-                    name={`thumbnail-input`}
-                    id={`thumbnail-input`}
-                  />
-                  <Card className="w-48 h-48 relative">
-                    <CardContent className="w-full h-full">
-                      <div className="w-full h-full flex flex-col items-center justify-center">
-                        <UploadSimple className="size-8 opacity-50 z-0" />
-                        <div className="w-full text-center opacity-50">
-                          Press or drag to select the thumbnail
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-                { resolvedImage ?
-                  <div
-                    className="w-48 h-48 relative rounded-[6px] overflow-clip"
-                    onMouseEnter={() => setIsThumbnailHovered(true)}
-                    onMouseLeave={() => setIsThumbnailHovered(false)}  
-                  >
-                    { isThumbnailHovered ?
-                      <Button
-                        size="icon"
-                        variant="destructive"
-                        onClick={() => setSelectedImage(null)}
-                        className="absolute top-2 left-2 z-10 cursor-pointer bg-foreground/65 hover:bg-foreground/85"
-                      >
-                        <Trash weight="fill" />
-                      </Button> : <></>
-                    }
-                    <Image
-                      src={resolvedImage}
-                      alt="Selected thumbnail"
-                      fill={true}
-                      style={{ objectFit: "cover" }}
+              <Controller
+                name="thumbnail"
+                control={uploadTrackForm.control}
+                render={({ field, fieldState }) => (
+                  <Field className="w-fit h-fit">
+                    <FieldLabel>
+                      Thumbnail
+                    </FieldLabel>
+                    <ThumbnailUpload
+                      onSelect={selectedImage => {
+                        uploadTrackForm.setValue("thumbnail", selectedImage ?? undefined);
+                      }}
                     />
-                  </div> : <div className="w-48 h-48 opacity-0" />
-                }
-              </div>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
               <div className="grow flex flex-col gap-2">
                 <div className="flex gap-2 items-baseline justify-center">
@@ -135,7 +106,12 @@ function UploadTrackInformationPage() {
                         <FieldLabel htmlFor="categories">
                           Categories for the track
                         </FieldLabel>
-                        <CategoriesSelect />
+                        <CategoriesSelect
+                          selected={field.value}
+                          onChange={(value: CategoryData[]) => {
+                            uploadTrackForm.setValue("categories", [...value]);
+                          }}
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -178,6 +154,28 @@ function UploadTrackInformationPage() {
           </form>
         </fieldset>
       </CardContent>
+      <CardFooter>
+        <Button
+          className="cursor-pointer relative"
+          disabled={!uploadTrackForm.formState.isValid}
+          type="submit"
+          form="edit-profile-form"
+        >
+          {isLoading ?
+            <div className="absolute w-full h-full flex items-center justify-center">
+              <Spinner />
+            </div> : <></>
+          }
+          <span className={isLoading ? "opacity-0" : ""}>Save</span>
+        </Button>
+        <Button
+          className="cursor-pointer"
+          variant="outline"
+          onClick={resetForm}
+        >
+          Reset
+        </Button>
+      </CardFooter>
     </Card>
   )
 }
