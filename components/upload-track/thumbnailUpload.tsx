@@ -26,7 +26,6 @@ function ThumbnailUpload({ onSelect }: Params) {
       if (imageBase64 instanceof ArrayBuffer) {
         imageBase64 = btoa(String.fromCharCode(...new Uint8Array(imageBase64)));
       }
-      console.log('read image');
       setResolvedImage(imageBase64);
     };
   };

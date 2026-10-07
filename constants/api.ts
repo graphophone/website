@@ -7,9 +7,14 @@ export const refreshEndpoint = `${authBase}/refresh`;
 const userBase = '/api/user';
 export const meEndpoint = `${userBase}/me`;
 export const myFullProfileEndpoint = `${userBase}/full-profile`;
-export const editProfileEndpoint = `${userBase}/edit-profile`;
-export const editAvatarEndpoint = `${userBase}/edit-avatar`;
-export const editBannerEndpoint = `${userBase}/edit-banner`;
+export const editProfileEndpoint = `${userBase}/update-profile`;
+export const editAvatarEndpoint = `${userBase}/update-avatar`;
+export const editBannerEndpoint = `${userBase}/update-banner`;
 
 const categoriesBase = '/api/categories';
 export const searchCategoriesEndpoint = `${categoriesBase}`;
+
+const tracksBase = '/api/tracks';
+export const uploadTrackEndpoint = `${tracksBase}/upload`;
+export const updateTrackThumbnailEndpoint = (trackId: number) =>
+        `${tracksBase}/update-thumbnail/${trackId}`;

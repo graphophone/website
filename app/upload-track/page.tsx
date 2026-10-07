@@ -11,17 +11,25 @@ import CategoriesSelect from '@/components/upload-track/categoriesSelect';
 import ThumbnailUpload from '@/components/upload-track/thumbnailUpload';
 import { CategoryData } from '@/types/category/category';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
+import { updateTrackThumbnailEndpoint, uploadTrackEndpoint } from '@/constants/api';
+import { UserContext } from '@/context/userContext';
+import { isRequestError } from '@/lib/error';
+import { ToastContext } from '@/context/toastContext';
+import { useRouter } from 'next/navigation';
 
 function UploadTrackInformationPage() {
+  const router = useRouter();
+  const userContext = useContext(UserContext);
+  const toastContext = useContext(ToastContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const uploadTrackForm = useForm<UploadTrackForm>({
     resolver: zodResolver(uploadTrackSchema),
     defaultValues: {
       title: '',
-      description: '',
+      description: undefined,
       categories: [],
       thumbnail: undefined,
     },
@@ -31,8 +39,54 @@ function UploadTrackInformationPage() {
   const handleSubmit = async (data: UploadTrackForm) => {
     setIsLoading(true);
 
+    const uploadRes = await userContext.protectedFetch(uploadTrackEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: data.title,
+        description: data.description ?? null,
+        categoriesIds: data.categories.map(category => category.id),
+      }),
+    });
+    if (isRequestError(uploadRes)) {
+      toastContext.show({
+        title: "Failed to upload track data",
+        description: "Try again later",
+        type: "error",
+      });
+      setIsLoading(false);
+      return;
+    }
+    
+    const trackId = await uploadRes.json();
+    toastContext.show({
+      title: "Uploaded successfully",
+      type: "success",
+    });
 
-    setIsLoading(false);
+    let body = null;
+    if (data.thumbnail) {
+      const formData = new FormData();
+      formData.append('thumbnail', data.thumbnail);
+      body = formData;
+    }
+    const updateThumbnailRes = await userContext.protectedFetch(
+      updateTrackThumbnailEndpoint(trackId),
+      {
+        method: "PATCH",
+        body,
+      },
+    );
+
+    if (isRequestError(updateThumbnailRes)) {
+      toastContext.show({
+        title: "Failed to set track thumbnail",
+        description: "Try again later",
+        type: "error",
+      });
+    }
   };
 
   const resetForm = () => {
@@ -63,7 +117,7 @@ function UploadTrackInformationPage() {
                     </FieldLabel>
                     <ThumbnailUpload
                       onSelect={selectedImage => {
-                        uploadTrackForm.setValue("thumbnail", selectedImage ?? undefined);
+                        field.onChange(selectedImage ?? undefined);
                       }}
                     />
                     {fieldState.invalid && (
@@ -73,52 +127,52 @@ function UploadTrackInformationPage() {
                 )}
               />
 
-              <div className="grow flex flex-col gap-2">
-                <div className="flex gap-2 items-baseline justify-center">
-                  <Controller
-                    name="title"
-                    control={uploadTrackForm.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="title">
-                          Title
-                        </FieldLabel>
-                        <Input
-                          {...field}
-                          id="title"
-                          aria-invalid={fieldState.invalid}
-                          placeholder="Track title"
-                          autoComplete="off"
-                          className="placeholder:text-foreground/50"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
+            <div className="grow flex flex-col gap-2">
+                <Controller
+                  name="title"
+                  control={uploadTrackForm.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="title">
+                        Title
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id="title"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Track title"
+                        autoComplete="off"
+                        className="placeholder:text-foreground/50"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
 
-                  <Controller
-                    name="categories"
-                    control={uploadTrackForm.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="categories">
-                          Categories for the track
-                        </FieldLabel>
-                        <CategoriesSelect
-                          selected={field.value}
-                          onChange={(value: CategoryData[]) => {
-                            uploadTrackForm.setValue("categories", [...value]);
-                          }}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                </div>
+                <Controller
+                  name="categories"
+                  control={uploadTrackForm.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="categories">
+                        Categories for the track
+                      </FieldLabel>
+                      <CategoriesSelect
+                        selected={field.value}
+                        invalid={fieldState.invalid}
+                        onChange={(value: CategoryData[]) => {
+                          field.onChange([...value]);
+                        }}
+                        onBlur={field.onBlur}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
 
                 <Controller
                   name="description"
@@ -157,7 +211,7 @@ function UploadTrackInformationPage() {
       <CardFooter>
         <Button
           className="cursor-pointer relative"
-          disabled={!uploadTrackForm.formState.isValid}
+          disabled={!uploadTrackForm.formState.isValid || isLoading}
           type="submit"
           form="edit-profile-form"
         >

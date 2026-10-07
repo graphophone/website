@@ -14,14 +14,20 @@ const nextConfig: NextConfig = {
         port: "19010",
         pathname: "/assets/**"
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "19020",
+        pathname: "/assets/**"
+      },
     ],
   },
   async rewrites() {
     return [
       {
-        source: `/api/:path*`,
+        source: '/api/:path*',
         destination: `${process.env.API_URL}/:path*`,
-      }
+      },
     ];
   }
 };

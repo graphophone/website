@@ -10,10 +10,12 @@ import { debounce } from 'lodash';
 
 interface Params {
   selected: CategoryData[],
+  invalid: boolean,
   onChange: (category: CategoryData[]) => void,
+  onBlur: () => void,
 }
 
-function CategoriesSelect({ selected, onChange }: Params) {
+function CategoriesSelect({ selected, invalid, onBlur, onChange }: Params) {
   const [options, setOptions] = useState<CategoryData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +42,10 @@ function CategoriesSelect({ selected, onChange }: Params) {
 
   return (
     <Select
+      labelInValue
       mode="multiple"
+      onBlur={onBlur}
+      status={invalid ? "error" : undefined}
       style={{ width: '100%' }}
       placeholder="Select categories"
       loading={isLoading}
@@ -56,15 +61,19 @@ function CategoriesSelect({ selected, onChange }: Params) {
           </div> : <span>Not found</span>
       }
       allowClear
-      onChange={(value) => {
-        onChange(value);
+      onChange={value => {
+        const categories = value.map(v => ({
+          id: v.value,
+          name: v.label,
+        }));
+        onChange(categories);
       }}
       fieldNames={{
         label: "name",
         value: "id",
       }}
       options={options}
-      value={selected}
+      value={selected.map(c => ({ label: c.name, value: c.id }))}
       optionRender={(option) => (
         <div key={option.value}>{option.label}</div>
       )}

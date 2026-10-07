@@ -1,13 +1,22 @@
 "use client"
 
+import { identityAssetPrefix } from "@/constants/assets";
 import Image, { ImageProps } from "next/image";
 
 function S3Image({ src, alt, ...props }: ImageProps) {
-  const prefix = process.env.NEXT_PUBLIC_ASSETS_S3_PREFIX ?? '';
+  let url = src;
+  if (typeof src === 'string') {
+    let [host, uri] = ['', ''];
+    if (src.startsWith(identityAssetPrefix)) {
+      host = process.env.NEXT_PUBLIC_IDENTITY_ASSETS_HOST!;
+      uri = src.slice(identityAssetPrefix.length);
+    }
+    url = `${host}${uri}`;
+  }
   
   return (
     <Image
-      src={`${prefix}${src}`}
+      src={url}
       alt={alt}
       {...props}
     />
