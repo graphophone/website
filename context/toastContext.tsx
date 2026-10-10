@@ -1,7 +1,8 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import React, { createContext } from "react";
-import { toast, Toaster } from "@/components/ui/toast"
+import { Toaster, toast } from 'sonner';
 
 export interface ToastDefaultMessage {
     title: string,
@@ -30,13 +31,26 @@ export const ToastContext = createContext<IToastContext>({
 });
 
 export function ToastContextProvider({ children }: { children: React.ReactNode }) {
+    const { theme = "system" } = useTheme()
+
     const show = (message: ToastDefaultMessage) => {
-        const type = message.type ?? 'default';
-        toast.add({
-            title: message.title,
-            description: message.description,
-            type,
-        });
+        if (message.type === 'success') {
+            toast.success(message.title, {
+                description: message.description,
+            });
+        } else if (message.type === 'error') {
+            toast.error(message.title, {
+                description: message.description,
+            });
+        } else if (message.type === 'warning') {
+            toast.warning(message.title, {
+                description: message.description,
+            });
+        } else {
+            toast(message.title, {
+                description: message.description,
+            });
+        }
     };
 
     const promise = (promise: Promise<any>, message: ToastPromiseMessage) => {
@@ -53,7 +67,20 @@ export function ToastContextProvider({ children }: { children: React.ReactNode }
             promise,
         }}>
             {children}
-            <Toaster />
+            <Toaster
+                position="bottom-left"
+                richColors
+                theme={theme as "light" | "dark" | "system"}
+                toastOptions={{
+                    classNames: {
+                        toast: "bg-background text-foreground border-border",
+                        description: "!text-background",
+                        success: "!bg-success !text-background !border-success",
+                        error: "!bg-destructive !text-background !border-destructive",
+                        warning: "!bg-warning !text-background !border-warning",
+                    },
+                }}
+            />
         </ToastContext>
     )
 }
