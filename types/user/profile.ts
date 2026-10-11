@@ -1,7 +1,10 @@
-export interface Profile {
+export interface BasicProfile {
     userId: number;
     username: string;
     avatarUrl: string | null;
+}
+
+export interface Profile extends BasicProfile {
     bannerUrl: string | null;
     firstName: string | null;
     lastName: string | null;
@@ -10,6 +13,6 @@ export interface Profile {
     city: string | null;
 }
 
-export interface FullProfile extends Profile {
+export interface SettingsProfile extends Profile {
     email: string;
 }

@@ -3,13 +3,8 @@
 import { loginEndpoint, logoutEndpoint, meEndpoint, refreshEndpoint, signUpEndpoint } from "@/constants/api";
 import { isRequestError } from "@/lib/error";
 import { LoginForm, SignUpForm } from "@/types/auth/forms";
+import { BasicProfile } from "@/types/user/profile";
 import React, { createContext, useEffect, useState } from "react";
-
-export interface BasicProfile {
-    userId: number;
-    username: string;
-    avatarUrl?: string;
-}
 
 export interface IUserContext {
     user: BasicProfile | null;

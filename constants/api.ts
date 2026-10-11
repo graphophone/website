@@ -18,3 +18,4 @@ const tracksBase = '/api/tracks';
 export const uploadTrackEndpoint = `${tracksBase}/upload`;
 export const updateTrackThumbnailEndpoint = (trackId: number) =>
         `${tracksBase}/update-thumbnail/${trackId}`;
+export const trackEndpoint = (trackId: number) => `${tracksBase}/${trackId}`;

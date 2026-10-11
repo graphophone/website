@@ -32,7 +32,7 @@ export default function RootLayout({
           <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
             <Header />
 
-            <div className="w-full grow md:px-[9vw] flex">
+            <div className="w-full grow pb-4.5 md:px-[9vw] flex">
               {children}
             </div>
           </div>

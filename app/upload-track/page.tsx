@@ -3,7 +3,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Controller, useForm } from 'react-hook-form';
-import { UploadTrackForm, uploadTrackSchema } from '@/types/upload-track/forms';
+import { UploadTrackForm, uploadTrackSchema } from '@/types/track/forms';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from '@/components/ui/input-group';
@@ -87,6 +87,8 @@ function UploadTrackInformationPage() {
         type: "error",
       });
     }
+
+    router.push(`/track/${trackId}`);
   };
 
   const resetForm = () => {

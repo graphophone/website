@@ -1,6 +1,6 @@
 "use client"
 
-import { FullProfile } from "@/types/user/profile";
+import { SettingsProfile } from "@/types/user/profile";
 import EditProfileInformationForm from "./editProfileInformationForm";
 import EditProfileImageForm from "./editImageForm";
 import { useContext } from "react";
@@ -10,7 +10,7 @@ import { ToastContext } from "@/context/toastContext";
 import { isRequestError } from "@/lib/error";
 
 interface Params {
-  fullProfile: FullProfile,
+  fullProfile: SettingsProfile,
 }
 
 function EditProfileForms({ fullProfile }: Params) {

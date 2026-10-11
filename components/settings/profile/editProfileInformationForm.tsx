@@ -11,13 +11,13 @@ import { ToastContext } from "@/context/toastContext"
 import { UserContext } from "@/context/userContext"
 import { isRequestError } from "@/lib/error"
 import { EditProfileForm, editProfileSchema } from "@/types/settings/forms"
-import { FullProfile } from "@/types/user/profile"
+import { SettingsProfile } from "@/types/user/profile"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 interface Params {
-  fullProfile: FullProfile,
+  fullProfile: SettingsProfile,
 };
 
 function EditProfileInformationForm({ fullProfile }: Params) {

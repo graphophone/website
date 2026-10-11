@@ -6,13 +6,13 @@ import { myFullProfileEndpoint } from "@/constants/api";
 import { ToastContext } from "@/context/toastContext";
 import { UserContext } from "@/context/userContext"
 import { isRequestError } from "@/lib/error";
-import { FullProfile } from "@/types/user/profile";
+import { SettingsProfile } from "@/types/user/profile";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react"
 
 function ProfileSettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [fullProfile, setFullProfile] = useState<FullProfile | null>(null);
+  const [fullProfile, setFullProfile] = useState<SettingsProfile | null>(null);
   const userContext = useContext(UserContext);
   const toastContext = useContext(ToastContext);
   const router = useRouter();
@@ -34,7 +34,7 @@ function ProfileSettingsPage() {
         router.push(`/user/${userContext.user?.userId}`);
       }
 
-      const profileData: FullProfile = await res.json();
+      const profileData: SettingsProfile = await res.json();
       setFullProfile(profileData);
 
       setIsLoading(false);
