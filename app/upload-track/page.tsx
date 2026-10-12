@@ -37,6 +37,52 @@ function UploadTrackInformationPage() {
     },
     mode: 'onTouched',
   });
+  
+  const handleThumbnailUpload = async (trackId: number, thumbnail?: File) => {
+    let body = null;
+    if (thumbnail) {
+      const formData = new FormData();
+      formData.append('thumbnail', thumbnail);
+      body = formData;
+    }
+    const updateThumbnailRes = await userContext.protectedFetch(
+      updateTrackThumbnailEndpoint(trackId),
+      {
+        method: "PATCH",
+        body,
+      },
+    );
+
+    if (isRequestError(updateThumbnailRes)) {
+      toastContext.show({
+        title: "Failed to set track thumbnail",
+        description: "Try again later",
+        type: "error",
+      });
+    }
+  };
+
+  const handleAudioUpload = async (trackId: number, audio?: File) => {
+    let body = null;
+    if (audio) {
+      const formData = new FormData();
+      formData.append('audio', audio);
+      body = formData;
+    }
+    const uploadAudioRes = await new Promise<Response>((resolve) => {
+      setTimeout(() => {
+        resolve({ status: 404 } as Response);
+      }, 3000);
+    });
+
+    if (isRequestError(uploadAudioRes)) {
+      toastContext.show({
+        title: "Failed to upload audio",
+        description: "You can upload it separately later",
+        type: "error",
+      });
+    }
+  };
 
   const handleSubmit = async (data: UploadTrackForm) => {
     setIsLoading(true);
@@ -63,33 +109,18 @@ function UploadTrackInformationPage() {
     }
     
     const trackId = await uploadRes.json();
+
+    const thumbnailUploadPromise = handleThumbnailUpload(trackId, data.thumbnail);
+    const audioUploadPromise = handleAudioUpload(trackId, data.audio);
+    await Promise.allSettled([
+      thumbnailUploadPromise,
+      audioUploadPromise,
+    ]);
+
     toastContext.show({
       title: "Uploaded successfully",
       type: "success",
     });
-
-    let body = null;
-    if (data.thumbnail) {
-      const formData = new FormData();
-      formData.append('thumbnail', data.thumbnail);
-      body = formData;
-    }
-    const updateThumbnailRes = await userContext.protectedFetch(
-      updateTrackThumbnailEndpoint(trackId),
-      {
-        method: "PATCH",
-        body,
-      },
-    );
-
-    if (isRequestError(updateThumbnailRes)) {
-      toastContext.show({
-        title: "Failed to set track thumbnail",
-        description: "Try again later",
-        type: "error",
-      });
-    }
-
     router.push(`/track/${trackId}`);
   };
 
