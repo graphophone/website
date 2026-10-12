@@ -24,6 +24,14 @@ export const uploadTrackSchema = z.object({
             { error: "Invalid image" },
         )
         .optional(),
+    audio: z.instanceof(File)
+        .refine(
+            file => [
+                "audio/mpeg",
+                "audio/wav",
+            ].includes(file.type),
+            { error: "Invalid audio" },
+        ),
 });
 
 export type UploadTrackForm = z.infer<typeof uploadTrackSchema>;

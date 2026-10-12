@@ -18,6 +18,7 @@ import { UserContext } from '@/context/userContext';
 import { isRequestError } from '@/lib/error';
 import { ToastContext } from '@/context/toastContext';
 import { useRouter } from 'next/navigation';
+import AudioUpload from '@/components/upload-track/audioUpload';
 
 function UploadTrackInformationPage() {
   const router = useRouter();
@@ -32,6 +33,7 @@ function UploadTrackInformationPage() {
       description: undefined,
       categories: [],
       thumbnail: undefined,
+      audio: undefined,
     },
     mode: 'onTouched',
   });
@@ -129,7 +131,28 @@ function UploadTrackInformationPage() {
                 )}
               />
 
-            <div className="grow flex flex-col gap-2">
+              <Controller
+                name="audio"
+                control={uploadTrackForm.control}
+                render={({ field, fieldState }) => (
+                  <Field className="w-fit h-fit">
+                    <FieldLabel>
+                      Audio
+                    </FieldLabel>
+                    <AudioUpload
+                      selectedAudio={field.value}
+                      onSelect={selectedAudio => {
+                        field.onChange(selectedAudio ?? undefined);
+                      }}
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <div className="grow flex flex-col gap-2">
                 <Controller
                   name="title"
                   control={uploadTrackForm.control}
