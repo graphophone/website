@@ -43,7 +43,9 @@ function UserProfileCard({ profile }: Params) {
               { isBannerExpanded ? <CaretUp size={16} /> : <CaretDown size={16} /> }
             </Button>
           </div>
-          <div className="absolute z-10 w-full h-full bg-background/35" />
+          { isBannerExpanded ?
+            <></> : <div className="absolute z-10 w-full h-full bg-background/35" />
+          }
           <div className="absolute w-full h-87.5">
             <S3Image
               className="absolute"
