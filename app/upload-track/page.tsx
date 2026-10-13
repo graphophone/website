@@ -13,7 +13,7 @@ import { CategoryData } from '@/types/category/category';
 import { Button } from '@/components/ui/button';
 import { useContext, useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
-import { updateTrackThumbnailEndpoint, uploadTrackEndpoint } from '@/constants/api';
+import { notifyUploadThumbnailEndpoint, removeThumbnailEndpoint, uploadThumbnailEndpoint, uploadTrackEndpoint } from '@/constants/api';
 import { UserContext } from '@/context/userContext';
 import { isRequestError } from '@/lib/error';
 import { ToastContext } from '@/context/toastContext';
@@ -39,27 +39,93 @@ function UploadTrackInformationPage() {
   });
   
   const handleThumbnailUpload = async (trackId: number, thumbnail?: File) => {
-    let body = null;
-    if (thumbnail) {
-      const formData = new FormData();
-      formData.append('thumbnail', thumbnail);
-      body = formData;
+    if (!thumbnail) {
+      const removeThumbnailRes = await userContext.protectedFetch(
+        removeThumbnailEndpoint(trackId),
+        {
+          method: "DELETE ",
+        },
+      );
+
+      if (isRequestError(removeThumbnailRes)) {
+        toastContext.show({
+          title: "Failed to remove track thumbnail",
+          description: "Try again later",
+          type: "error",
+        });
+      }
+      return;
     }
-    const updateThumbnailRes = await userContext.protectedFetch(
-      updateTrackThumbnailEndpoint(trackId),
+    const uploadThumbnailRes = await userContext.protectedFetch(
+      uploadThumbnailEndpoint(trackId),
       {
         method: "PATCH",
-        body,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mimeType: thumbnail.type,
+        }),
       },
     );
 
-    if (isRequestError(updateThumbnailRes)) {
+    if (isRequestError(uploadThumbnailRes)) {
       toastContext.show({
-        title: "Failed to set track thumbnail",
+        title: "Failed to upload track thumbnail",
         description: "Try again later",
         type: "error",
       });
+      return;
     }
+
+    const { uploadUrl, thumbnailId } = await uploadThumbnailRes.json();
+    const s3UploadRes = await fetch(uploadUrl, {
+      method: "PUT",
+      body: thumbnail,
+      headers: {
+        "Content-Type": thumbnail.type,
+      }
+    });
+
+    if (isRequestError(s3UploadRes)) {
+      toastContext.show({
+        title: "Failed to upload thumbnail to storage",
+        description: "Try again later",
+        type: "error",
+      });
+      return;
+    }
+
+    const notifyUploadRes = await userContext.protectedFetch(
+      notifyUploadThumbnailEndpoint(trackId),
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          thumbnailId,
+        }),
+      },
+    );
+
+    if (isRequestError(notifyUploadRes)) {
+      userContext.protectedFetch(
+        removeThumbnailEndpoint(trackId),
+        {
+          method: "DELETE ",
+        },
+      );
+
+      toastContext.show({
+        title: "Failed to notify after upload",
+        description: "Try again later",
+        type: "error",
+      });
+      return;
+    }
+
+
   };
 
   const handleAudioUpload = async (trackId: number, audio?: File) => {

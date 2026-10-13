@@ -17,13 +17,6 @@ function HeaderLinks() {
                 <MagnifyingGlass size={16} />
                 <span className="text-md">Search</span>
             </HeaderLink>
-
-            <Link href="/feed">
-                <HeaderLink>
-                    <Rss size={16} />
-                    <span className="text-md">Feed</span>
-                </HeaderLink>
-            </Link>
         </div>
     )
 }

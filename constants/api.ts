@@ -16,6 +16,10 @@ export const searchCategoriesEndpoint = `${categoriesBase}`;
 
 const tracksBase = '/api/tracks';
 export const uploadTrackEndpoint = `${tracksBase}/upload`;
-export const updateTrackThumbnailEndpoint = (trackId: number) =>
-        `${tracksBase}/update-thumbnail/${trackId}`;
+export const uploadThumbnailEndpoint = (trackId: number) =>
+        `${tracksBase}/upload-thumbnail/${trackId}`;
+export const removeThumbnailEndpoint = (trackId: number) =>
+        `${tracksBase}/remove-thumbnail/${trackId}`;
+export const notifyUploadThumbnailEndpoint = (trackId: number) =>
+        `${tracksBase}/notify-upload-thumbnail/${trackId}`;
 export const trackEndpoint = (trackId: number) => `${tracksBase}/${trackId}`;
