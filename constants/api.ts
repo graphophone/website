@@ -8,18 +8,22 @@ const userBase = '/api/user';
 export const meEndpoint = `${userBase}/me`;
 export const myFullProfileEndpoint = `${userBase}/full-profile`;
 export const editProfileEndpoint = `${userBase}/update-profile`;
-export const editAvatarEndpoint = `${userBase}/update-avatar`;
-export const editBannerEndpoint = `${userBase}/update-banner`;
+export const requestUploadAvatarEndpoint = `${userBase}/request-upload-image`;
+export const removeAvatarEndpoint = `${userBase}/remove-image?imageType=avatar`;
+export const notifyUploadAvatarEndpoint = `${userBase}/notify-upload-image?imageType=avatar`;
+export const requestUploadBannerEndpoint = `${userBase}/request-upload-image`;
+export const removeBannerEndpoint = `${userBase}/remove-image?imageType=banner`;
+export const notifyUploadBannerEndpoint = `${userBase}/notify-upload-image?imageType=banner`
 
 const categoriesBase = '/api/categories';
 export const searchCategoriesEndpoint = `${categoriesBase}`;
 
 const tracksBase = '/api/tracks';
 export const uploadTrackEndpoint = `${tracksBase}/upload`;
-export const uploadThumbnailEndpoint = (trackId: number) =>
-        `${tracksBase}/upload-thumbnail/${trackId}`;
+export const requestUploadThumbnailEndpoint = (trackId: number) =>
+        `${tracksBase}/request-upload-image/${trackId}`;
 export const removeThumbnailEndpoint = (trackId: number) =>
-        `${tracksBase}/remove-thumbnail/${trackId}`;
+        `${tracksBase}/remove-image/${trackId}`;
 export const notifyUploadThumbnailEndpoint = (trackId: number) =>
-        `${tracksBase}/notify-upload-thumbnail/${trackId}`;
+        `${tracksBase}/notify-upload-image/${trackId}`;
 export const trackEndpoint = (trackId: number) => `${tracksBase}/${trackId}`;

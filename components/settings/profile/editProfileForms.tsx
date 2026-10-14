@@ -5,9 +5,10 @@ import EditProfileInformationForm from "./editProfileInformationForm";
 import EditProfileImageForm from "./editImageForm";
 import { useContext } from "react";
 import { UserContext } from "@/context/userContext";
-import { editAvatarEndpoint, editBannerEndpoint } from "@/constants/api";
 import { ToastContext } from "@/context/toastContext";
 import { isRequestError } from "@/lib/error";
+import { AssetContext } from "@/context/assetContext";
+import { notifyUploadAvatarEndpoint, notifyUploadBannerEndpoint, removeAvatarEndpoint, removeBannerEndpoint, requestUploadAvatarEndpoint, requestUploadBannerEndpoint } from "@/constants/api";
 
 interface Params {
   fullProfile: SettingsProfile,
@@ -16,54 +17,73 @@ interface Params {
 function EditProfileForms({ fullProfile }: Params) {
   const userContext = useContext(UserContext);
   const toastContext = useContext(ToastContext);
+  const assetContext = useContext(AssetContext)
 
   const handleEditAvatar = async (selectedImage: File | null) => {
-    let body = null;
-    if (selectedImage !== null) {
-      const formData = new FormData();
-      formData.append('avatar', selectedImage);
-      body = formData;
-    }
-    const res = await userContext.protectedFetch(editAvatarEndpoint, {
-      method: "PUT",
-      body,
-    });
+    const uploadError = await assetContext.uploadImage({
+      requestUploadEndpoint: requestUploadAvatarEndpoint,
+      notifyUploadEndpoint: notifyUploadAvatarEndpoint,
+      removeEndpoint: removeAvatarEndpoint,
+    }, selectedImage ?? null);
 
-    if (isRequestError(res)) {
+    if (uploadError === "remove_fail") {
       toastContext.show({
-        title: "Failed to save avatar",
-        type: 'error',
+        title: "Failed to remove avatar",
+        type: "error",
+      });
+    } else if (uploadError === "request_upload_fail") {
+      toastContext.show({
+        title: "Failed to request upload avatar",
+        type: "error",
+      });
+    } else if (uploadError === "upload_fail") {
+      toastContext.show({
+        title: "Failed to upload avatar",
+        type: "error",
+      });
+    } else if (uploadError === "notify_upload_fail") {
+      toastContext.show({
+        title: "Failed to notify upload avatar",
+        type: "error",
       });
     } else {
       toastContext.show({
-        title: "Saved avatar",
-        description: "Reload the page to see the results",
+        title: "Avatar uploaded",
         type: "success",
       });
     }
   };
 
   const handleEditBanner = async (selectedImage: File | null) => {
-    let body = null;
-    if (selectedImage !== null) {
-      const formData = new FormData();
-      formData.append('banner', selectedImage);
-      body = formData;
-    }
-    const res = await userContext.protectedFetch(editBannerEndpoint, {
-      method: "PUT",
-      body,
-    });
+    const uploadError = await assetContext.uploadImage({
+      requestUploadEndpoint: requestUploadBannerEndpoint,
+      notifyUploadEndpoint: notifyUploadBannerEndpoint,
+      removeEndpoint: removeBannerEndpoint,
+    }, selectedImage ?? null);
 
-    if (isRequestError(res)) {
+    if (uploadError === "remove_fail") {
       toastContext.show({
-        title: "Failed to save banner",
-        type: 'error',
+        title: "Failed to remove banner",
+        type: "error",
+      });
+    } else if (uploadError === "request_upload_fail") {
+      toastContext.show({
+        title: "Failed to request upload banner",
+        type: "error",
+      });
+    } else if (uploadError === "upload_fail") {
+      toastContext.show({
+        title: "Failed to upload banner",
+        type: "error",
+      });
+    } else if (uploadError === "notify_upload_fail") {
+      toastContext.show({
+        title: "Failed to notify upload banner",
+        type: "error",
       });
     } else {
       toastContext.show({
-        title: "Saved banner",
-        description: "Reload the page to see the results",
+        title: "Banner uploaded",
         type: "success",
       });
     }

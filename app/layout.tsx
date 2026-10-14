@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Header from "@/components/header/header";
 import { UserContextProvider } from "@/context/userContext";
 import { ToastContextProvider } from "@/context/toastContext";
+import { AssetContextProvider } from "@/context/assetContext";
 
 const font = Open_Sans({
   variable: "--font-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className="min-h-screen overflow-x-hidden">
         <ToastContextProvider>
         <UserContextProvider>
+        <AssetContextProvider>
           <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
             <Header />
 
@@ -36,6 +38,7 @@ export default function RootLayout({
               {children}
             </div>
           </div>
+        </AssetContextProvider>
         </UserContextProvider>
         </ToastContextProvider>
       </body>
