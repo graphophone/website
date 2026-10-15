@@ -8,7 +8,7 @@ import Image from "next/image";
 import { Trash, UploadSimple } from "phosphor-react";
 import { useEffect, useState } from "react";
 
-interface Params {
+interface Props {
   title: string,
   imageSemantics: string,
   imageUrl: string | null;
@@ -22,7 +22,7 @@ function EditProfileImageForm({
   imageUrl,
   handleSave,
   imageFill,
-}: Params) {
+}: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [resolvedImage, setResolvedImage] = useState<string | null>(imageUrl);
   const [isImageHovered, setIsImageHovered] = useState(false);

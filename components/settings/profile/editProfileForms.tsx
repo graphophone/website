@@ -10,11 +10,11 @@ import { isRequestError } from "@/lib/error";
 import { AssetContext } from "@/context/assetContext";
 import { notifyUploadAvatarEndpoint, notifyUploadBannerEndpoint, removeAvatarEndpoint, removeBannerEndpoint, requestUploadAvatarEndpoint, requestUploadBannerEndpoint } from "@/constants/api";
 
-interface Params {
+interface Props {
   fullProfile: SettingsProfile,
 }
 
-function EditProfileForms({ fullProfile }: Params) {
+function EditProfileForms({ fullProfile }: Props) {
   const userContext = useContext(UserContext);
   const toastContext = useContext(ToastContext);
   const assetContext = useContext(AssetContext)

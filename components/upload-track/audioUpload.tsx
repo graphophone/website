@@ -7,12 +7,12 @@ import { Card, CardContent } from '../ui/card';
 import { VinylRecordIcon } from '@phosphor-icons/react';
 import { humanFileSize } from '@/lib/units';
 
-interface Params {
+interface Props {
   selectedAudio: File | null;
   onSelect: (selectedAudio: File | null) => void;
 }
 
-function AudioUpload({ selectedAudio, onSelect }: Params) {
+function AudioUpload({ selectedAudio, onSelect }: Props) {
   const [isFileHovered, setIsFileHovered] = useState(false);
 
   return selectedAudio ?

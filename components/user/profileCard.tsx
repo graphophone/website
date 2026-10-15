@@ -9,11 +9,11 @@ import Link from "next/link";
 import S3Image from "../s3Image";
 import { CaretDown, CaretUp } from "phosphor-react";
 
-interface Params {
+interface Props {
   profile: Profile;
 }
 
-function UserProfileCard({ profile }: Params) {
+function UserProfileCard({ profile }: Props) {
   const userContext = useContext(UserContext);
   const [isBannerExpanded, setIsBannerExpanded] = useState(false);
   const canEdit = userContext.user?.userId === profile.userId;

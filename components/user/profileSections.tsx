@@ -7,6 +7,7 @@ const profileSections = [
   { label: 'All', href: '' },
   { label: 'Tracks', href: 'tracks' },
   { label: 'Comments', href: 'comments' },
+  { label: 'About', href: 'about' },
 ];
 
 function UserProfileSections({ userId }: { userId: number }) {
@@ -14,8 +15,6 @@ function UserProfileSections({ userId }: { userId: number }) {
   const currentSection = pathname
     .slice(`/user/${userId}/`.length)
     .split('/').at(0)!;
-
-  console.log({ currentSection });
 
   return (
     <div className="w-full flex items-center px-16 border-t">

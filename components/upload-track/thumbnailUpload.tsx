@@ -5,11 +5,11 @@ import { Trash, UploadSimple } from 'phosphor-react';
 import Image from 'next/image';
 import { Card, CardContent } from '../ui/card';
 
-interface Params {
+interface Props {
   onSelect: (selectedImage: File | null) => void;
 }
 
-function ThumbnailUpload({ onSelect }: Params) {
+function ThumbnailUpload({ onSelect }: Props) {
   const [resolvedImage, setResolvedImage] = useState<string | null>(null);
   const [isThumbnailHovered, setIsThumbnailHovered] = useState(false);
 

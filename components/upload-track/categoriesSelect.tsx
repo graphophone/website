@@ -8,14 +8,14 @@ import { useEffect, useState } from 'react'
 import { Spinner } from '../ui/spinner';
 import { debounce } from 'lodash';
 
-interface Params {
+interface Props {
   selected: CategoryData[],
   invalid: boolean,
   onChange: (category: CategoryData[]) => void,
   onBlur: () => void,
 }
 
-function CategoriesSelect({ selected, invalid, onBlur, onChange }: Params) {
+function CategoriesSelect({ selected, invalid, onBlur, onChange }: Props) {
   const [options, setOptions] = useState<CategoryData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 

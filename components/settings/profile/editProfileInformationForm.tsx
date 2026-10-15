@@ -16,11 +16,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-interface Params {
+interface Props {
   fullProfile: SettingsProfile,
 };
 
-function EditProfileInformationForm({ fullProfile }: Params) {
+function EditProfileInformationForm({ fullProfile }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const userContext = useContext(UserContext);
   const toastContext = useContext(ToastContext);

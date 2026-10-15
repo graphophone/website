@@ -4,11 +4,11 @@ import { SidebarEntry } from '@/types/settings/sidebarEntry';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 
-interface Params {
+interface Props {
   entries: SidebarEntry[];
 }
 
-function SettingsSidebar({ entries }: Params) {
+function SettingsSidebar({ entries }: Props) {
   return (
     <Card className="w-full flex flex-col gap-2 p-2">
       {entries.map(entry => (
