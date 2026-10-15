@@ -27,9 +27,7 @@ function UserProfileCard({ profile }: Params) {
     profile.country;
 
   return (
-    <div className="w-full bg-background
-      rounded-t-[8px] overflow-clip"
-    >
+    <div className="w-full bg-background rounded-t-[8px] overflow-clip">
       { profile.bannerUrl ?
         <div className={`w-full relative ${isBannerExpanded ? 'h-87.5' : 'h-10.5'} overflow-clip`}>
           <div className="absolute flex items-center h-10.5 w-full justify-end pr-16">
