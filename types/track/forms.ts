@@ -3,9 +3,9 @@ import * as z from 'zod';
 export const uploadTrackSchema = z.object({
     title: z.string()
         .min(3, "Track title must be at least 3 characters")
-        .max(16, "Track title must be at most 16 characters"),
+        .max(64, "Track title must be at most  characters"),
     description: z.string()
-        .max(120, "Description must be at most 120 characters")
+        .max(360, "Description must be at most 360 characters")
         .optional(),
     categories: z.array(
         z.object({
@@ -25,6 +25,10 @@ export const uploadTrackSchema = z.object({
         )
         .optional(),
     audio: z.instanceof(File)
+        .refine(
+            file => !!file,
+            { error: "Audio file is required" },
+        )
         .refine(
             file => [
                 "audio/mpeg",

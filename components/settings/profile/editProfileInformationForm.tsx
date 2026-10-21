@@ -243,7 +243,7 @@ function EditProfileInformationForm({ fullProfile }: Props) {
                       />
                       <InputGroupAddon align="block-end">
                         <InputGroupText className="tabular-nums text-foreground/50">
-                          {field.value?.length ?? 0}/120 characters
+                          {field.value?.length ?? 0}/360 characters
                         </InputGroupText>
                       </InputGroupAddon>
                     </InputGroup>
@@ -263,7 +263,7 @@ function EditProfileInformationForm({ fullProfile }: Props) {
           disabled={!editProfileForm.formState.isValid}
           onClick={handleEditProfile}
         >
-          { isLoading ?
+          {isLoading ?
             <div className="absolute w-full h-full flex items-center justify-center">
               <Spinner />
             </div> : <></>

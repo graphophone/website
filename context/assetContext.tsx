@@ -4,20 +4,20 @@ import React, { createContext, useContext } from "react";
 import { UserContext } from "./userContext";
 import { isRequestError } from "@/lib/error";
 
-interface ImageUploadEndpoints {
+interface AssetUploadEndpoints {
   requestUploadEndpoint: string,
   notifyUploadEndpoint: string,
   removeEndpoint: string,
 }
 
-type ImageUploadError = "request_upload_fail" | "upload_fail" | "notify_upload_fail" | "remove_fail";
+type AssetUploadError = "request_upload_fail" | "upload_fail" | "notify_upload_fail" | "remove_fail" | "remove_success";
 
 export interface IAssetContext {
-  uploadImage: (endpoints: ImageUploadEndpoints, image: File | null) => Promise<ImageUploadError | null>,
+  uploadAsset: (endpoints: AssetUploadEndpoints, asset: File | null) => Promise<AssetUploadError | null>,
 }
 
 export const AssetContext = createContext<IAssetContext>({
-  uploadImage: function (endpoints: ImageUploadEndpoints, image: File | null): Promise<ImageUploadError | null> {
+  uploadAsset: function (endpoints: AssetUploadEndpoints, asset: File | null): Promise<AssetUploadError | null> {
     throw new Error("Function not implemented.");
   }
 });
@@ -25,21 +25,23 @@ export const AssetContext = createContext<IAssetContext>({
 export function AssetContextProvider({ children }: { children: React.ReactNode }) {
   const userContext = useContext(UserContext);
 
-  const uploadImage = async (
-    endpoints: ImageUploadEndpoints,
-    image: File | null,
-  ): Promise<ImageUploadError | null> => {
-    if (!image) {
-      const removeImageRes = await userContext.protectedFetch(
+  const uploadAsset = async (
+    endpoints: AssetUploadEndpoints,
+    asset: File | null,
+  ): Promise<AssetUploadError | null> => {
+    if (!asset) {
+      const removeAssetRes = await userContext.protectedFetch(
         endpoints.removeEndpoint,
         {
           method: "DELETE ",
         },
       );
-
-      return "remove_fail";
+      if (isRequestError(removeAssetRes)) {
+        return "remove_fail";
+      }
+      return "remove_success";
     }
-    const requestUploadImageRes = await userContext.protectedFetch(
+    const requestUploadAssetRes = await userContext.protectedFetch(
       endpoints.requestUploadEndpoint,
       {
         method: "PATCH",
@@ -47,21 +49,21 @@ export function AssetContextProvider({ children }: { children: React.ReactNode }
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          mimeType: image.type,
+          mimeType: asset.type,
         }),
       },
     );
 
-    if (isRequestError(requestUploadImageRes)) {
+    if (isRequestError(requestUploadAssetRes)) {
       return "request_upload_fail";
     }
 
-    const { uploadUrl, imageId } = await requestUploadImageRes.json();
+    const { uploadUrl, assetId } = await requestUploadAssetRes.json();
     const s3UploadRes = await fetch(uploadUrl, {
       method: "PUT",
-      body: image,
+      body: asset,
       headers: {
-        "Content-Type": image.type,
+        "Content-Type": asset.type,
       }
     });
 
@@ -77,7 +79,7 @@ export function AssetContextProvider({ children }: { children: React.ReactNode }
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          imageId,
+          assetId,
         }),
       },
     );
@@ -96,7 +98,7 @@ export function AssetContextProvider({ children }: { children: React.ReactNode }
   };
 
   return (
-    <AssetContext value={{ uploadImage }}>
+    <AssetContext value={{ uploadAsset }}>
       {children}
     </AssetContext>
   )

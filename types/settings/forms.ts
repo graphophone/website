@@ -3,7 +3,7 @@ import * as z from 'zod';
 export const editProfileSchema = z.object({
     username: z.string()
         .min(3, "Username must be at least 3 characters")
-        .max(16, "Description must be at most 16 characters"),
+        .max(16, "Username must be at most 16 characters"),
     email: z.email(),
     firstName: z.string()
         .max(16, "First name must be at most 16 characters")
@@ -12,7 +12,7 @@ export const editProfileSchema = z.object({
         .max(16, "Last name must be at most 16 characters")
         .optional(),
     bio: z.string()
-        .max(120, "Bio must be at most 120 characters")
+        .max(360, "Bio must be at most 360 characters")
         .optional(),
     country: z.string()
         .max(24, "Country must be at most 24 characters")

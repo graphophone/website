@@ -19,7 +19,7 @@ import { ToastContext } from '@/context/toastContext';
 import { useRouter } from 'next/navigation';
 import AudioUpload from '@/components/upload-track/audioUpload';
 import { AssetContext } from '@/context/assetContext';
-import { notifyUploadThumbnailEndpoint, removeThumbnailEndpoint, requestUploadThumbnailEndpoint, uploadTrackEndpoint } from '@/constants/api';
+import { notifyUploadThumbnailEndpoint, notifyUploadTrackAudioEndpoint, removeThumbnailEndpoint, requestUploadThumbnailEndpoint, requestUploadTrackAudioEndpoint, uploadTrackEndpoint } from '@/constants/api';
 
 function UploadTrackInformationPage() {
   const router = useRouter();
@@ -39,9 +39,9 @@ function UploadTrackInformationPage() {
     },
     mode: 'onTouched',
   });
-  
+
   const handleThumbnailUpload = async (trackId: number, thumbnail?: File) => {
-    const uploadError = await assetContext.uploadImage({
+    const uploadError = await assetContext.uploadAsset({
       requestUploadEndpoint: requestUploadThumbnailEndpoint(trackId),
       notifyUploadEndpoint: notifyUploadThumbnailEndpoint(trackId),
       removeEndpoint: removeThumbnailEndpoint(trackId),
@@ -67,37 +67,43 @@ function UploadTrackInformationPage() {
         title: "Failed to notify upload thumbnail",
         type: "error",
       });
-    } else {
-      toastContext.show({
-        title: "Thumbnail uploaded",
-        type: "success",
-      });
     }
   };
 
-  const handleAudioUpload = async (trackId: number, audio?: File) => {
-    let body = null;
-    if (audio) {
-      const formData = new FormData();
-      formData.append('audio', audio);
-      body = formData;
-    }
-    const uploadAudioRes = await new Promise<Response>((resolve) => {
-      setTimeout(() => {
-        resolve({ status: 404 } as Response);
-      }, 3000);
-    });
+  const handleAudioUpload = async (trackId: number, audio: File) => {
+    const uploadError = await assetContext.uploadAsset({
+      requestUploadEndpoint: requestUploadTrackAudioEndpoint(trackId),
+      notifyUploadEndpoint: notifyUploadTrackAudioEndpoint(trackId),
+      removeEndpoint: 'never used',
+    }, audio);
 
-    if (isRequestError(uploadAudioRes)) {
+    if (uploadError === "remove_fail") {
+      toastContext.show({
+        title: "Failed to remove audio",
+        type: "error",
+      });
+    } else if (uploadError === "request_upload_fail") {
+      toastContext.show({
+        title: "Failed to request upload audio",
+        type: "error",
+      });
+    } else if (uploadError === "upload_fail") {
       toastContext.show({
         title: "Failed to upload audio",
-        description: "You can upload it separately later",
+        type: "error",
+      });
+    } else if (uploadError === "notify_upload_fail") {
+      toastContext.show({
+        title: "Failed to notify upload audio",
         type: "error",
       });
     }
   };
 
   const handleSubmit = async (data: UploadTrackForm) => {
+    if (!data.audio) {
+      return;
+    }
     setIsLoading(true);
 
     const uploadRes = await userContext.protectedFetch(uploadTrackEndpoint, {
@@ -120,15 +126,14 @@ function UploadTrackInformationPage() {
       setIsLoading(false);
       return;
     }
-    
-    const trackId = await uploadRes.json();
 
-    const thumbnailUploadPromise = handleThumbnailUpload(trackId, data.thumbnail);
-    const audioUploadPromise = handleAudioUpload(trackId, data.audio);
-    await Promise.allSettled([
-      thumbnailUploadPromise,
-      audioUploadPromise,
-    ]);
+    const trackId = await uploadRes.json();
+    const requests = [];
+    if (data.thumbnail) {
+      requests.push(handleThumbnailUpload(trackId, data.thumbnail));
+    }
+    requests.push(handleAudioUpload(trackId, data.audio));
+    await Promise.allSettled(requests);
 
     toastContext.show({
       title: "Uploaded successfully",
@@ -262,7 +267,7 @@ function UploadTrackInformationPage() {
                         />
                         <InputGroupAddon align="block-end">
                           <InputGroupText className="tabular-nums text-foreground/50">
-                            {field.value?.length ?? 0}/120 characters
+                            {field.value?.length ?? 0}/360 characters
                           </InputGroupText>
                         </InputGroupAddon>
                       </InputGroup>

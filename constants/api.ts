@@ -27,3 +27,7 @@ export const removeThumbnailEndpoint = (trackId: number) =>
 export const notifyUploadThumbnailEndpoint = (trackId: number) =>
         `${tracksBase}/notify-upload-image/${trackId}`;
 export const trackEndpoint = (trackId: number) => `${tracksBase}/${trackId}`;
+export const requestUploadTrackAudioEndpoint = (trackId: number) =>
+        `${tracksBase}/request-upload-audio/${trackId}`;
+export const notifyUploadTrackAudioEndpoint = (trackId: number) =>
+        `${tracksBase}/notify-upload-audio/${trackId}`;
