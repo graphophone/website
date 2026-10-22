@@ -15,12 +15,11 @@ interface Props {
 }
 
 function EditProfileForms({ fullProfile }: Props) {
-  const userContext = useContext(UserContext);
   const toastContext = useContext(ToastContext);
   const assetContext = useContext(AssetContext)
 
   const handleEditAvatar = async (selectedImage: File | null) => {
-    const uploadError = await assetContext.uploadImage({
+    const uploadError = await assetContext.uploadAsset({
       requestUploadEndpoint: requestUploadAvatarEndpoint,
       notifyUploadEndpoint: notifyUploadAvatarEndpoint,
       removeEndpoint: removeAvatarEndpoint,
@@ -55,7 +54,7 @@ function EditProfileForms({ fullProfile }: Props) {
   };
 
   const handleEditBanner = async (selectedImage: File | null) => {
-    const uploadError = await assetContext.uploadImage({
+    const uploadError = await assetContext.uploadAsset({
       requestUploadEndpoint: requestUploadBannerEndpoint,
       notifyUploadEndpoint: notifyUploadBannerEndpoint,
       removeEndpoint: removeBannerEndpoint,

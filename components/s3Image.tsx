@@ -11,12 +11,12 @@ function S3Image({ src, alt, ...props }: ImageProps) {
       host = process.env.NEXT_PUBLIC_IDENTITY_ASSETS_HOST!;
       uri = src.slice(identityAssetPrefix.length);
     } else if (src.startsWith(trackAssetPrefix)) {
-      host = process.env.NEXT_PUBLIC_TRACK_ASSETS_PREFIX!;
+      host = process.env.NEXT_PUBLIC_TRACK_IMAGES_PREFIX!;
       uri = src.slice(trackAssetPrefix.length);
     }
     url = `${host}${uri}`;
   }
-  
+
   return (
     <Image
       src={url}

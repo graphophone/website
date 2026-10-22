@@ -15,11 +15,14 @@ async function UserProfileAboutPage(props: Props) {
     notFound();
   }
   const profile: Profile = await res.json();
-  
+
   const sections = [
     { title: 'Full name', value: `${profile.firstName} ${profile.lastName}`.trim() },
-    { title: 'Location',
-      value: `${profile.country ? (profile.country + ',') : ''} ${profile.city}`.trim() },
+    {
+      title: 'Location',
+      value: profile.country || profile.city ?
+        `${profile.country ? (profile.country + ',') : ''} ${profile.city}`.trim() : null
+    },
     { title: 'Bio', value: profile.bio },
     { title: 'Created at', value: '11/09/2001' },
   ]
