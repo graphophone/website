@@ -58,13 +58,13 @@ function TrackData({ trackId }: { trackId: number }) {
       <CardContent className="w-full h-full flex flex-col gap-4.5">
         <div className="w-full flex gap-4.5">
           <div className="transition-all flex justify-center items-center
-            rounded-[6px] overflow-clip w-64 h-64 relative"
+            rounded-[6px] overflow-clip w-64 h-64 grow-0 shrink-0 relative"
           >
-            { trackData.thumbnailUrl ?
+            {trackData.thumbnailUrl ?
               <S3Image
                 src={trackData.thumbnailUrl}
                 alt="track thumbnail"
-                style={{objectFit: "cover"}}
+                style={{ objectFit: "cover" }}
                 fill={true}
               /> :
               <Image
@@ -75,16 +75,16 @@ function TrackData({ trackId }: { trackId: number }) {
             }
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="grow-0 min-w-0 flex flex-col gap-2">
             <h1 className="text-3xl font-bold">{trackData.title}</h1>
             {trackData.description ?
               <div>
-                { trackData.description }
+                {trackData.description}
               </div> : <></>
             }
             {trackData.uploadStatus === "uploaded" && trackData.durationSeconds ?
-              <span>{ trackData.durationSeconds }</span> :
-              <Badge>{ trackData.uploadStatus }</Badge>
+              <span>{trackData.durationSeconds}</span> :
+              <Badge>{trackData.uploadStatus}</Badge>
             }
             <UserCard profile={trackData.uploader} />
           </div>
