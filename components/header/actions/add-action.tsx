@@ -8,9 +8,9 @@ import { MusicNote, Playlist, Plus } from "phosphor-react"
 function AddAction() {
     const actions = [
         {
-            label: "Upload track",
+            label: "Upload music",
             icon: <MusicNote weight="fill" />,
-            href: "/upload-track",
+            href: "/upload-music",
         },
         {
             label: "Create new playlist",

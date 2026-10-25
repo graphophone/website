@@ -1,9 +1,9 @@
 import * as z from 'zod';
 
-export const uploadTrackSchema = z.object({
+export const uploadMusicSchema = z.object({
     title: z.string()
-        .min(3, "Track title must be at least 3 characters")
-        .max(64, "Track title must be at most  characters"),
+        .min(3, "Music title must be at least 3 characters")
+        .max(64, "Music title must be at most  characters"),
     description: z.string()
         .max(360, "Description must be at most 360 characters")
         .optional(),
@@ -38,4 +38,4 @@ export const uploadTrackSchema = z.object({
         ),
 });
 
-export type UploadTrackForm = z.infer<typeof uploadTrackSchema>;
+export type UploadMusicForm = z.infer<typeof uploadMusicSchema>;

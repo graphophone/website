@@ -13,7 +13,7 @@ interface Props {
 
 async function UserProfileLayout(props: Props) {
   const { userId } = await props.params;
-  const res = await fetch(`${process.env.API_URL}/user/${userId}`);
+  const res = await fetch(`${process.env.API_INTERNAL_URL}/user/${userId}`);
   if (isRequestError(res)) {
     notFound();
   }

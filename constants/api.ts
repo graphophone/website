@@ -18,16 +18,16 @@ export const notifyUploadBannerEndpoint = `${userBase}/notify-upload-image?image
 const categoriesBase = '/api/categories';
 export const searchCategoriesEndpoint = `${categoriesBase}`;
 
-const tracksBase = '/api/tracks';
-export const uploadTrackEndpoint = `${tracksBase}/upload`;
-export const requestUploadThumbnailEndpoint = (trackId: number) =>
-        `${tracksBase}/request-upload-image/${trackId}`;
-export const removeThumbnailEndpoint = (trackId: number) =>
-        `${tracksBase}/remove-image/${trackId}`;
-export const notifyUploadThumbnailEndpoint = (trackId: number) =>
-        `${tracksBase}/notify-upload-image/${trackId}`;
-export const trackEndpoint = (trackId: number) => `${tracksBase}/${trackId}`;
-export const requestUploadTrackAudioEndpoint = (trackId: number) =>
-        `${tracksBase}/request-upload-audio/${trackId}`;
-export const notifyUploadTrackAudioEndpoint = (trackId: number) =>
-        `${tracksBase}/notify-upload-audio/${trackId}`;
+const musicBase = '/api/music';
+export const uploadMusicEndpoint = `${musicBase}/upload`;
+export const requestUploadThumbnailEndpoint = (musicId: number) =>
+        `${musicBase}/request-upload-image/${musicId}`;
+export const removeThumbnailEndpoint = (musicId: number) =>
+        `${musicBase}/remove-image/${musicId}`;
+export const notifyUploadThumbnailEndpoint = (musicId: number) =>
+        `${musicBase}/notify-upload-image/${musicId}`;
+export const musicEndpoint = (musicId: number) => `${musicBase}/${musicId}`;
+export const requestUploadMusicAudioEndpoint = (musicId: number) =>
+        `${musicBase}/request-upload-audio/${musicId}`;
+export const notifyUploadMusicAudioEndpoint = (musicId: number) =>
+        `${musicBase}/notify-upload-audio/${musicId}`;

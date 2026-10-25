@@ -1,7 +1,7 @@
 import { CategoryData } from "../category/category";
 import { BasicProfile } from "../user/profile";
 
-export interface FullTrackData {
+export interface FullMusicData {
     id: number;
     title: string;
     description?: string;

@@ -3,12 +3,12 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Controller, useForm } from 'react-hook-form';
-import { UploadTrackForm, uploadTrackSchema } from '@/types/track/forms';
+import { UploadMusicForm, uploadMusicSchema } from '@/types/music/forms';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from '@/components/ui/input-group';
-import CategoriesSelect from '@/components/upload-track/categoriesSelect';
-import ThumbnailUpload from '@/components/upload-track/thumbnailUpload';
+import CategoriesSelect from '@/components/upload-music/categoriesSelect';
+import ThumbnailUpload from '@/components/upload-music/thumbnailUpload';
 import { CategoryData } from '@/types/category/category';
 import { Button } from '@/components/ui/button';
 import { useContext, useState } from 'react';
@@ -17,19 +17,19 @@ import { UserContext } from '@/context/userContext';
 import { isRequestError } from '@/lib/error';
 import { ToastContext } from '@/context/toastContext';
 import { useRouter } from 'next/navigation';
-import AudioUpload from '@/components/upload-track/audioUpload';
+import AudioUpload from '@/components/upload-music/audioUpload';
 import { AssetContext } from '@/context/assetContext';
-import { notifyUploadThumbnailEndpoint, notifyUploadTrackAudioEndpoint, removeThumbnailEndpoint, requestUploadThumbnailEndpoint, requestUploadTrackAudioEndpoint, uploadTrackEndpoint } from '@/constants/api';
+import { notifyUploadThumbnailEndpoint, notifyUploadMusicAudioEndpoint, removeThumbnailEndpoint, requestUploadThumbnailEndpoint, requestUploadMusicAudioEndpoint, uploadMusicEndpoint } from '@/constants/api';
 
-function UploadTrackInformationPage() {
+function UploadMusicInformationPage() {
   const router = useRouter();
   const userContext = useContext(UserContext);
   const toastContext = useContext(ToastContext);
   const assetContext = useContext(AssetContext);
   const [isLoading, setIsLoading] = useState(false);
 
-  const uploadTrackForm = useForm<UploadTrackForm>({
-    resolver: zodResolver(uploadTrackSchema),
+  const uploadMusicForm = useForm<UploadMusicForm>({
+    resolver: zodResolver(uploadMusicSchema),
     defaultValues: {
       title: '',
       description: undefined,
@@ -40,11 +40,11 @@ function UploadTrackInformationPage() {
     mode: 'onTouched',
   });
 
-  const handleThumbnailUpload = async (trackId: number, thumbnail?: File) => {
+  const handleThumbnailUpload = async (musicId: number, thumbnail?: File) => {
     const uploadError = await assetContext.uploadAsset({
-      requestUploadEndpoint: requestUploadThumbnailEndpoint(trackId),
-      notifyUploadEndpoint: notifyUploadThumbnailEndpoint(trackId),
-      removeEndpoint: removeThumbnailEndpoint(trackId),
+      requestUploadEndpoint: requestUploadThumbnailEndpoint(musicId),
+      notifyUploadEndpoint: notifyUploadThumbnailEndpoint(musicId),
+      removeEndpoint: removeThumbnailEndpoint(musicId),
     }, thumbnail ?? null);
 
     if (uploadError === "remove_fail") {
@@ -70,10 +70,10 @@ function UploadTrackInformationPage() {
     }
   };
 
-  const handleAudioUpload = async (trackId: number, audio: File) => {
+  const handleAudioUpload = async (musicId: number, audio: File) => {
     const uploadError = await assetContext.uploadAsset({
-      requestUploadEndpoint: requestUploadTrackAudioEndpoint(trackId),
-      notifyUploadEndpoint: notifyUploadTrackAudioEndpoint(trackId),
+      requestUploadEndpoint: requestUploadMusicAudioEndpoint(musicId),
+      notifyUploadEndpoint: notifyUploadMusicAudioEndpoint(musicId),
       removeEndpoint: 'never used',
     }, audio);
 
@@ -100,13 +100,13 @@ function UploadTrackInformationPage() {
     }
   };
 
-  const handleSubmit = async (data: UploadTrackForm) => {
+  const handleSubmit = async (data: UploadMusicForm) => {
     if (!data.audio) {
       return;
     }
     setIsLoading(true);
 
-    const uploadRes = await userContext.protectedFetch(uploadTrackEndpoint, {
+    const uploadRes = await userContext.protectedFetch(uploadMusicEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -119,7 +119,7 @@ function UploadTrackInformationPage() {
     });
     if (isRequestError(uploadRes)) {
       toastContext.show({
-        title: "Failed to upload track data",
+        title: "Failed to upload music data",
         description: "Try again later",
         type: "error",
       });
@@ -127,23 +127,23 @@ function UploadTrackInformationPage() {
       return;
     }
 
-    const trackId = await uploadRes.json();
+    const musicId = await uploadRes.json();
     const requests = [];
     if (data.thumbnail) {
-      requests.push(handleThumbnailUpload(trackId, data.thumbnail));
+      requests.push(handleThumbnailUpload(musicId, data.thumbnail));
     }
-    requests.push(handleAudioUpload(trackId, data.audio));
+    requests.push(handleAudioUpload(musicId, data.audio));
     await Promise.allSettled(requests);
 
     toastContext.show({
       title: "Uploaded successfully",
       type: "success",
     });
-    router.push(`/track/${trackId}`);
+    router.push(`/music/${musicId}`);
   };
 
   const resetForm = () => {
-    uploadTrackForm.setValues({
+    uploadMusicForm.setValues({
       title: '',
       description: '',
       categories: [],
@@ -154,15 +154,15 @@ function UploadTrackInformationPage() {
   return (
     <Card className="w-[80vh] md:w-full">
       <CardHeader>
-        <CardTitle>Enter track data</CardTitle>
+        <CardTitle>Enter music data</CardTitle>
       </CardHeader>
       <CardContent>
         <fieldset disabled={false}>
-          <form id="edit-profile-form" onSubmit={uploadTrackForm.handleSubmit(handleSubmit)}>
+          <form id="edit-profile-form" onSubmit={uploadMusicForm.handleSubmit(handleSubmit)}>
             <FieldGroup className="flex flex-col md:flex-row gap-4.5">
               <Controller
                 name="thumbnail"
-                control={uploadTrackForm.control}
+                control={uploadMusicForm.control}
                 render={({ field, fieldState }) => (
                   <Field className="w-fit h-fit">
                     <FieldLabel>
@@ -182,7 +182,7 @@ function UploadTrackInformationPage() {
 
               <Controller
                 name="audio"
-                control={uploadTrackForm.control}
+                control={uploadMusicForm.control}
                 render={({ field, fieldState }) => (
                   <Field className="w-fit h-fit">
                     <FieldLabel>
@@ -204,7 +204,7 @@ function UploadTrackInformationPage() {
               <div className="grow flex flex-col gap-2">
                 <Controller
                   name="title"
-                  control={uploadTrackForm.control}
+                  control={uploadMusicForm.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="title">
@@ -214,7 +214,7 @@ function UploadTrackInformationPage() {
                         {...field}
                         id="title"
                         aria-invalid={fieldState.invalid}
-                        placeholder="Track title"
+                        placeholder="Music title"
                         autoComplete="off"
                         className="placeholder:text-foreground/50"
                       />
@@ -227,11 +227,11 @@ function UploadTrackInformationPage() {
 
                 <Controller
                   name="categories"
-                  control={uploadTrackForm.control}
+                  control={uploadMusicForm.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="categories">
-                        Categories for the track
+                        Categories for the music
                       </FieldLabel>
                       <CategoriesSelect
                         selected={field.value}
@@ -250,7 +250,7 @@ function UploadTrackInformationPage() {
 
                 <Controller
                   name="description"
-                  control={uploadTrackForm.control}
+                  control={uploadMusicForm.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="description">
@@ -260,7 +260,7 @@ function UploadTrackInformationPage() {
                         <InputGroupTextarea
                           {...field}
                           id="description"
-                          placeholder="Tell something the track"
+                          placeholder="Tell something the music"
                           rows={3}
                           className="resize-none placeholder:text-foreground/50"
                           aria-invalid={fieldState.invalid}
@@ -285,7 +285,7 @@ function UploadTrackInformationPage() {
       <CardFooter>
         <Button
           className="cursor-pointer relative"
-          disabled={!uploadTrackForm.formState.isValid || isLoading}
+          disabled={!uploadMusicForm.formState.isValid || isLoading}
           type="submit"
           form="edit-profile-form"
         >
@@ -308,4 +308,4 @@ function UploadTrackInformationPage() {
   )
 }
 
-export default UploadTrackInformationPage
+export default UploadMusicInformationPage

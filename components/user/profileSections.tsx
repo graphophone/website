@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 const profileSections = [
   { label: 'All', href: '' },
-  { label: 'Tracks', href: 'tracks' },
+  { label: 'Music', href: 'music' },
   { label: 'Comments', href: 'comments' },
   { label: 'About', href: 'about' },
 ];

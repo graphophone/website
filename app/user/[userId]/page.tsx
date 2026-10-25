@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 async function UserProfilePage({ params }: { params: Promise<{ userId: number }> }) {
   const { userId } = await params;
-  const res = await fetch(`${process.env.API_URL}/user/${userId}`);
+  const res = await fetch(`${process.env.API_INTERNAL_URL}/user/${userId}`);
   if (isRequestError(res)) {
     notFound();
   }

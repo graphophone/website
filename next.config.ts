@@ -10,15 +10,9 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "http",
-        hostname: "localhost",
-        port: "19010",
-        pathname: "/assets/**"
-      },
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "19020",
-        pathname: "/images/**"
+        hostname: "rustfs",
+        port: "9000",
+        pathname: "/**"
       },
     ],
   },
@@ -26,7 +20,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.API_URL}/:path*`,
+        destination: `${process.env.API_INTERNAL_URL}/:path*`,
       },
     ];
   }
