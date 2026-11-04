@@ -4,9 +4,7 @@ import { SettingsProfile } from "@/types/user/profile";
 import EditProfileInformationForm from "./editProfileInformationForm";
 import EditProfileImageForm from "./editImageForm";
 import { useContext } from "react";
-import { UserContext } from "@/context/userContext";
 import { ToastContext } from "@/context/toastContext";
-import { isRequestError } from "@/lib/error";
 import { AssetContext } from "@/context/assetContext";
 import { notifyUploadAvatarEndpoint, notifyUploadBannerEndpoint, removeAvatarEndpoint, removeBannerEndpoint, requestUploadAvatarEndpoint, requestUploadBannerEndpoint } from "@/constants/api";
 
@@ -50,7 +48,9 @@ function EditProfileForms({ fullProfile }: Props) {
         title: "Avatar uploaded",
         type: "success",
       });
+      return true;
     }
+    return false;
   };
 
   const handleEditBanner = async (selectedImage: File | null) => {
@@ -85,32 +85,20 @@ function EditProfileForms({ fullProfile }: Props) {
         title: "Banner uploaded",
         type: "success",
       });
+      return true;
     }
+    return false;
   };
 
 
   return (
     <div className="w-full flex flex-col gap-4.5">
-      <div className="w-full grid grid-cols-12 gap-4.5">
-        <div className="col-span-5">
-          <EditProfileImageForm
-            title="Avatar"
-            imageSemantics="avatar"
-            imageUrl={fullProfile.avatarUrl}
-            handleSave={handleEditAvatar}
-          />
-        </div>
-
-        <div className="col-span-7">
-          <EditProfileImageForm
-            title="Banner"
-            imageSemantics="banner"
-            imageUrl={fullProfile.bannerUrl}
-            handleSave={handleEditBanner}
-            imageFill={true}
-          />
-        </div>
-      </div>
+      <EditProfileImageForm
+        avatarUrl={fullProfile.avatarUrl}
+        bannerUrl={fullProfile.bannerUrl}
+        handleSaveAvatar={handleEditAvatar}
+        handleSaveBanner={handleEditBanner}
+      />
 
       <EditProfileInformationForm fullProfile={fullProfile} />
     </div>
