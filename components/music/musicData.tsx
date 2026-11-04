@@ -5,7 +5,7 @@ import { UserContext } from "@/context/userContext";
 import { isRequestError } from "@/lib/error";
 import { FullMusicData } from "@/types/music/music";
 import { useContext, useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
 import { ToastContext } from "@/context/toastContext";
 import { useRouter } from "next/navigation";
 import { Spinner } from "../ui/spinner";
@@ -13,6 +13,8 @@ import UserCard from "../user/userCard";
 import S3Image from "../s3Image";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Pencil } from "phosphor-react";
 
 function MusicData({ musicId }: { musicId: number }) {
   const userContext = useContext(UserContext);
@@ -43,7 +45,7 @@ function MusicData({ musicId }: { musicId: number }) {
       setMusicData(data);
       setIsLoading(false);
     })();
-  }, [musicId]);
+  }, [musicId, router, toastContext, userContext]);
 
   if (isLoading || musicData === null) {
     return (
@@ -87,6 +89,15 @@ function MusicData({ musicId }: { musicId: number }) {
               <Badge>{musicData.uploadStatus}</Badge>
             }
             <UserCard profile={musicData.uploader} />
+            {userContext.user?.userId === musicData.uploader.userId && (
+              <Button
+                className="w-fit cursor-pointer"
+                onClick={() => router.push(`/music/${musicId}/edit`)}
+              >
+                <Pencil />
+                Edit
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>

@@ -39,3 +39,11 @@ export const uploadMusicSchema = z.object({
 });
 
 export type UploadMusicForm = z.infer<typeof uploadMusicSchema>;
+
+export const editMusicSchema = uploadMusicSchema.omit({
+    audio: true,
+}).extend({
+    thumbnail: z.instanceof(File).optional(),
+});
+
+export type EditMusicForm = z.infer<typeof editMusicSchema>;

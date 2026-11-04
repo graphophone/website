@@ -4,13 +4,15 @@ import { Button } from '../ui/button';
 import { Trash, UploadSimple } from 'phosphor-react';
 import Image from 'next/image';
 import { Card, CardContent } from '../ui/card';
+import S3Image from '../s3Image';
 
 interface Props {
+  initialImage?: string;
   onSelect: (selectedImage: File | null) => void;
 }
 
-function ThumbnailUpload({ onSelect }: Props) {
-  const [resolvedImage, setResolvedImage] = useState<string | null>(null);
+function ThumbnailUpload({ initialImage, onSelect }: Props) {
+  const [resolvedImage, setResolvedImage] = useState<string | null>(initialImage ?? null);
   const [isThumbnailHovered, setIsThumbnailHovered] = useState(false);
 
   const selectImage = (selectedImage: File | null) => {
@@ -46,12 +48,21 @@ function ThumbnailUpload({ onSelect }: Props) {
           <Trash weight="fill" />
         </Button> : <></>
       }
-      <Image
-        src={resolvedImage}
-        alt="Selected thumbnail"
-        fill={true}
-        style={{ objectFit: "cover" }}
-      />
+      {resolvedImage === initialImage ? (
+        <S3Image
+          src={resolvedImage}
+          alt="Current thumbnail"
+          fill={true}
+          style={{ objectFit: "cover" }}
+        />
+      ) : (
+        <Image
+          src={resolvedImage}
+          alt="Selected thumbnail"
+          fill={true}
+          style={{ objectFit: "cover" }}
+        />
+      )}
     </div> :
     <div className="h-48! w-48! relative">
       <input
