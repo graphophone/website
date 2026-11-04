@@ -48,7 +48,6 @@ function EditProfileForms({ fullProfile }: Props) {
 
   const resolveImage = (image: File | null, setResolvedImage: (image: string | null) => void) => {
     if (!image) {
-      setResolvedImage(null);
       return;
     }
     const fileReader = new FileReader();
