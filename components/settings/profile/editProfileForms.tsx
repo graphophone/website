@@ -174,8 +174,18 @@ function EditProfileForms({ fullProfile }: Props) {
           bannerUrl={fullProfile.bannerUrl}
           resolvedAvatar={resolvedAvatar}
           resolvedBanner={resolvedBanner}
-          onAvatarChange={setSelectedAvatar}
-          onBannerChange={setSelectedBanner}
+          onAvatarChange={image => {
+            setSelectedAvatar(image);
+            if (!image) {
+              setResolvedAvatar(null);
+            }
+          }}
+          onBannerChange={image => {
+            setSelectedBanner(image);
+            if (!image) {
+              setResolvedBanner(null);
+            }
+          }}
         />
         <EditProfileInformationForm form={form} />
         <CardFooter className="w-full flex gap-2 justify-end">
