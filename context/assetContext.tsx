@@ -33,7 +33,7 @@ export function AssetContextProvider({ children }: { children: React.ReactNode }
       const removeAssetRes = await userContext.protectedFetch(
         endpoints.removeEndpoint,
         {
-          method: "DELETE ",
+          method: "DELETE",
         },
       );
       if (isRequestError(removeAssetRes)) {
@@ -88,7 +88,7 @@ export function AssetContextProvider({ children }: { children: React.ReactNode }
       userContext.protectedFetch(
         endpoints.removeEndpoint,
         {
-          method: "DELETE ",
+          method: "DELETE",
         },
       );
       return "notify_upload_fail";

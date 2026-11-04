@@ -2,11 +2,10 @@
 
 import S3Image from "@/components/s3Image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
+import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Trash, UploadSimple } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface ImageEditorProps {
   imageSemantics: string;
@@ -89,140 +88,44 @@ function ImageEditor({
 interface Props {
   avatarUrl: string | null;
   bannerUrl: string | null;
-  handleSaveAvatar: (selectedImage: File | null) => Promise<boolean>;
-  handleSaveBanner: (selectedImage: File | null) => Promise<boolean>;
+  resolvedAvatar: string | null;
+  resolvedBanner: string | null;
+  onAvatarChange: (image: File | null) => void;
+  onBannerChange: (image: File | null) => void;
 }
 
 function EditProfileImageForm({
   avatarUrl,
   bannerUrl,
-  handleSaveAvatar,
-  handleSaveBanner,
+  resolvedAvatar,
+  resolvedBanner,
+  onAvatarChange,
+  onBannerChange,
 }: Props) {
-  const [selectedAvatar, setSelectedAvatar] = useState<File | null>(null);
-  const [selectedBanner, setSelectedBanner] = useState<File | null>(null);
-  const [savedAvatar, setSavedAvatar] = useState<string | null>(avatarUrl);
-  const [savedBanner, setSavedBanner] = useState<string | null>(bannerUrl);
-  const [resolvedAvatar, setResolvedAvatar] = useState<string | null>(avatarUrl);
-  const [resolvedBanner, setResolvedBanner] = useState<string | null>(bannerUrl);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (!selectedAvatar) {
-      return;
-    }
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(selectedAvatar);
-    fileReader.onload = () => {
-      const imageBase64 = fileReader.result;
-      if (typeof imageBase64 === "string") {
-        setResolvedAvatar(imageBase64);
-      }
-    };
-  }, [selectedAvatar]);
-
-  useEffect(() => {
-    if (!selectedBanner) {
-      return;
-    }
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(selectedBanner);
-    fileReader.onload = () => {
-      const imageBase64 = fileReader.result;
-      if (typeof imageBase64 === "string") {
-        setResolvedBanner(imageBase64);
-      }
-    };
-  }, [selectedBanner]);
-
-  const hasChanges = resolvedAvatar !== savedAvatar || resolvedBanner !== savedBanner;
-
-  const handleSave = async () => {
-    setIsLoading(true);
-    const [avatarSaved, bannerSaved] = await Promise.all([
-      resolvedAvatar !== savedAvatar
-        ? handleSaveAvatar(selectedAvatar)
-        : Promise.resolve(true),
-      resolvedBanner !== savedBanner
-        ? handleSaveBanner(selectedBanner)
-        : Promise.resolve(true),
-    ]);
-
-    if (avatarSaved) {
-      setSavedAvatar(resolvedAvatar);
-      setSelectedAvatar(null);
-    }
-    if (bannerSaved) {
-      setSavedBanner(resolvedBanner);
-      setSelectedBanner(null);
-    }
-    setIsLoading(false);
-  };
-
-  const resetImages = () => {
-    setResolvedAvatar(savedAvatar);
-    setResolvedBanner(savedBanner);
-    setSelectedAvatar(null);
-    setSelectedBanner(null);
-  };
-
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Profile images</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="w-full flex gap-4.5">
-          <div className="w-48 shrink-0 flex flex-col gap-2">
-            <div>Avatar</div>
-            <ImageEditor
-              imageSemantics="avatar"
-              imageUrl={avatarUrl}
-              onChange={image => {
-                setSelectedAvatar(image);
-                setResolvedAvatar(image ? resolvedAvatar : null);
-              }}
-              resolvedImage={resolvedAvatar}
-            />
-          </div>
-          <div className="grow flex flex-col gap-2">
-            <div>Banner</div>
-            <ImageEditor
-              imageSemantics="banner"
-              imageUrl={bannerUrl}
-              imageFill
-              onChange={image => {
-                setSelectedBanner(image);
-                setResolvedBanner(image ? resolvedBanner : null);
-              }}
-              resolvedImage={resolvedBanner}
-            />
-          </div>
+    <CardContent>
+      <div className="w-full flex gap-4.5">
+        <div className="w-48 shrink-0 flex flex-col gap-2">
+          <div>Avatar</div>
+          <ImageEditor
+            imageSemantics="avatar"
+            imageUrl={avatarUrl}
+            onChange={onAvatarChange}
+            resolvedImage={resolvedAvatar}
+          />
         </div>
-      </CardContent>
-      <CardFooter className="w-full flex justify-end gap-2">
-        <Button
-          onClick={handleSave}
-          disabled={!hasChanges || isLoading}
-          className="cursor-pointer relative"
-        >
-          {isLoading && (
-            <div className="absolute w-full h-full flex items-center justify-center">
-              <Spinner />
-            </div>
-          )}
-          <span className={isLoading ? "opacity-0" : ""}>Save</span>
-        </Button>
-        <Button
-          className="cursor-pointer"
-          onClick={resetImages}
-          variant="outline"
-          disabled={isLoading}
-        >
-          Reset
-        </Button>
-      </CardFooter>
-    </Card>
+        <div className="grow flex flex-col gap-2">
+          <div>Banner</div>
+          <ImageEditor
+            imageSemantics="banner"
+            imageUrl={bannerUrl}
+            imageFill
+            onChange={onBannerChange}
+            resolvedImage={resolvedBanner}
+          />
+        </div>
+      </div>
+    </CardContent>
   );
 }
 
