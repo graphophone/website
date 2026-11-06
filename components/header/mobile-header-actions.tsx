@@ -2,13 +2,12 @@
 
 import { useContext } from "react"
 import Link from "next/link"
+import { BellSimple, MusicNote, Moon, Sun } from "phosphor-react"
+import { useTheme } from "next-themes"
 
 import { UserContext } from "@/context/userContext"
 import S3Image from "@/components/s3Image"
 import Image from "next/image"
-import AddAction from "./actions/add-action"
-import NotificationsAction from "./actions/notifications-action"
-import ThemeToggle from "./actions/theme-toggle"
 import MobileMenuAccordion from "./mobile-menu-accordion"
 
 function MobileHeaderActions({ onNavigate }: { onNavigate: () => void }) {
@@ -22,7 +21,7 @@ function MobileHeaderActions({ onNavigate }: { onNavigate: () => void }) {
         return (
             <div className="flex flex-col gap-3">
                 <MobileActionRow label="Theme">
-                    <ThemeToggle mobile />
+                    <MobileThemeToggle />
                 </MobileActionRow>
                 <Link
                     href="/auth/login"
@@ -45,13 +44,17 @@ function MobileHeaderActions({ onNavigate }: { onNavigate: () => void }) {
     return (
         <div className="flex flex-col gap-3">
             <MobileActionRow label="Theme">
-                <ThemeToggle mobile />
+                <MobileThemeToggle />
             </MobileActionRow>
             <MobileActionRow label="Upload music">
-                <AddAction onNavigate={onNavigate} mobile />
+                <MobileLink href="/upload-music" onNavigate={onNavigate}>
+                    <MusicNote color="var(--foreground)" size={16} weight="fill" />
+                </MobileLink>
             </MobileActionRow>
             <MobileActionRow label="Notifications">
-                <NotificationsAction onNavigate={onNavigate} mobile />
+                <MobileLink href="/notifications" onNavigate={onNavigate}>
+                    <BellSimple color="var(--foreground)" size={16} weight="fill" />
+                </MobileLink>
             </MobileActionRow>
             <Link
                 href={`/user/${userContext.user.userId}`}
@@ -79,6 +82,47 @@ function MobileHeaderActions({ onNavigate }: { onNavigate: () => void }) {
             </Link>
             <MobileMenuAccordion onNavigate={onNavigate} />
         </div>
+    )
+}
+
+function MobileThemeToggle() {
+    const { resolvedTheme, setTheme } = useTheme()
+    const isDark = resolvedTheme === "dark"
+
+    return (
+        <button
+            type="button"
+            onClick={() => setTheme(isDark ? "light" : "dark")}
+            aria-label="Toggle theme"
+            className="absolute inset-0 flex cursor-pointer items-center justify-end px-2"
+        >
+            <span className="flex h-8 w-8 items-center justify-center">
+                <Sun size={16} className="hidden dark:block" color="var(--foreground)" />
+                <Moon size={16} className="dark:hidden" color="var(--foreground)" />
+            </span>
+        </button>
+    )
+}
+
+function MobileLink({
+    href,
+    onNavigate,
+    children,
+}: {
+    href: string
+    onNavigate: () => void
+    children: React.ReactNode
+}) {
+    return (
+        <Link
+            href={href}
+            onClick={onNavigate}
+            className="absolute inset-0 flex cursor-pointer items-center justify-end px-2"
+        >
+            <span className="flex h-8 w-8 items-center justify-center">
+                {children}
+            </span>
+        </Link>
     )
 }
 

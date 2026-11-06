@@ -20,7 +20,7 @@ function MobileHeader() {
     const [open, setOpen] = useState(false)
 
     return (
-        <div className="flex h-14 w-full items-center justify-between bg-muted-foreground px-2 shadow-sm md:hidden">
+        <div className="flex h-14 w-full items-center justify-between bg-muted-foreground px-2 shadow-sm">
             <Link href="/" className="cursor-pointer">
                 <b className="select-none transition-all hover:opacity-50">Graphophone</b>
             </Link>

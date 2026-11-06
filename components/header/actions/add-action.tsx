@@ -14,7 +14,7 @@ function AddAction({ onNavigate, mobile = false }: { onNavigate?: () => void; mo
             >
                 <span className={mobile
                     ? "absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center"
-                    : ""
+                    : "w-full h-full flex items-center justify-center"
                 }>
                     <MusicNote color="var(--foreground)" size={16} weight="fill" />
                 </span>

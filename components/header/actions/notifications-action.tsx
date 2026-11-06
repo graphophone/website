@@ -14,7 +14,7 @@ function NotificationsAction({ onNavigate, mobile = false }: { onNavigate?: () =
             >
                 <span className={mobile
                     ? "absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center"
-                    : ""
+                    : "w-full h-full flex items-center justify-center"
                 }>
                     <BellSimple color="var(--foreground)" weight="fill" size={16} />
                 </span>

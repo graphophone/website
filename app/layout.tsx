@@ -42,7 +42,9 @@ export default function RootLayout({
               <div className="hidden md:block">
                 <Header />
               </div>
-              <MobileHeader />
+              <div className="md:hidden">
+                <MobileHeader />
+              </div>
 
               <div className="w-full grow pb-4.5 md:px-[9vw] flex">
                 {children}
