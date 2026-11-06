@@ -77,27 +77,34 @@ function MusicData({ musicId }: { musicId: number }) {
             }
           </div>
 
-          <div className="grow-0 min-w-0 flex flex-col gap-2">
-            <h1 className="text-3xl font-bold">{musicData.title}</h1>
-            {musicData.description ?
+          <div className="grow min-w-0 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <h1 className="min-w-0 flex-1 text-3xl font-bold break-words">
+                {musicData.title}
+              </h1>
+              {musicData.uploadStatus !== "uploaded" && (
+                <Badge className="shrink-0">{musicData.uploadStatus}</Badge>
+              )}
+              {userContext.user?.userId === musicData.uploader.userId && (
+                <Button
+                  className="shrink-0 cursor-pointer"
+                  onClick={() => router.push(`/music/${musicId}/edit`)}
+                >
+                  <Pencil />
+                  Edit
+                </Button>
+              )}
+            </div>
+            {musicData.description && (
               <div>
-                {musicData.description}
-              </div> : <></>
-            }
-            {musicData.uploadStatus === "uploaded" && musicData.durationSeconds ?
-              <span>{musicData.durationSeconds}</span> :
-              <Badge>{musicData.uploadStatus}</Badge>
-            }
-            <UserCard profile={musicData.uploader} />
-            {userContext.user?.userId === musicData.uploader.userId && (
-              <Button
-                className="w-fit cursor-pointer"
-                onClick={() => router.push(`/music/${musicId}/edit`)}
-              >
-                <Pencil />
-                Edit
-              </Button>
+                <span className="font-semibold">Description</span>
+                <p>{musicData.description}</p>
+              </div>
             )}
+            {musicData.uploadStatus === "uploaded" && musicData.durationSeconds && (
+              <span>{musicData.durationSeconds}</span>
+            )}
+            <UserCard profile={musicData.uploader} />
           </div>
         </div>
       </CardContent>

@@ -3,7 +3,8 @@
 import { searchCategoriesEndpoint } from '@/constants/api';
 import { isRequestError } from '@/lib/error';
 import { CategoryData } from '@/types/category/category'
-import { Select } from 'antd'
+import { ConfigProvider, Select, theme as antdTheme } from 'antd'
+import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react'
 import { Spinner } from '../ui/spinner';
 import { debounce } from 'lodash';
@@ -16,6 +17,7 @@ interface Props {
 }
 
 function CategoriesSelect({ selected, invalid, onBlur, onChange }: Props) {
+  const { resolvedTheme } = useTheme();
   const [options, setOptions] = useState<CategoryData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,43 +43,54 @@ function CategoriesSelect({ selected, invalid, onBlur, onChange }: Props) {
   }, []);
 
   return (
-    <Select
-      labelInValue
-      mode="multiple"
-      onBlur={onBlur}
-      status={invalid ? "error" : undefined}
-      style={{ width: '100%' }}
-      placeholder="Select categories"
-      loading={isLoading}
-      showSearch={{
-        autoClearSearchValue: false,
-        filterOption: false,
-        onSearch: debounce(searchCategories, 300),
+    <ConfigProvider
+      theme={{
+        algorithm: resolvedTheme === "dark"
+          ? antdTheme.darkAlgorithm
+          : antdTheme.defaultAlgorithm,
+        token: {
+          colorPrimary: "#FF9100",
+        },
       }}
-      notFoundContent={
-        isLoading ?
-          <div className="w-full h-full flex justify-center items-center">
-            <Spinner className="size-8" />
-          </div> : <span>Not found</span>
-      }
-      allowClear
-      onChange={value => {
-        const categories = value.map(v => ({
-          id: v.value,
-          name: v.label,
-        }));
-        onChange(categories);
-      }}
-      fieldNames={{
-        label: "name",
-        value: "id",
-      }}
-      options={options}
-      value={selected.map(c => ({ label: c.name, value: c.id }))}
-      optionRender={(option) => (
-        <div key={option.value}>{option.label}</div>
-      )}
-    />
+    >
+      <Select
+        labelInValue
+        mode="multiple"
+        onBlur={onBlur}
+        status={invalid ? "error" : undefined}
+        style={{ width: '100%' }}
+        placeholder="Select categories"
+        loading={isLoading}
+        showSearch={{
+          autoClearSearchValue: false,
+          filterOption: false,
+          onSearch: debounce(searchCategories, 300),
+        }}
+        notFoundContent={
+          isLoading ?
+            <div className="w-full h-full flex justify-center items-center">
+              <Spinner className="size-8" />
+            </div> : <span>Not found</span>
+        }
+        allowClear
+        onChange={value => {
+          const categories = value.map(v => ({
+            id: v.value,
+            name: v.label,
+          }));
+          onChange(categories);
+        }}
+        fieldNames={{
+          label: "name",
+          value: "id",
+        }}
+        options={options}
+        value={selected.map(c => ({ label: c.name, value: c.id }))}
+        optionRender={(option) => (
+          <div key={option.value}>{option.label}</div>
+        )}
+      />
+    </ConfigProvider>
   )
 }
 
