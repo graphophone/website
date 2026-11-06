@@ -7,7 +7,9 @@ import MobileHeader from "@/components/header/mobile-header";
 import { UserContextProvider } from "@/context/userContext";
 import { ToastContextProvider } from "@/context/toastContext";
 import { AssetContextProvider } from "@/context/assetContext";
+import { PlayerContextProvider } from "@/context/playerContext";
 import { ThemeProvider } from "next-themes";
+import AudioPlayer from "@/components/player/audio-player";
 
 const font = Open_Sans({
   variable: "--font-sans",
@@ -34,6 +36,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <ToastContextProvider>
           <UserContextProvider>
+          <PlayerContextProvider>
           <AssetContextProvider>
             <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
               <div className="hidden md:block">
@@ -45,7 +48,9 @@ export default function RootLayout({
                 {children}
               </div>
             </div>
+            <AudioPlayer />
           </AssetContextProvider>
+          </PlayerContextProvider>
           </UserContextProvider>
           </ToastContextProvider>
         </ThemeProvider>
