@@ -3,6 +3,7 @@ import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header/header";
+import MobileHeader from "@/components/header/mobile-header";
 import { UserContextProvider } from "@/context/userContext";
 import { ToastContextProvider } from "@/context/toastContext";
 import { AssetContextProvider } from "@/context/assetContext";
@@ -35,7 +36,10 @@ export default function RootLayout({
           <UserContextProvider>
           <AssetContextProvider>
             <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
-              <Header />
+              <div className="hidden md:block">
+                <Header />
+              </div>
+              <MobileHeader />
 
               <div className="w-full grow pb-4.5 md:px-[9vw] flex">
                 {children}

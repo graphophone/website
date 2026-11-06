@@ -1,45 +1,24 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import { MusicNote, Playlist, Plus } from "phosphor-react"
+import { MusicNote } from "phosphor-react"
 
-function AddAction() {
-    const actions = [
-        {
-            label: "Upload music",
-            icon: <MusicNote weight="fill" />,
-            href: "/upload-music",
-        },
-        {
-            label: "Create new playlist",
-            icon: <Playlist weight="fill" />,
-            href: "/create-playlist",
-        },
-    ]
-
+function AddAction({ onNavigate, mobile = false }: { onNavigate?: () => void; mobile?: boolean }) {
     return (
         <div className="w-full h-full flex justify-center items-center">
-            <DropdownMenu>
-                <DropdownMenuTrigger render={
-                    <Button variant="link" className="cursor-pointer">
-                        <Plus color="var(--foreground)" size={16} weight="bold" />
-                    </Button>
-                } />
-                <DropdownMenuContent className="w-40" align="end">
-                    <DropdownMenuGroup>
-                        {actions.map((action, i) => (
-                            <Link key={i} href={action.href}>
-                                <DropdownMenuItem className="cursor-pointer">
-                                    {action.icon}
-                                    <span>{action.label}</span>
-                                </DropdownMenuItem>
-                            </Link>
-                        ))}
-                    </DropdownMenuGroup>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <Link
+                href="/upload-music"
+                onClick={onNavigate}
+                className="relative flex h-full w-full items-center justify-end"
+                aria-label="Upload music"
+            >
+                <span className={mobile
+                    ? "absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center"
+                    : ""
+                }>
+                    <MusicNote color="var(--foreground)" size={16} weight="fill" />
+                </span>
+            </Link>
         </div>
     )
 }
