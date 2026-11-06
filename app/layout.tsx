@@ -6,6 +6,7 @@ import Header from "@/components/header/header";
 import { UserContextProvider } from "@/context/userContext";
 import { ToastContextProvider } from "@/context/toastContext";
 import { AssetContextProvider } from "@/context/assetContext";
+import { ThemeProvider } from "next-themes";
 
 const font = Open_Sans({
   variable: "--font-sans",
@@ -25,22 +26,25 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={cn("h-full", "antialiased", font.variable, "font-sans")}
     >
       <body className="min-h-screen overflow-x-hidden">
-        <ToastContextProvider>
-        <UserContextProvider>
-        <AssetContextProvider>
-          <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
-            <Header />
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <ToastContextProvider>
+          <UserContextProvider>
+          <AssetContextProvider>
+            <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
+              <Header />
 
-            <div className="w-full grow pb-4.5 md:px-[9vw] flex">
-              {children}
+              <div className="w-full grow pb-4.5 md:px-[9vw] flex">
+                {children}
+              </div>
             </div>
-          </div>
-        </AssetContextProvider>
-        </UserContextProvider>
-        </ToastContextProvider>
+          </AssetContextProvider>
+          </UserContextProvider>
+          </ToastContextProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
