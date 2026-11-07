@@ -17,7 +17,9 @@ function HeaderActions() {
     if (userContext.isLoading) {
         return (
             <div className="flex gap-2 items-center">
-                <ThemeToggle />
+                <HeaderActionButton>
+                    <ThemeToggle />
+                </HeaderActionButton>
                 <Spinner />
 
                 <span className="text-foreground">Loading ...</span>
@@ -28,7 +30,9 @@ function HeaderActions() {
     if (userContext.user === null) {
         return (
             <div className="flex gap-2 items-center">
-                <ThemeToggle />
+                <HeaderActionButton>
+                    <ThemeToggle />
+                </HeaderActionButton>
                 <Link href="/auth/login">
                     <Button variant="ghost" className="cursor-pointer h-8 px-2">
                         <span className="text-md">Login</span>
