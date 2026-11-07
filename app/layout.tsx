@@ -33,28 +33,28 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", font.variable, "font-sans")}
     >
       <body className="min-h-screen overflow-x-hidden">
+        <ToastContextProvider>
+        <UserContextProvider>
+        <PlayerContextProvider>
+        <AssetContextProvider>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <ToastContextProvider>
-          <UserContextProvider>
-          <PlayerContextProvider>
-          <AssetContextProvider>
-            <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
-              <div className="hidden md:block">
-                <Header />
-              </div>
-              <div className="md:hidden">
-                <MobileHeader />
-              </div>
-
-              <LayoutContent>{children}</LayoutContent>
+          <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
+            <div className="hidden md:block">
+              <Header />
+            </div>
+            <div className="md:hidden">
+              <MobileHeader />
             </div>
 
-            <AudioPlayer />
-          </AssetContextProvider>
-          </PlayerContextProvider>
-          </UserContextProvider>
-          </ToastContextProvider>
+            <LayoutContent>{children}</LayoutContent>
+          </div>
+
+          <AudioPlayer />
         </ThemeProvider>
+        </AssetContextProvider>
+        </PlayerContextProvider>
+        </UserContextProvider>
+        </ToastContextProvider>
       </body>
     </html>
   );

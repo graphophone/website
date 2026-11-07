@@ -10,6 +10,7 @@ function ThemeToggle({ mobile = false }: { mobile?: boolean }) {
 
     return (
         <Button
+            type="button"
             variant="link"
             className="cursor-pointer w-full h-full"
             onClick={() => setTheme(isDark ? "light" : "dark")}
