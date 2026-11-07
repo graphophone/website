@@ -14,12 +14,8 @@ function UserCard({ profile }: { profile: BasicProfile }) {
 
   return (
     <div className="w-fit flex items-center gap-2">
-      <Link href={`/user/${profile.userId}`} className="w-max flex gap-2
-        items-center justify-center bg-background rounded-[6px] pr-2 hover:brightness-75">
-        <div className="transition-all
-            flex justify-center items-center
-            rounded-[6px] overflow-clip relative w-8 h-8"
-        >
+      <Link href={`/user/${profile.userId}`}>
+        <div className="flex justify-center items-center rounded-[6px] overflow-clip relative w-8 h-8">
           { profile.avatarUrl ?
             <S3Image
               src={profile.avatarUrl}
@@ -34,9 +30,18 @@ function UserCard({ profile }: { profile: BasicProfile }) {
             />
           }
         </div>
-
-        <span>{ profile.username }</span>
       </Link>
+      <div className="flex flex-col">
+        <Link
+          href={`/user/${profile.userId}`}
+          className="w-max hover:brightness-75"
+        >
+          {profile.username}
+        </Link>
+        <span className="text-xs text-foreground/70">
+          {profile.followersCount ?? 0} followers
+        </span>
+      </div>
 
       {canFollow && (
         <Button type="button" className="cursor-pointer">

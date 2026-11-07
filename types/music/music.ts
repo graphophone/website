@@ -12,5 +12,5 @@ export interface FullMusicData {
     uploader: BasicProfile;
     categories: CategoryData[];
     uploadStatus: string;
-    createdAt: Date,
+    createdAt: number,
 }

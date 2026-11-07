@@ -36,7 +36,7 @@ export function PlayerContextProvider({
     },
     categories: [],
     uploadStatus: "uploaded",
-    createdAt: new Date(0),
+    createdAt: 0,
   });
 
   const playSong = (song: FullMusicData) => {

@@ -25,7 +25,11 @@ import {
   DotsThree,
   Heart,
   ListPlus,
+  PlayCircle,
+  Play,
   Pencil,
+  SkipBack,
+  SkipForward,
   Trash,
 } from "phosphor-react";
 import {
@@ -51,6 +55,21 @@ const formatDuration = (durationSeconds: number) => {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 };
 
+const formatCreatedAt = (createdAt: number) =>
+  new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+  }).format(new Date(createdAt * 1000));
+
+const formatCompactCount = (count: number) => {
+  if (count >= 1_000_000) {
+    return `${(count / 1_000_000).toFixed(count >= 10_000_000 ? 0 : 1).replace(/\.0$/, "")}m`;
+  }
+  if (count >= 1_000) {
+    return `${(count / 1_000).toFixed(count >= 10_000 ? 0 : 1).replace(/\.0$/, "")}k`;
+  }
+  return count.toString();
+};
+
 function MusicData({ musicId }: { musicId: number }) {
   const userContext = useContext(UserContext);
   const router = useRouter();
@@ -59,9 +78,16 @@ function MusicData({ musicId }: { musicId: number }) {
   const [comments, setComments] = useState<MusicComment[]>([]);
   const [comment, setComment] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
   const toastContext = useContext(ToastContext);
   const isUploaded = musicData?.uploadStatus === "uploaded";
   const isOwner = userContext.user?.userId === musicData?.uploader.userId;
+  const description = musicData?.description ?? "";
+  const hasLongDescription = description.length > 64;
+  const visibleDescription = isDescriptionExpanded || !hasLongDescription
+    ? description
+    : `${description.slice(0, 64).trimEnd()}...`;
 
   useEffect(() => {
     (async () => {
@@ -174,25 +200,27 @@ function MusicData({ musicId }: { musicId: number }) {
     <Card className="w-full grow">
       <CardContent className="w-full h-full flex flex-col gap-4.5">
         <div className="w-full flex gap-4.5">
-          <div className="transition-all flex justify-center items-center
-            rounded-[6px] overflow-clip w-64 h-64 grow-0 shrink-0 relative"
-          >
-            {musicData.thumbnailUrl ?
-              <S3Image
-                src={musicData.thumbnailUrl}
-                alt="music thumbnail"
-                style={{ objectFit: "cover" }}
-                fill={true}
-              /> :
-              <Image
-                src="/images/empty_avatar.jpg"
-                fill={true}
-                alt="empty music thumbnail"
-              />
-            }
+          <div className="w-48 shrink-0">
+            <div className="transition-all flex justify-center items-center
+              rounded-[6px] overflow-clip w-48 h-48 relative"
+            >
+              {musicData.thumbnailUrl ?
+                <S3Image
+                  src={musicData.thumbnailUrl}
+                  alt="music thumbnail"
+                  style={{ objectFit: "cover" }}
+                  fill={true}
+                /> :
+                <Image
+                  src="/images/empty_avatar.jpg"
+                  fill={true}
+                  alt="empty music thumbnail"
+                />
+              }
+            </div>
           </div>
 
-          <div className="grow min-w-0 flex flex-col gap-2">
+          <div className="h-48 grow min-w-0 flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <h1 className="min-w-0 flex-1 text-3xl font-bold break-words">
                 {musicData.title}
@@ -202,10 +230,9 @@ function MusicData({ musicId }: { musicId: number }) {
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger
-                  render={<Button className="shrink-0 cursor-pointer" variant="outline" size="icon" />}
+                  render={<Button className="shrink-0 cursor-pointer text-foreground" variant="outline" size="icon" />}
                 >
                   <DotsThree />
-                  <span className="sr-only">Track actions</span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {isOwner && (
@@ -222,41 +249,96 @@ function MusicData({ musicId }: { musicId: number }) {
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
-              {isUploaded && (
-                <>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-foreground">
+              <span className="font-semibold">Categories:</span>
+              {musicData.categories.length > 0 ? musicData.categories.map(category => (
+                <Badge key={category.id} variant="outline" className="text-foreground">
+                  {category.name}
+                </Badge>
+              )) : (
+                <span>No categories</span>
+              )}
+            </div>
+            <span className="text-sm text-foreground">
+              Created: {formatCreatedAt(musicData.createdAt)}
+            </span>
+            {isUploaded && (
+              <div className="mt-auto flex items-center gap-2">
+                <Button variant="outline" size="icon" className="text-foreground" disabled>
+                  <SkipBack />
+                </Button>
+                <Button variant="outline" size="icon" className="text-foreground" disabled>
+                  <Play />
+                </Button>
+                <Button variant="outline" size="icon" className="text-foreground" disabled>
+                  <SkipForward />
+                </Button>
+                <input
+                  className="min-w-0 flex-1 accent-primary"
+                  type="range"
+                  min={0}
+                  max={musicData.durationSeconds ?? 0}
+                  value={currentTime}
+                  onChange={event => setCurrentTime(Number(event.target.value))}
+                />
+                <span className="shrink-0 text-sm text-foreground">
+                  {formatDuration(currentTime)} / {formatDuration(musicData.durationSeconds ?? 0)}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-4">
+          <UserCard profile={musicData.uploader} />
+          <div className="flex shrink-0 items-center gap-3 text-sm text-foreground">
+            {isUploaded && (
+              <>
+                <div className="flex items-center gap-2">
                   <Button
-                    className="shrink-0 cursor-pointer"
+                    className="shrink-0 cursor-pointer text-foreground"
                     variant="outline"
                     onClick={() => runAction(likeMusicEndpoint(musicId), "POST", "Music liked", "Failed to like music")}
                   >
                     <Heart />
-                    Like ({musicData.likeCount})
+                    Like
                   </Button>
                   <Button
-                    className="shrink-0 cursor-pointer"
+                    className="shrink-0 cursor-pointer text-foreground"
                     variant="outline"
                     onClick={() => runAction(addMusicToPlaylistEndpoint(musicId), "POST", "Added to playlist", "Failed to add to playlist")}
                   >
                     <ListPlus />
                     Add to playlist
                   </Button>
-                </>
-              )}
-            </div>
-            {musicData.description && (
-              <div>
-                <span className="font-semibold">Description</span>
-                <p>{musicData.description}</p>
-              </div>
+                </div>
+                <span className="flex items-center gap-1">
+                  <PlayCircle />
+                  {formatCompactCount(musicData.playCount)}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Heart />
+                  {formatCompactCount(musicData.likeCount)}
+                </span>
+              </>
             )}
-            {isUploaded && musicData.durationSeconds !== undefined && (
-              <span className="text-sm text-muted-foreground">
-                Duration: {formatDuration(musicData.durationSeconds)}
-              </span>
-            )}
-            <UserCard profile={musicData.uploader} />
           </div>
         </div>
+        {description && (
+          <div className="text-sm text-foreground">
+            <span className="font-semibold">Description: </span>
+            <span>{visibleDescription}</span>
+            {hasLongDescription && (
+              <Button
+                className="ml-1 h-auto p-0 text-foreground"
+                variant="link"
+                onClick={() => setIsDescriptionExpanded(expanded => !expanded)}
+              >
+                {isDescriptionExpanded ? "Show less" : "Show more"}
+              </Button>
+            )}
+          </div>
+        )}
         <section className="border-t pt-4">
           <div className="mb-3 flex items-center gap-2">
             <ChatCircle />
@@ -273,8 +355,8 @@ function MusicData({ musicId }: { musicId: number }) {
                   value={comment}
                   onChange={event => setComment(event.target.value)}
                   placeholder="Add a comment"
+                  className="text-foreground placeholder:text-foreground/60"
                   disabled={isSubmittingComment}
-                  aria-label="Comment"
                 />
                 <Button type="submit" disabled={isSubmittingComment || !comment.trim()}>
                   Comment
@@ -282,7 +364,7 @@ function MusicData({ musicId }: { musicId: number }) {
               </form>
               <div className="flex flex-col gap-2">
                 {comments.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No comments yet.</p>
+                  <p className="text-sm text-foreground">No comments yet.</p>
                 ) : comments.map(item => (
                   <div className="rounded-md border p-2" key={item.id}>
                     {item.author && (

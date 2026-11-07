@@ -2,6 +2,7 @@ export interface BasicProfile {
     userId: number;
     username: string;
     avatarUrl: string | null;
+    followersCount?: number;
 }
 
 export interface Profile extends BasicProfile {
