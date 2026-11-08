@@ -27,6 +27,8 @@ export const removeThumbnailEndpoint = (musicId: number) =>
 export const notifyUploadThumbnailEndpoint = (musicId: number) =>
         `${musicBase}/notify-upload-image/${musicId}`;
 export const musicEndpoint = (musicId: number) => `${musicBase}/${musicId}`;
+export const userMusicEndpoint = (userId: number, pageNumber: number) =>
+        `${musicBase}/user-music/${userId}?pageNumber=${pageNumber}`;
 export const editMusicEndpoint = (musicId: number) => `${musicBase}/${musicId}`;
 export const deleteMusicEndpoint = (musicId: number) => `${musicBase}/${musicId}`;
 // to implement

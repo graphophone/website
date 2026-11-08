@@ -9,6 +9,7 @@ import {
 } from "@/constants/api";
 import { UserContext } from "@/context/userContext";
 import { isRequestError } from "@/lib/error";
+import { formatCompactCount } from "@/lib/utils";
 import { FullMusicData } from "@/types/music/music";
 import React, { useContext, useEffect, useState } from "react";
 import { Card, CardContent } from "../ui/card";
@@ -59,16 +60,6 @@ const formatCreatedAt = (createdAt: number) =>
   new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
   }).format(new Date(createdAt * 1000));
-
-const formatCompactCount = (count: number) => {
-  if (count >= 1_000_000) {
-    return `${(count / 1_000_000).toFixed(count >= 10_000_000 ? 0 : 1).replace(/\.0$/, "")}m`;
-  }
-  if (count >= 1_000) {
-    return `${(count / 1_000).toFixed(count >= 10_000 ? 0 : 1).replace(/\.0$/, "")}k`;
-  }
-  return count.toString();
-};
 
 function MusicData({ musicId }: { musicId: number }) {
   const userContext = useContext(UserContext);
@@ -251,7 +242,7 @@ function MusicData({ musicId }: { musicId: number }) {
 
           <div className="h-48 grow min-w-0 flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <h1 className="min-w-0 flex-1 text-3xl font-bold break-words">
+              <h1 className="min-w-0 flex-1 truncate text-3xl font-bold" title={musicData.title}>
                 {musicData.title}
               </h1>
               {musicData.uploadStatus !== "uploaded" && (
