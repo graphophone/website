@@ -10,7 +10,7 @@ import {
 import { UserContext } from "@/context/userContext";
 import { isRequestError } from "@/lib/error";
 import { FullMusicData } from "@/types/music/music";
-import { FormEvent, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { ToastContext } from "@/context/toastContext";
 import { useRouter } from "next/navigation";
@@ -137,21 +137,7 @@ function MusicData({ musicId }: { musicId: number }) {
     })();
   }, [isUploaded, musicId, toastContext, userContext]);
 
-  const runAction = async (
-    endpoint: string,
-    method: "POST" | "DELETE",
-    successTitle: string,
-    errorTitle: string,
-  ) => {
-    const response = await userContext.protectedFetch(endpoint, { method });
-    toastContext.show({
-      title: isRequestError(response) ? errorTitle : successTitle,
-      type: isRequestError(response) ? "error" : "success",
-    });
-    return !isRequestError(response);
-  };
-
-  const handleCommentSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleCommentSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const content = comment.trim();
     if (!content || isSubmittingComment) {
@@ -183,9 +169,52 @@ function MusicData({ musicId }: { musicId: number }) {
     if (!window.confirm("Delete this track?")) {
       return;
     }
-    if (await runAction(deleteMusicEndpoint(musicId), "DELETE", "Music deleted", "Failed to delete music")) {
+    const response = await userContext.protectedFetch(deleteMusicEndpoint(musicId), {
+      method: "DELETE",
+    });
+    toastContext.show({
+      title: isRequestError(response) ? "Failed to delete music" : "Music deleted",
+      type: isRequestError(response) ? "error" : "success",
+    });
+    if (!isRequestError(response)) {
       router.push("/");
     }
+  };
+
+  const handleLike = async () => {
+    const response = await userContext.protectedFetch(likeMusicEndpoint(musicId), {
+      method: "PATCH",
+    });
+    if (isRequestError(response)) {
+      toastContext.show({
+        title: "Failed to like music",
+        type: "error",
+      });
+      return;
+    }
+
+    setMusicData(currentMusicData => {
+      if (!currentMusicData) {
+        return currentMusicData;
+      }
+
+      const isLiked = !currentMusicData.isLiked;
+      return {
+        ...currentMusicData,
+        isLiked,
+        likeCount: currentMusicData.likeCount + (isLiked ? 1 : -1),
+      };
+    });
+  };
+
+  const handleAddToPlaylist = async () => {
+    const response = await userContext.protectedFetch(addMusicToPlaylistEndpoint(musicId), {
+      method: "POST",
+    });
+    toastContext.show({
+      title: isRequestError(response) ? "Failed to add to playlist" : "Added to playlist",
+      type: isRequestError(response) ? "error" : "success",
+    });
   };
 
   if (isLoading || musicData === null) {
@@ -228,27 +257,27 @@ function MusicData({ musicId }: { musicId: number }) {
               {musicData.uploadStatus !== "uploaded" && (
                 <Badge className="shrink-0">{musicData.uploadStatus}</Badge>
               )}
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={<Button className="shrink-0 cursor-pointer text-foreground" variant="outline" size="icon" />}
-                >
-                  <DotsThree />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {isOwner && (
+              {isOwner && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={<Button className="shrink-0 cursor-pointer text-foreground" variant="outline" size="icon" />}
+                  >
+                    <DotsThree />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => router.push(`/music/${musicId}/edit`)}>
                       <Pencil />
                       Edit
                     </DropdownMenuItem>
-                  )}
-                  {isOwner && isUploaded && (
-                    <DropdownMenuItem variant="destructive" onClick={handleDelete}>
-                      <Trash />
-                      Delete
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    {isUploaded && (
+                      <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+                        <Trash />
+                        Delete
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
             <div className="flex items-center gap-2 text-sm text-foreground">
               <span className="font-semibold">Categories:</span>
@@ -298,15 +327,18 @@ function MusicData({ musicId }: { musicId: number }) {
                   <Button
                     className="shrink-0 cursor-pointer text-foreground"
                     variant="outline"
-                    onClick={() => runAction(likeMusicEndpoint(musicId), "POST", "Music liked", "Failed to like music")}
+                    onClick={handleLike}
                   >
-                    <Heart />
-                    Like
+                    <Heart
+                      className={musicData.isLiked ? "fill-red-500 text-red-500" : undefined}
+                      weight={musicData.isLiked ? "fill" : "regular"}
+                    />
+                    {musicData.isLiked ? "Liked" : "Like"}
                   </Button>
                   <Button
                     className="shrink-0 cursor-pointer text-foreground"
                     variant="outline"
-                    onClick={() => runAction(addMusicToPlaylistEndpoint(musicId), "POST", "Added to playlist", "Failed to add to playlist")}
+                    onClick={handleAddToPlaylist}
                   >
                     <ListPlus />
                     Add to playlist
@@ -325,9 +357,9 @@ function MusicData({ musicId }: { musicId: number }) {
           </div>
         </div>
         {description && (
-          <div className="text-sm text-foreground">
+          <div className="min-w-0 text-sm text-foreground [overflow-wrap:anywhere] whitespace-pre-wrap">
             <span className="font-semibold">Description: </span>
-            <span>{visibleDescription}</span>
+            <span className="break-words">{visibleDescription}</span>
             {hasLongDescription && (
               <Button
                 className="ml-1 h-auto p-0 text-foreground"
@@ -345,7 +377,7 @@ function MusicData({ musicId }: { musicId: number }) {
             <h2 className="text-xl font-semibold">Comments</h2>
           </div>
           {!isUploaded ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground">
               No actions can be performed until this track is uploaded.
             </p>
           ) : (

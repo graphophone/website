@@ -16,7 +16,7 @@ interface Props {
 function UserProfileCard({ profile }: Props) {
   const userContext = useContext(UserContext);
   const [isBannerExpanded, setIsBannerExpanded] = useState(false);
-  const canEdit = userContext.user?.userId === profile.userId;
+  const isOwner = userContext.user?.userId === profile.userId;
 
   const displayName = profile.firstName ?
     `${profile.firstName} ${profile.lastName}`.trimEnd() :
@@ -87,14 +87,16 @@ function UserProfileCard({ profile }: Props) {
         </div>
         
         <div className="flex flex-col md:flex-row gap-1.5">
-          <Button
-            className="md:min-w-32 rounded-[6px] cursor-pointer
-              bg-primary hover:brightness-95 hover:bg-primary text-background text-[14px]"
-          >
-            Follow
-          </Button>
+          { isOwner ? <></> :
+            <Button
+              className="md:min-w-32 rounded-[6px] cursor-pointer
+                bg-primary hover:brightness-95 hover:bg-primary text-background text-[14px]"
+            >
+              Follow
+            </Button>
+          }
 
-          { canEdit ?
+          { isOwner ?
             <Link href="/settings/profile">
               <Button
                 className="md:min-w-32 rounded-[6px] cursor-pointer

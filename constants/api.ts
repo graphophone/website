@@ -28,15 +28,14 @@ export const notifyUploadThumbnailEndpoint = (musicId: number) =>
         `${musicBase}/notify-upload-image/${musicId}`;
 export const musicEndpoint = (musicId: number) => `${musicBase}/${musicId}`;
 export const editMusicEndpoint = (musicId: number) => `${musicBase}/${musicId}`;
-// to implement
 export const deleteMusicEndpoint = (musicId: number) => `${musicBase}/${musicId}`;
 // to implement
-export const likeMusicEndpoint = (musicId: number) => `${musicBase}/${musicId}/like`;
-// to implement
 export const addMusicToPlaylistEndpoint = (musicId: number) => `${musicBase}/${musicId}/playlist`;
-// to implement
 export const musicCommentsEndpoint = (musicId: number) => `${musicBase}/${musicId}/comments`;
 export const requestUploadMusicAudioEndpoint = (musicId: number) =>
         `${musicBase}/request-upload-audio/${musicId}`;
 export const notifyUploadMusicAudioEndpoint = (musicId: number) =>
         `${musicBase}/notify-upload-audio/${musicId}`;
+
+const likesBase = '/api/likes';
+export const likeMusicEndpoint = (musicId: number) => `${likesBase}/${musicId}/like`;
