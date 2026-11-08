@@ -38,6 +38,7 @@ export const requestUploadMusicAudioEndpoint = (musicId: number) =>
         `${musicBase}/request-upload-audio/${musicId}`;
 export const notifyUploadMusicAudioEndpoint = (musicId: number) =>
         `${musicBase}/notify-upload-audio/${musicId}`;
+export const requestMusicPlayEndpoint = (musicId: number) => `${musicBase}/${musicId}/request-play`
 
 const likesBase = '/api/likes';
 export const likeMusicEndpoint = (musicId: number) => `${likesBase}/${musicId}/like`;

@@ -7,6 +7,7 @@ import {
   musicCommentsEndpoint,
   musicEndpoint,
 } from "@/constants/api";
+import { PlayerContext } from "@/context/playerContext";
 import { UserContext } from "@/context/userContext";
 import { isRequestError } from "@/lib/error";
 import { formatCompactCount } from "@/lib/utils";
@@ -63,6 +64,7 @@ const formatCreatedAt = (createdAt: number) =>
 
 function MusicData({ musicId }: { musicId: number }) {
   const userContext = useContext(UserContext);
+  const { playMusic } = useContext(PlayerContext);
   const router = useRouter();
   const [musicData, setMusicData] = useState<FullMusicData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -288,7 +290,12 @@ function MusicData({ musicId }: { musicId: number }) {
                 <Button variant="outline" size="icon" className="text-foreground" disabled>
                   <SkipBack />
                 </Button>
-                <Button variant="outline" size="icon" className="text-foreground" disabled>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="text-foreground"
+                  onClick={() => void playMusic(musicData)}
+                >
                   <Play />
                 </Button>
                 <Button variant="outline" size="icon" className="text-foreground" disabled>

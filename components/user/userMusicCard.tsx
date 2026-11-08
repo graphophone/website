@@ -5,6 +5,7 @@ import {
   deleteMusicEndpoint,
   likeMusicEndpoint,
 } from "@/constants/api";
+import { PlayerContext } from "@/context/playerContext";
 import { UserContext } from "@/context/userContext";
 import { ToastContext } from "@/context/toastContext";
 import { isRequestError } from "@/lib/error";
@@ -46,6 +47,7 @@ const formatDuration = (durationSeconds: number) => {
 
 function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicProfile }) {
   const userContext = useContext(UserContext);
+  const { playMusic } = useContext(PlayerContext);
   const toastContext = useContext(ToastContext);
   const router = useRouter();
   const [currentTime, setCurrentTime] = useState(0);
@@ -153,7 +155,21 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
           {isUploaded && (
             <div className="flex min-w-0 items-center gap-2">
               <Button variant="outline" size="icon" className="text-foreground" disabled><SkipBack /></Button>
-              <Button variant="outline" size="icon" className="text-foreground" disabled><Play /></Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="text-foreground"
+                onClick={() =>
+                  void playMusic({
+                    ...musicData,
+                    uploader: profile,
+                    categories: [],
+                    createdAt: 0,
+                  })
+                }
+              >
+                <Play />
+              </Button>
               <Button variant="outline" size="icon" className="text-foreground" disabled><SkipForward /></Button>
               <input
                 className="min-w-0 flex-1 accent-primary"

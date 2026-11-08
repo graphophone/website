@@ -35,8 +35,8 @@ export default function RootLayout({
       <body className="min-h-screen overflow-x-hidden">
         <ToastContextProvider>
         <UserContextProvider>
-        <PlayerContextProvider>
         <AssetContextProvider>
+        <PlayerContextProvider>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
             <div className="hidden md:block">
@@ -48,11 +48,9 @@ export default function RootLayout({
 
             <LayoutContent>{children}</LayoutContent>
           </div>
-
-          <AudioPlayer />
         </ThemeProvider>
-        </AssetContextProvider>
         </PlayerContextProvider>
+        </AssetContextProvider>
         </UserContextProvider>
         </ToastContextProvider>
       </body>
