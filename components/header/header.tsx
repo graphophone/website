@@ -1,5 +1,4 @@
 import Link from "next/link"
-import HeaderLinks from "./header-links"
 import HeaderActions from "./actions/header-actions"
 
 function Header() {
@@ -10,8 +9,6 @@ function Header() {
             <Link href="/" className="cursor-pointer">
                 <b className="hover:opacity-50 select-none transition-all">Graphophone</b>
             </Link>
-
-            <HeaderLinks />
 
             <HeaderActions />
         </div>

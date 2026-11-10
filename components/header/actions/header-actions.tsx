@@ -10,6 +10,7 @@ import { Spinner } from '@/components/ui/spinner';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from './theme-toggle';
+import HeaderSearch from '../header-search';
 
 function HeaderActions() {
     const userContext = useContext(UserContext);
@@ -30,6 +31,7 @@ function HeaderActions() {
     if (userContext.user === null) {
         return (
             <div className="flex gap-2 items-center">
+                <HeaderSearch />
                 <HeaderActionButton>
                     <ThemeToggle />
                 </HeaderActionButton>
@@ -49,6 +51,7 @@ function HeaderActions() {
 
     return (
         <div className="flex gap-2 items-center">
+            <HeaderSearch />
             <HeaderActionButton>
                 <ThemeToggle />
             </HeaderActionButton>
