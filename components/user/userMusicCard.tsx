@@ -2,7 +2,6 @@
 
 import {
   addMusicToPlaylistEndpoint,
-  deleteMusicEndpoint,
   likeMusicEndpoint,
 } from "@/constants/api";
 import { PlayerContext } from "@/context/playerContext";
@@ -15,29 +14,13 @@ import type { BasicProfile } from "@/types/user/profile";
 import Image from "next/image";
 import Link from "next/link";
 import { useContext, useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  DotsThree,
-  Heart,
-  ListPlus,
-  Pencil,
-  Play,
-  PlayCircle,
-  SkipBack,
-  SkipForward,
-  Trash,
-} from "phosphor-react";
+import { Heart, ListPlus, Play, PlayCircle } from "phosphor-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import S3Image from "../s3Image";
 import UserCard from "./userCard";
+import UserMusicCardMenu from "./userMusicCardMenu";
 
 const formatDuration = (durationSeconds: number) => {
   const minutes = Math.floor(durationSeconds / 60);
@@ -49,7 +32,6 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
   const userContext = useContext(UserContext);
   const { playMusic } = useContext(PlayerContext);
   const toastContext = useContext(ToastContext);
-  const router = useRouter();
   const [currentTime, setCurrentTime] = useState(0);
   const [musicData, setMusicData] = useState(music);
   const isUploaded = musicData.uploadStatus === "uploaded";
@@ -84,23 +66,6 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
     });
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm("Delete this track?")) {
-      return;
-    }
-
-    const response = await userContext.protectedFetch(deleteMusicEndpoint(musicData.id), {
-      method: "DELETE",
-    });
-    toastContext.show({
-      title: isRequestError(response) ? "Failed to delete music" : "Music deleted",
-      type: isRequestError(response) ? "error" : "success",
-    });
-    if (!isRequestError(response)) {
-      router.refresh();
-    }
-  };
-
   return (
     <Card className="w-full p-3 md:p-4">
       <div className="grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-2 md:grid-rows-[auto_auto_auto_1fr] md:gap-x-4">
@@ -129,34 +94,13 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
             {isOwner && musicData.uploadStatus !== "uploaded" && (
               <Badge className="shrink-0">{musicData.uploadStatus}</Badge>
             )}
-            {isOwner && (
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={<Button className="shrink-0 cursor-pointer text-foreground" variant="outline" size="icon" />}
-                >
-                  <DotsThree />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => router.push(`/music/${musicData.id}/edit`)}>
-                    <Pencil />
-                    Edit
-                  </DropdownMenuItem>
-                  {isUploaded && (
-                    <DropdownMenuItem variant="destructive" onClick={handleDelete}>
-                      <Trash />
-                      Delete
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            <UserMusicCardMenu musicId={musicData.id} isOwner={isOwner} isUploaded={isUploaded} />
           </div>
           <UserCard profile={profile} />
         </div>
 
         {isUploaded && (
           <div className="col-span-2 flex min-w-0 items-center gap-2 md:col-span-1">
-            <Button variant="outline" size="icon" className="text-foreground" disabled><SkipBack /></Button>
             <Button
               variant="outline"
               size="icon"
@@ -172,7 +116,6 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
             >
               <Play />
             </Button>
-            <Button variant="outline" size="icon" className="text-foreground" disabled><SkipForward /></Button>
             <input
               className="min-w-0 flex-1 accent-primary"
               type="range"
@@ -190,16 +133,26 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
         {isUploaded && (
           <div className="col-span-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-sm text-foreground md:col-span-1">
             <div className="flex flex-wrap items-center gap-2 md:gap-3">
-              <Button className="shrink-0 cursor-pointer text-foreground" variant="outline" onClick={handleLike}>
+              <Button
+                className="shrink-0 cursor-pointer text-foreground"
+                variant="outline"
+                onClick={handleLike}
+                aria-label={musicData.isLiked ? "Liked" : "Like"}
+              >
                 <Heart
                   className={musicData.isLiked ? "fill-red-500 text-red-500" : undefined}
                   weight={musicData.isLiked ? "fill" : "regular"}
                 />
-                {musicData.isLiked ? "Liked" : "Like"}
+                <span className="hidden md:inline">{musicData.isLiked ? "Liked" : "Like"}</span>
               </Button>
-              <Button className="shrink-0 cursor-pointer text-foreground" variant="outline" onClick={handleAddToPlaylist}>
+              <Button
+                className="shrink-0 cursor-pointer text-foreground"
+                variant="outline"
+                onClick={handleAddToPlaylist}
+                aria-label="Add to playlist"
+              >
                 <ListPlus />
-                Add to playlist
+                <span className="hidden md:inline">Add to playlist</span>
               </Button>
             </div>
             <div className="flex shrink-0 items-center gap-3">

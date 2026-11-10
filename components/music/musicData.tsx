@@ -30,8 +30,6 @@ import {
   PlayCircle,
   Play,
   Pencil,
-  SkipBack,
-  SkipForward,
   Trash,
 } from "phosphor-react";
 import {
@@ -287,9 +285,6 @@ function MusicData({ musicId }: { musicId: number }) {
             </span>
             {isUploaded && (
               <div className="mt-auto flex items-center gap-2">
-                <Button variant="outline" size="icon" className="text-foreground" disabled>
-                  <SkipBack />
-                </Button>
                 <Button
                   variant="outline"
                   size="icon"
@@ -297,9 +292,6 @@ function MusicData({ musicId }: { musicId: number }) {
                   onClick={() => void playMusic(musicData)}
                 >
                   <Play />
-                </Button>
-                <Button variant="outline" size="icon" className="text-foreground" disabled>
-                  <SkipForward />
                 </Button>
                 <input
                   className="min-w-0 flex-1 accent-primary"
