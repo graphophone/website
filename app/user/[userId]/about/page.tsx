@@ -28,7 +28,7 @@ async function UserProfileAboutPage(props: Props) {
   ]
 
   return (
-    <Card className="w-full flex flex-col gap-4.5 px-16">
+    <Card className="w-full flex flex-col gap-4.5 px-4 md:px-16">
       {sections.map((section, i) => (
         <UserProfileAboutSection
           key={i}

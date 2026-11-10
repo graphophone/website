@@ -29,8 +29,8 @@ function UserProfileCard({ profile }: Props) {
   return (
     <div className="w-full bg-background rounded-t-[8px] overflow-clip">
       { profile.bannerUrl ?
-        <div className={`w-full relative ${isBannerExpanded ? 'h-87.5' : 'h-10.5'} overflow-clip`}>
-          <div className="absolute flex items-center h-10.5 w-full justify-end pr-16">
+        <div className={`w-full relative ${isBannerExpanded ? 'h-40 md:h-87.5' : 'h-10.5'} overflow-clip`}>
+          <div className="absolute flex items-center h-10.5 w-full justify-end pr-4 md:pr-16">
             <Button
               variant="outline"
               className="bg-background text-foreground
@@ -44,7 +44,7 @@ function UserProfileCard({ profile }: Props) {
           { isBannerExpanded ?
             <></> : <div className="absolute z-10 w-full h-full bg-background/35" />
           }
-          <div className="absolute w-full h-87.5">
+          <div className="absolute w-full h-40 md:h-87.5">
             <S3Image
               className="absolute"
               src={profile.bannerUrl}
@@ -56,9 +56,9 @@ function UserProfileCard({ profile }: Props) {
         </div> : <></>
       }
 
-      <div className="py-2 px-16 w-full h-full flex items-center justify-between">
-        <div className="w-full h-full flex items-center gap-4.5">
-          <div className="w-18 h-18 relative rounded-[6px] overflow-clip z-0">
+      <div className="py-2 px-4 md:px-16 w-full h-full flex items-center justify-between gap-3">
+        <div className="min-w-0 w-full h-full flex items-center gap-3 md:gap-4.5">
+          <div className="size-14 md:size-18 shrink-0 relative rounded-[6px] overflow-clip z-0">
             { profile.avatarUrl ?
               <S3Image
                 src={profile.avatarUrl}
@@ -75,9 +75,9 @@ function UserProfileCard({ profile }: Props) {
             }
           </div>
 
-          <div className="flex flex-col w-max h-18 justify-center gap-1.5">
-            <span className="text-foreground font-bold text-xl">{profile.username}</span>
-            <span className="text-foreground/50">
+          <div className="min-w-0 flex flex-col justify-center gap-1.5">
+            <span className="truncate text-foreground font-bold text-lg md:text-xl">{profile.username}</span>
+            <span className="truncate text-foreground/50">
               { [displayName, displayLocation]
                   .filter(v => !!v)
                   .join(' • ')
@@ -86,7 +86,7 @@ function UserProfileCard({ profile }: Props) {
           </div>
         </div>
         
-        <div className="flex flex-col md:flex-row gap-1.5">
+        <div className="shrink-0 flex flex-col md:flex-row gap-1.5">
           { isOwner ? <></> :
             <Button
               className="md:min-w-32 rounded-[6px] cursor-pointer

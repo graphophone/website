@@ -17,11 +17,11 @@ function UserProfileSections({ userId }: { userId: number }) {
     .split('/').at(0)!;
 
   return (
-    <div className="w-full flex items-center px-16 border-t">
+    <div className="w-full flex items-center md:px-16 border-t">
       {profileSections.map((section, i) => (
         <Link
           href={`/user/${userId}/${section.href}`}
-          className={`py-2 px-4 ${currentSection === section.href ?
+          className={`flex-1 md:flex-none text-center py-2 px-4 ${currentSection === section.href ?
             'border-primary border-b-2' : 'hover:border-primary/25 hover:border-b-2'}`}
           key={i}
         >

@@ -83,7 +83,7 @@ function UserMusic({ profile }: { profile: BasicProfile }) {
   }
 
   return (
-    <Card className="flex w-full flex-col gap-4.5 px-16">
+    <Card className="flex w-full flex-col gap-4.5 px-2 md:px-16">
       {error && <p className="text-sm text-destructive">{error}</p>}
       {music.length === 0 && !error ? (
         <p>{profile.username} hasn&apos;t uploaded any music yet</p>

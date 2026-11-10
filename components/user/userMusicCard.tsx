@@ -102,9 +102,9 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
   };
 
   return (
-    <Card className="w-full p-4">
-      <div className="flex w-full min-w-0 gap-4">
-        <div className="relative h-36 w-36 shrink-0 overflow-clip rounded-[6px]">
+    <Card className="w-full p-3 md:p-4">
+      <div className="grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-2 md:grid-rows-[auto_auto_auto_1fr] md:gap-x-4">
+        <div className="relative size-20 shrink-0 overflow-clip rounded-[6px] md:row-span-4 md:size-36">
           {musicData.thumbnailUrl ? (
             <S3Image
               src={musicData.thumbnailUrl}
@@ -117,11 +117,11 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
           )}
         </div>
 
-        <div className="flex min-w-0 grow flex-col gap-2">
+        <div className="flex min-w-0 flex-col gap-2">
           <div className="flex min-w-0 items-center gap-2">
             <Link
               href={`/music/${musicData.id}`}
-              className="min-w-0 flex-1 truncate text-xl font-bold"
+              className="min-w-0 flex-1 truncate text-lg font-bold md:text-xl"
               title={musicData.title}
             >
               {musicData.title}
@@ -152,60 +152,62 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
             )}
           </div>
           <UserCard profile={profile} />
-          {isUploaded && (
-            <div className="flex min-w-0 items-center gap-2">
-              <Button variant="outline" size="icon" className="text-foreground" disabled><SkipBack /></Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="text-foreground"
-                onClick={() =>
-                  void playMusic({
-                    ...musicData,
-                    uploader: profile,
-                    categories: [],
-                    createdAt: 0,
-                  })
-                }
-              >
-                <Play />
-              </Button>
-              <Button variant="outline" size="icon" className="text-foreground" disabled><SkipForward /></Button>
-              <input
-                className="min-w-0 flex-1 accent-primary"
-                type="range"
-                min={0}
-                max={musicData.durationSeconds ?? 0}
-                value={currentTime}
-                onChange={event => setCurrentTime(Number(event.target.value))}
-              />
-              <span className="shrink-0 text-sm text-foreground">
-                {formatDuration(currentTime)} / {formatDuration(musicData.durationSeconds ?? 0)}
-              </span>
-            </div>
-          )}
-          {isUploaded && (
-            <div className="flex items-center justify-between gap-4 text-sm text-foreground">
-              <div className="flex flex-wrap items-center gap-3">
-                <Button className="shrink-0 cursor-pointer text-foreground" variant="outline" onClick={handleLike}>
-                  <Heart
-                    className={musicData.isLiked ? "fill-red-500 text-red-500" : undefined}
-                    weight={musicData.isLiked ? "fill" : "regular"}
-                  />
-                  {musicData.isLiked ? "Liked" : "Like"}
-                </Button>
-                <Button className="shrink-0 cursor-pointer text-foreground" variant="outline" onClick={handleAddToPlaylist}>
-                  <ListPlus />
-                  Add to playlist
-                </Button>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
-                <span className="flex items-center gap-1"><PlayCircle />{formatCompactCount(musicData.playCount)}</span>
-                <span className="flex items-center gap-1"><Heart />{formatCompactCount(musicData.likeCount)}</span>
-              </div>
-            </div>
-          )}
         </div>
+
+        {isUploaded && (
+          <div className="col-span-2 flex min-w-0 items-center gap-2 md:col-span-1">
+            <Button variant="outline" size="icon" className="text-foreground" disabled><SkipBack /></Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="text-foreground"
+              onClick={() =>
+                void playMusic({
+                  ...musicData,
+                  uploader: profile,
+                  categories: [],
+                  createdAt: 0,
+                })
+              }
+            >
+              <Play />
+            </Button>
+            <Button variant="outline" size="icon" className="text-foreground" disabled><SkipForward /></Button>
+            <input
+              className="min-w-0 flex-1 accent-primary"
+              type="range"
+              min={0}
+              max={musicData.durationSeconds ?? 0}
+              value={currentTime}
+              onChange={event => setCurrentTime(Number(event.target.value))}
+            />
+            <span className="shrink-0 text-sm text-foreground">
+              {formatDuration(currentTime)} / {formatDuration(musicData.durationSeconds ?? 0)}
+            </span>
+          </div>
+        )}
+
+        {isUploaded && (
+          <div className="col-span-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-sm text-foreground md:col-span-1">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3">
+              <Button className="shrink-0 cursor-pointer text-foreground" variant="outline" onClick={handleLike}>
+                <Heart
+                  className={musicData.isLiked ? "fill-red-500 text-red-500" : undefined}
+                  weight={musicData.isLiked ? "fill" : "regular"}
+                />
+                {musicData.isLiked ? "Liked" : "Like"}
+              </Button>
+              <Button className="shrink-0 cursor-pointer text-foreground" variant="outline" onClick={handleAddToPlaylist}>
+                <ListPlus />
+                Add to playlist
+              </Button>
+            </div>
+            <div className="flex shrink-0 items-center gap-3">
+              <span className="flex items-center gap-1"><PlayCircle />{formatCompactCount(musicData.playCount)}</span>
+              <span className="flex items-center gap-1"><Heart />{formatCompactCount(musicData.likeCount)}</span>
+            </div>
+          </div>
+        )}
       </div>
     </Card>
   );
