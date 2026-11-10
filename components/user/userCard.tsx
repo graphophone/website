@@ -8,9 +8,14 @@ import Link from 'next/link'
 import { useContext } from "react";
 import { Button } from "../ui/button";
 
-function UserCard({ profile }: { profile: BasicProfile }) {
+interface Props {
+  profile: BasicProfile;
+  withFollowButton?: boolean;
+}
+
+function UserCard({ profile, withFollowButton = false }: Props) {
   const userContext = useContext(UserContext);
-  const canFollow = userContext.user?.userId !== profile.userId;
+  const canFollow = withFollowButton && userContext.user?.userId !== profile.userId;
 
   return (
     <div className="w-fit flex items-center gap-2">
@@ -44,7 +49,7 @@ function UserCard({ profile }: { profile: BasicProfile }) {
       </div>
 
       {canFollow && (
-        <Button type="button" className="cursor-pointer">
+        <Button type="button" className="hidden md:inline-flex cursor-pointer">
           Follow
         </Button>
       )}

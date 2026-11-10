@@ -19,9 +19,10 @@ interface Props {
   musicId: number;
   isOwner: boolean;
   isUploaded: boolean;
+  onDeleted: () => void;
 }
 
-function UserMusicCardMenu({ musicId, isOwner, isUploaded }: Props) {
+function MusicMenu({ musicId, isOwner, isUploaded, onDeleted }: Props) {
   const userContext = useContext(UserContext);
   const toastContext = useContext(ToastContext);
   const router = useRouter();
@@ -39,7 +40,7 @@ function UserMusicCardMenu({ musicId, isOwner, isUploaded }: Props) {
       type: isRequestError(response) ? "error" : "success",
     });
     if (!isRequestError(response)) {
-      router.refresh();
+      onDeleted();
     }
   };
 
@@ -81,4 +82,4 @@ function UserMusicCardMenu({ musicId, isOwner, isUploaded }: Props) {
   );
 }
 
-export default UserMusicCardMenu;
+export default MusicMenu;
