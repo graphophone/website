@@ -4,7 +4,7 @@ import { Moon, Sun } from "phosphor-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
-function ThemeToggle({ mobile = false }: { mobile?: boolean }) {
+function ThemeToggle() {
     const { resolvedTheme, setTheme } = useTheme();
     const isDark = resolvedTheme === "dark";
 
@@ -17,10 +17,8 @@ function ThemeToggle({ mobile = false }: { mobile?: boolean }) {
             aria-label="Toggle theme"
             title="Toggle theme"
         >
-            <span className={mobile ? "absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center" : ""}>
-                <Sun size={16} className="hidden dark:block" color="var(--foreground)" />
-                <Moon size={16} className="dark:hidden" color="var(--foreground)" />
-            </span>
+            <Sun size={16} className="hidden dark:block" color="var(--foreground)" />
+            <Moon size={16} className="dark:hidden" color="var(--foreground)" />
         </Button>
     );
 }

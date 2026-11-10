@@ -3,7 +3,7 @@ import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header/header";
-import MobileHeader from "@/components/header/mobile-header";
+import MobileHeader from "@/components/header/mobile/mobile-header";
 import { UserContextProvider } from "@/context/userContext";
 import { ToastContextProvider } from "@/context/toastContext";
 import { AssetContextProvider } from "@/context/assetContext";
@@ -39,12 +39,8 @@ export default function RootLayout({
         <PlayerContextProvider>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <div className="w-full h-max min-h-screen flex flex-col gap-4.5">
-            <div className="hidden md:block">
-              <Header />
-            </div>
-            <div className="md:hidden">
-              <MobileHeader />
-            </div>
+            <Header />
+            <MobileHeader />
 
             <LayoutContent>{children}</LayoutContent>
           </div>
