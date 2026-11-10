@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { passwordSchema } from '@/types/auth/forms';
 
 export const editProfileSchema = z.object({
     username: z.string()
@@ -23,3 +24,16 @@ export const editProfileSchema = z.object({
 });
 
 export type EditProfileForm = z.infer<typeof editProfileSchema>;
+
+
+export const changePasswordSchema = z.object({
+    currentPassword: z.string()
+        .min(1, "Current password is required"),
+    newPassword: passwordSchema,
+    confirmNewPassword: z.string(),
+}).refine(data => data.newPassword === data.confirmNewPassword, {
+    error: "Passwords do not match",
+    path: ["confirmNewPassword"],
+});
+
+export type ChangePasswordForm = z.infer<typeof changePasswordSchema>;

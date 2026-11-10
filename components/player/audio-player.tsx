@@ -22,8 +22,8 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`w-full grow md:px-[9vw] flex${
-        user && currentMusic ? " pb-10" : ""
+      className={`w-full grow md:px-[9vw] flex ${
+        user && currentMusic ? "pb-10" : "pb-4.5"
       }`}
     >
       {children}

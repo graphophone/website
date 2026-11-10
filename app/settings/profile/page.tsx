@@ -1,6 +1,7 @@
 "use client"
 
 import EditProfileForms from "@/components/settings/profile/editProfileForms";
+import SecuritySettings from "@/components/settings/security/securitySettings";
 import { Spinner } from "@/components/ui/spinner";
 import { myFullProfileEndpoint } from "@/constants/api";
 import { ToastContext } from "@/context/toastContext";
@@ -50,8 +51,9 @@ function ProfileSettingsPage() {
   }
 
   return (
-    <div className="w-full min-h-full">
+    <div className="w-full min-h-full flex flex-col gap-4.5">
       <EditProfileForms fullProfile={fullProfile} />
+      <SecuritySettings />
     </div>
   )
 }

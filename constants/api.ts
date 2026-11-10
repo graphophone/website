@@ -14,6 +14,9 @@ export const notifyUploadAvatarEndpoint = `${userBase}/notify-upload-image?image
 export const requestUploadBannerEndpoint = `${userBase}/request-upload-image`;
 export const removeBannerEndpoint = `${userBase}/remove-image?imageType=banner`;
 export const notifyUploadBannerEndpoint = `${userBase}/notify-upload-image?imageType=banner`
+// to implement
+export const changePasswordEndpoint = `${userBase}/change-password`;
+export const deleteAccountEndpoint = `${userBase}/delete-account`;
 
 const categoriesBase = '/api/categories';
 export const searchCategoriesEndpoint = `${categoriesBase}`;
