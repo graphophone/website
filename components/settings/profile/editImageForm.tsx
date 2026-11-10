@@ -40,7 +40,7 @@ function ImageEditor({
     )
   ) : null;
 
-  const imageSizeClassName = imageFill ? "w-full h-24 md:h-48" : "size-24 md:size-48 shrink-0";
+  const imageSizeClassName = imageFill ? "w-full h-28 md:h-48" : "size-28 md:size-48 shrink-0";
 
   return resolvedImage ? (
     <div className="flex flex-col gap-2">
