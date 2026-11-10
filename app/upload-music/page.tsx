@@ -152,14 +152,14 @@ function UploadMusicInformationPage() {
   }
 
   return (
-    <Card className="w-[80vh] md:w-full">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Enter music data</CardTitle>
       </CardHeader>
       <CardContent>
         <fieldset disabled={false}>
           <form id="edit-profile-form" onSubmit={uploadMusicForm.handleSubmit(handleSubmit)}>
-            <FieldGroup className="flex flex-col md:flex-row gap-4.5">
+            <FieldGroup className="flex flex-row flex-wrap md:flex-nowrap gap-4.5">
               <Controller
                 name="thumbnail"
                 control={uploadMusicForm.control}
@@ -201,7 +201,7 @@ function UploadMusicInformationPage() {
                 )}
               />
 
-              <div className="grow flex flex-col gap-2">
+              <div className="w-full md:w-auto grow flex flex-col gap-2">
                 <Controller
                   name="title"
                   control={uploadMusicForm.control}

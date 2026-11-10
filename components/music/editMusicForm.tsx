@@ -88,7 +88,7 @@ function EditMusicForm({ musicData }: { musicData: FullMusicData }) {
   };
 
   return (
-    <Card className="w-[80vh] md:w-full">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Edit music</CardTitle>
       </CardHeader>
