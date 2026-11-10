@@ -18,7 +18,7 @@ function EditProfileInformationForm({ form: editProfileForm }: Props) {
         <fieldset>
           <div>
             <FieldGroup>
-              <div className="flex gap-2">
+              <div className="flex flex-col md:flex-row gap-4 md:gap-2">
                 <Controller
                   name="username"
                   control={editProfileForm.control}
@@ -65,7 +65,7 @@ function EditProfileInformationForm({ form: editProfileForm }: Props) {
                 />
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col md:flex-row gap-4 md:gap-2">
                 <Controller
                   name="firstName"
                   control={editProfileForm.control}
@@ -111,7 +111,7 @@ function EditProfileInformationForm({ form: editProfileForm }: Props) {
                 />
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col md:flex-row gap-4 md:gap-2">
                 <Controller
                   name="country"
                   control={editProfileForm.control}
