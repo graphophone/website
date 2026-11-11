@@ -9,7 +9,7 @@ import { ToastContextProvider } from "@/context/toastContext";
 import { AssetContextProvider } from "@/context/assetContext";
 import { PlayerContextProvider } from "@/context/playerContext";
 import { ThemeProvider } from "next-themes";
-import AudioPlayer, { LayoutContent } from "@/components/player/audio-player";
+import AudioPlayer from "@/components/player/audio-player";
 
 const font = Open_Sans({
   variable: "--font-sans",
@@ -42,7 +42,11 @@ export default function RootLayout({
             <Header />
             <MobileHeader />
 
-            <LayoutContent>{children}</LayoutContent>
+            <div className="w-full grow md:px-[9vw] flex pb-4.5">
+              {children}
+            </div>
+
+            <AudioPlayer />
           </div>
         </ThemeProvider>
         </PlayerContextProvider>

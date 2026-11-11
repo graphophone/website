@@ -46,6 +46,7 @@ function MusicData({ musicId }: { musicId: number }) {
   const [musicData, setMusicData] = useState<FullMusicData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [comments, setComments] = useState<MusicComment[]>([]);
+  const [commentsError, setCommentsError] = useState<string | null>(null);
   const [comment, setComment] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -93,16 +94,13 @@ function MusicData({ musicId }: { musicId: number }) {
       });
 
       if (isRequestError(response)) {
-        toastContext.show({
-          title: "Failed to load comments",
-          description: "Try again later",
-          type: "error",
-        });
+        setCommentsError("Failed to load comments. Try again later.");
         return;
       }
 
       const data = await response.json();
       setComments(Array.isArray(data) ? data : data.comments ?? []);
+      setCommentsError(null);
     })();
   }, [isUploaded, musicId, toastContext, userContext]);
 
@@ -282,7 +280,9 @@ function MusicData({ musicId }: { musicId: number }) {
                 </Button>
               </form>
               <div className="flex flex-col gap-2">
-                {comments.length === 0 ? (
+                {commentsError ? (
+                  <p className="text-sm text-destructive">{commentsError}</p>
+                ) : comments.length === 0 ? (
                   <p className="text-sm text-foreground">No comments yet.</p>
                 ) : comments.map(item => (
                   <div className="rounded-md border p-2" key={item.id}>

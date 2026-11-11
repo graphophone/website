@@ -102,7 +102,7 @@ function UserProfileCard({ profile }: Props) {
                 className="md:min-w-32 rounded-[6px] cursor-pointer
                   bg-foreground/85 hover:bg-foreground text-background text-[14px]"
               >
-                Edit profile
+                Manage profile
               </Button>
             </Link> :
             <></>

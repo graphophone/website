@@ -3,7 +3,6 @@
 import type Hls from "hls.js";
 import { FullMusicData } from "@/types/music/music";
 import React, { createContext, useContext, useRef, useState } from "react";
-import AudioPlayer from "@/components/player/audio-player";
 import { ToastContext } from "./toastContext";
 import { requestMusicPlayEndpoint } from "@/constants/api";
 import { isRequestError } from "@/lib/error";
@@ -12,6 +11,8 @@ export interface IPlayerContext {
   currentMusic: FullMusicData | null;
   playMusic: (music: FullMusicData) => Promise<void>;
   pauseMusic: () => void;
+  playNextMusic: () => void;
+  playPreviousMusic: () => void;
 }
 
 export const PlayerContext = createContext<IPlayerContext>({
@@ -20,6 +21,12 @@ export const PlayerContext = createContext<IPlayerContext>({
     throw new Error("Function not implemented.");
   },
   pauseMusic: () => {
+    throw new Error("Function not implemented.");
+  },
+  playNextMusic: () => {
+    throw new Error("Function not implemented.");
+  },
+  playPreviousMusic: () => {
     throw new Error("Function not implemented.");
   },
 });
@@ -115,12 +122,15 @@ export function PlayerContextProvider({
     audioRef.current?.pause();
   };
 
+  const playNextMusic = () => {};
+
+  const playPreviousMusic = () => {};
+
   return (
-    <PlayerContext.Provider value={{ currentMusic, playMusic, pauseMusic }}>
+    <PlayerContext.Provider value={{ currentMusic, playMusic, pauseMusic, playNextMusic, playPreviousMusic }}>
       {children}
 
       <audio ref={audioRef} id="audio-player" className="hidden" />
-      <AudioPlayer />
     </PlayerContext.Provider>
   );
 }

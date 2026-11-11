@@ -8,8 +8,10 @@ function SecuritySettings() {
       <CardHeader>
         <CardTitle>Security</CardTitle>
       </CardHeader>
-      <ChangePasswordForm />
-      <DeleteAccountSection />
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <ChangePasswordForm />
+        <DeleteAccountSection />
+      </div>
     </Card>
   )
 }
