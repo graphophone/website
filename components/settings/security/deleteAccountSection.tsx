@@ -5,21 +5,19 @@ import { ToastContext } from "@/context/toastContext"
 import { UserContext } from "@/context/userContext"
 import { isRequestError } from "@/lib/error"
 import { useRouter } from "next/navigation"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { Trash } from "phosphor-react"
 import { Button } from "@/components/ui/button"
 import { CardContent } from "@/components/ui/card"
+import ConfirmDialog from "@/components/confirmDialog"
 
 function DeleteAccountSection() {
   const userContext = useContext(UserContext)
   const toastContext = useContext(ToastContext)
   const router = useRouter()
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const handleDelete = async () => {
-    if (!window.confirm("Delete your account? This cannot be undone.")) {
-      return
-    }
-
     const response = await userContext.protectedFetch(deleteAccountEndpoint, {
       method: "DELETE",
     })
@@ -46,12 +44,20 @@ function DeleteAccountSection() {
           type="button"
           variant="destructive"
           className="w-fit shrink-0 cursor-pointer"
-          onClick={handleDelete}
+          onClick={() => setIsDeleteDialogOpen(true)}
         >
           <Trash weight="fill" />
           Delete account
         </Button>
       </div>
+      <ConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title="Delete your account?"
+        description="This cannot be undone. Your profile and all uploaded music will be removed permanently."
+        confirmLabel="Delete account"
+        onConfirm={handleDelete}
+      />
     </CardContent>
   )
 }
