@@ -189,7 +189,7 @@ function MusicData({ musicId }: { musicId: number }) {
                 fill={true}
               /> :
               <Image
-                src="/images/empty_avatar.jpg"
+                src="/images/empty_thumbnail.png"
                 fill={true}
                 alt="empty music thumbnail"
               />

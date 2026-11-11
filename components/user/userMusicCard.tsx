@@ -71,7 +71,7 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
               style={{ objectFit: "cover" }}
             />
           ) : (
-            <Image src="/images/empty_avatar.jpg" fill={true} alt="empty music thumbnail" />
+            <Image src="/images/empty_thumbnail.png" fill={true} alt="empty music thumbnail" />
           )}
         </div>
 

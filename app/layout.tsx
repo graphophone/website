@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,16 @@ const font = Open_Sans({
 export const metadata: Metadata = {
   title: "Graphophone",
   description: "Music streaming app",
+  applicationName: "Graphophone",
+  appleWebApp: {
+    capable: true,
+    title: "Graphophone",
+    statusBarStyle: "default",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FF9100",
 };
 
 export default function RootLayout({

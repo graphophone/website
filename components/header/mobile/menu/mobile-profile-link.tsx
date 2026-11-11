@@ -17,7 +17,7 @@ function MobileProfileLink({ user }: { user: BasicProfile }) {
                         style={{ objectFit: "cover" }}
                     />
                 ) : (
-                    <Image src="/images/empty_avatar.jpg" fill={true} alt="empty avatar" />
+                    <Image src="/images/empty_avatar.png" fill={true} alt="empty avatar" />
                 )}
             </div>
             <span className="truncate">{user.username}</span>

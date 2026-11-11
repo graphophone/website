@@ -67,7 +67,7 @@ function UserProfileCard({ profile }: Props) {
                 style={{objectFit: "cover"}}
               /> :
               <Image
-                src="/images/empty_avatar.jpg"
+                src="/images/empty_avatar.png"
                 alt="empty avatar"
                 fill={true}
                 style={{objectFit: "cover"}}

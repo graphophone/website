@@ -23,7 +23,7 @@ function UserAction() {
                         style={{objectFit: "cover"}}
                     /> :
                     <Image
-                        src="/images/empty_avatar.jpg"
+                        src="/images/empty_avatar.png"
                         width={32}
                         height={32}
                         alt="empty avatar"

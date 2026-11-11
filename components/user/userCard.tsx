@@ -29,7 +29,7 @@ function UserCard({ profile, withFollowButton = false }: Props) {
               style={{objectFit: "cover"}}
             /> :
             <Image
-              src="/images/empty_avatar.jpg"
+              src="/images/empty_avatar.png"
               fill={true}
               alt="empty avatar"
             />
