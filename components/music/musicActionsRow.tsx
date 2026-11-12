@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, formatCompactCount } from "@/lib/utils";
-import { Heart, ListPlus, Play, PlayCircle } from "phosphor-react";
+import { Heart, ListPlus, Pause, Play, PlayCircle } from "phosphor-react";
 import { Button } from "../ui/button";
 
 const formatDuration = (durationSeconds: number) => {
@@ -13,6 +13,7 @@ const formatDuration = (durationSeconds: number) => {
 interface Props {
   durationSeconds?: number;
   isLiked: boolean;
+  isPlaying: boolean;
   playCount: number;
   likeCount: number;
   onPlay: () => void;
@@ -24,6 +25,7 @@ interface Props {
 function MusicActionsRow({
   durationSeconds,
   isLiked,
+  isPlaying,
   playCount,
   likeCount,
   onPlay,
@@ -39,9 +41,9 @@ function MusicActionsRow({
           size="icon"
           className="cursor-pointer text-foreground"
           onClick={onPlay}
-          aria-label="Play"
+          aria-label={isPlaying ? "Pause" : "Play"}
         >
-          <Play />
+          {isPlaying ? <Pause /> : <Play />}
         </Button>
         <span>{formatDuration(durationSeconds ?? 0)}</span>
       </div>

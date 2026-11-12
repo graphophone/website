@@ -41,7 +41,7 @@ const formatCreatedAt = (createdAt: number) =>
 
 function MusicData({ musicId }: { musicId: number }) {
   const userContext = useContext(UserContext);
-  const { playMusic } = useContext(PlayerContext);
+  const { currentMusic, isPlaying, playMusic, togglePlay } = useContext(PlayerContext);
   const router = useRouter();
   const [musicData, setMusicData] = useState<FullMusicData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +53,7 @@ function MusicData({ musicId }: { musicId: number }) {
   const toastContext = useContext(ToastContext);
   const isUploaded = musicData?.uploadStatus === "uploaded";
   const isOwner = userContext.user?.userId === musicData?.uploader.userId;
+  const isCurrent = musicData !== null && currentMusic?.id === musicData.id;
   const description = musicData?.description ?? "";
   const hasLongDescription = description.length > 64;
   const visibleDescription = isDescriptionExpanded || !hasLongDescription
@@ -229,9 +230,10 @@ function MusicData({ musicId }: { musicId: number }) {
               className="col-span-2 md:col-span-1 md:self-end"
               durationSeconds={musicData.durationSeconds}
               isLiked={musicData.isLiked}
+              isPlaying={isCurrent && isPlaying}
               playCount={musicData.playCount}
               likeCount={musicData.likeCount}
-              onPlay={() => void playMusic(musicData)}
+              onPlay={() => (isCurrent ? togglePlay() : void playMusic(musicData))}
               onLike={handleLike}
               onAddToPlaylist={handleAddToPlaylist}
             />

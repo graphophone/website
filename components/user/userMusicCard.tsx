@@ -23,12 +23,27 @@ import MusicActionsRow from "../music/musicActionsRow";
 
 function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicProfile }) {
   const userContext = useContext(UserContext);
-  const { playMusic } = useContext(PlayerContext);
+  const { currentMusic, isPlaying, playMusic, togglePlay } = useContext(PlayerContext);
   const toastContext = useContext(ToastContext);
   const router = useRouter();
   const [musicData, setMusicData] = useState(music);
   const isUploaded = musicData.uploadStatus === "uploaded";
   const isOwner = userContext.user?.userId === profile.userId;
+  const isCurrent = currentMusic?.id === musicData.id;
+
+  const handlePlay = () => {
+    if (isCurrent) {
+      togglePlay();
+      return;
+    }
+
+    void playMusic({
+      ...musicData,
+      uploader: profile,
+      categories: [],
+      createdAt: 0,
+    });
+  };
 
   const handleLike = async () => {
     const response = await userContext.protectedFetch(likeMusicEndpoint(musicData.id), {
@@ -102,16 +117,10 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
             className="col-span-2 md:col-span-1 md:self-end"
             durationSeconds={musicData.durationSeconds}
             isLiked={musicData.isLiked}
+            isPlaying={isCurrent && isPlaying}
             playCount={musicData.playCount}
             likeCount={musicData.likeCount}
-            onPlay={() =>
-              void playMusic({
-                ...musicData,
-                uploader: profile,
-                categories: [],
-                createdAt: 0,
-              })
-            }
+            onPlay={handlePlay}
             onLike={handleLike}
             onAddToPlaylist={handleAddToPlaylist}
           />

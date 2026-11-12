@@ -11,15 +11,30 @@ import { isRequestError } from "@/lib/error";
 import Image from "next/image";
 import Link from "next/link";
 import { useContext, useState } from "react";
-import { Heart, ListPlus, Play, SkipBack, SkipForward } from "phosphor-react";
+import { Heart, ListPlus, Pause, Play, SkipBack, SkipForward } from "phosphor-react";
 import { Button } from "../ui/button";
 import S3Image from "../s3Image";
 import UserCard from "../user/userCard";
 import { useHorizontalSwipe } from "@/hooks/use-horizontal-swipe";
 
+const formatTime = (seconds: number) => {
+  const total = Math.floor(seconds);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+};
+
 function AudioPlayer() {
   const userContext = useContext(UserContext);
-  const { currentMusic, playNextMusic, playPreviousMusic } = useContext(PlayerContext);
+  const {
+    currentMusic,
+    isPlaying,
+    currentTime,
+    duration,
+    togglePlay,
+    seek,
+    playNextMusic,
+    playPreviousMusic,
+  } = useContext(PlayerContext);
+  const [scrubTime, setScrubTime] = useState<number | null>(null);
   const toastContext = useContext(ToastContext);
   const [likedMusic, setLikedMusic] = useState<{ id: number; isLiked: boolean } | null>(null);
   const swipeHandlers = useHorizontalSwipe({
@@ -30,6 +45,16 @@ function AudioPlayer() {
   if (!userContext.user || !currentMusic) {
     return null;
   }
+
+  const totalSeconds = duration || currentMusic.durationSeconds || 0;
+  const sliderValue = Math.min(scrubTime ?? currentTime, totalSeconds);
+
+  const commitScrub = () => {
+    if (scrubTime !== null) {
+      seek(scrubTime);
+      setScrubTime(null);
+    }
+  };
 
   const isLiked = likedMusic?.id === currentMusic.id ? likedMusic.isLiked : currentMusic.isLiked;
 
@@ -98,11 +123,15 @@ function AudioPlayer() {
         <Button
           variant="outline"
           size="icon"
-          className="col-start-1 row-span-2 row-start-1 size-12 text-foreground md:col-start-3 md:row-span-1 md:row-start-2 md:size-8"
-          aria-label="Play"
-          disabled
+          className="col-start-1 row-span-2 row-start-1 size-12 cursor-pointer text-foreground md:col-start-3 md:row-span-1 md:row-start-2 md:size-8"
+          aria-label={isPlaying ? "Pause" : "Play"}
+          onClick={togglePlay}
         >
-          <Play className="size-6 md:size-4" />
+          {isPlaying ? (
+            <Pause className="size-6 md:size-4" />
+          ) : (
+            <Play className="size-6 md:size-4" />
+          )}
         </Button>
         <Button
           variant="outline"
@@ -118,10 +147,16 @@ function AudioPlayer() {
           className="col-start-2 row-start-2 min-w-0 accent-primary md:col-start-5"
           type="range"
           min={0}
-          max={currentMusic.durationSeconds ?? 0}
-          defaultValue={0}
-          disabled
+          max={totalSeconds}
+          step={0.1}
+          value={sliderValue}
+          onChange={(e) => setScrubTime(Number(e.target.value))}
+          onPointerUp={commitScrub}
+          onKeyUp={commitScrub}
+          onBlur={commitScrub}
+          disabled={totalSeconds === 0}
           aria-label="Playback progress"
+          aria-valuetext={`${formatTime(sliderValue)} of ${formatTime(totalSeconds)}`}
         />
 
         <div className="col-start-3 row-span-2 row-start-1 flex items-center gap-2 md:col-start-6 md:row-span-1 md:row-start-2">
