@@ -14,17 +14,7 @@ function AudioUpload({ selectedAudio, onSelect }: Props) {
   return (
     <div className="flex flex-col gap-2">
       {selectedAudio ?
-        <div className="group size-36 md:size-48 relative">
-          <Button
-            type="button"
-            size="icon"
-            variant="destructive"
-            onClick={() => onSelect(null)}
-            aria-label="Remove audio"
-            className="absolute top-2 left-2 z-10 hidden md:group-hover:inline-flex cursor-pointer bg-foreground/65 hover:bg-foreground/85"
-          >
-            <Trash weight="fill" />
-          </Button>
+        <div className="size-36 md:size-48 relative">
           <Card className="size-full relative">
             <CardContent className="w-full h-full px-2 md:px-4">
               <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-xs md:text-sm">
@@ -71,7 +61,7 @@ function AudioUpload({ selectedAudio, onSelect }: Props) {
           type="button"
           variant="outline"
           onClick={() => onSelect(null)}
-          className="md:hidden w-fit cursor-pointer text-destructive"
+          className="w-fit cursor-pointer text-destructive"
         >
           <Trash weight="fill" />
           Remove audio

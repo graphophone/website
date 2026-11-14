@@ -44,24 +44,14 @@ function ImageEditor({
 
   return resolvedImage ? (
     <div className="flex flex-col gap-2">
-      <div className={cn("group relative rounded-[6px] overflow-clip", imageSizeClassName)}>
-        <Button
-          type="button"
-          size="icon"
-          variant="destructive"
-          onClick={() => onChange(null)}
-          aria-label={`Remove ${imageSemantics}`}
-          className="absolute top-2 left-2 z-10 hidden md:group-hover:inline-flex cursor-pointer bg-foreground/65 hover:bg-foreground/85"
-        >
-          <Trash weight="fill" />
-        </Button>
+      <div className={cn("relative rounded-[6px] overflow-clip", imageSizeClassName)}>
         {resolvedImageElement}
       </div>
       <Button
         type="button"
         variant="outline"
         onClick={() => onChange(null)}
-        className="md:hidden w-fit cursor-pointer text-destructive"
+        className="w-fit cursor-pointer text-destructive"
       >
         <Trash weight="fill" />
         Remove image

@@ -76,6 +76,7 @@ function EditMusicForm({ musicData }: { musicData: FullMusicData }) {
           type: "error",
         });
         setIsLoading(false);
+        router.push(`/music/${musicData.id}`);
         return;
       }
     }
@@ -178,10 +179,10 @@ function EditMusicForm({ musicData }: { musicData: FullMusicData }) {
           </form>
         </fieldset>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="gap-2.5">
         <Button
           className="cursor-pointer relative"
-          disabled={isLoading}
+          disabled={!form.formState.isValid || isLoading}
           type="submit"
           form="edit-music-form"
         >

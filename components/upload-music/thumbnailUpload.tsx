@@ -34,17 +34,7 @@ function ThumbnailUpload({ initialImage, onSelect }: Props) {
   return (
     <div className="flex flex-col gap-2">
       {resolvedImage ?
-        <div className="group size-36 md:size-48 relative rounded-[6px] overflow-clip">
-          <Button
-            type="button"
-            size="icon"
-            variant="destructive"
-            onClick={() => selectImage(null)}
-            aria-label="Remove thumbnail"
-            className="absolute top-2 left-2 z-10 hidden md:group-hover:inline-flex cursor-pointer bg-foreground/65 hover:bg-foreground/85"
-          >
-            <Trash weight="fill" />
-          </Button>
+        <div className="size-36 md:size-48 relative rounded-[6px] overflow-clip">
           {resolvedImage === initialImage ? (
             <S3Image
               src={resolvedImage}
@@ -90,7 +80,7 @@ function ThumbnailUpload({ initialImage, onSelect }: Props) {
           type="button"
           variant="outline"
           onClick={() => selectImage(null)}
-          className="md:hidden w-fit cursor-pointer text-destructive"
+          className="w-fit cursor-pointer text-destructive"
         >
           <Trash weight="fill" />
           Remove image

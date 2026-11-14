@@ -282,7 +282,7 @@ function UploadMusicInformationPage() {
           </form>
         </fieldset>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="gap-2.5">
         <Button
           className="cursor-pointer relative"
           disabled={!uploadMusicForm.formState.isValid || isLoading}
