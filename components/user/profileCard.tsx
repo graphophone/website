@@ -1,17 +1,18 @@
 "use client"
 
 import { UserContext } from "@/context/userContext";
-import { UserProfile } from "@/types/user/profile";
+import { FollowsCount, UserProfile } from "@/types/user/profile";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import S3Image from "../s3Image";
 import { CaretDown, CaretUp } from "phosphor-react";
 import { formatCompactCount } from "@/lib/utils";
-import { followUserEndpoint } from "@/constants/api";
+import { followUserEndpoint, followsCountEndpoint } from "@/constants/api";
 import { ToastContext } from "@/context/toastContext";
 import { isRequestError } from "@/lib/error";
+import { Skeleton } from "../ui/skeleton";
 
 interface Props {
   profile: UserProfile;
@@ -22,8 +23,34 @@ function UserProfileCard({ profile }: Props) {
   const toastContext = useContext(ToastContext);
   const [isBannerExpanded, setIsBannerExpanded] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
-  const [followersCount, setFollowersCount] = useState(profile.followersCount);
+  const [followsCount, setFollowsCount] = useState<FollowsCount | null>(null);
+  const [isFollowsCountLoading, setIsFollowsCountLoading] = useState(true);
   const isOwner = userContext.user?.userId === profile.userId;
+
+  useEffect(() => {
+    if (userContext.isLoading) {
+      return;
+    }
+
+    const loadFollowsCount = async () => {
+      setIsFollowsCountLoading(true);
+      const response = await userContext.protectedFetch(followsCountEndpoint(profile.userId), {
+        method: "GET",
+      });
+
+      if (isRequestError(response)) {
+        setFollowsCount(null);
+        setIsFollowed(false);
+      } else {
+        const newFollowsCount: FollowsCount = await response.json();
+        setFollowsCount(newFollowsCount);
+        setIsFollowed(newFollowsCount.isFollowed);
+      }
+      setIsFollowsCountLoading(false);
+    };
+
+    loadFollowsCount();
+  }, [userContext.isLoading, userContext.user?.userId, profile.userId]);
 
   const handleFollow = async () => {
     const response = await userContext.protectedFetch(followUserEndpoint(profile.userId), {
@@ -39,8 +66,11 @@ function UserProfileCard({ profile }: Props) {
 
     const newIsFollowed = !isFollowed;
     setIsFollowed(newIsFollowed);
-    setFollowersCount(currentCount =>
-      currentCount === null ? currentCount : currentCount + (newIsFollowed ? 1 : -1)
+    setFollowsCount(currentFollowsCount =>
+      currentFollowsCount === null ? currentFollowsCount : {
+        ...currentFollowsCount,
+        followersCount: currentFollowsCount.followersCount + (newIsFollowed ? 1 : -1),
+      }
     );
   };
 
@@ -109,13 +139,15 @@ function UserProfileCard({ profile }: Props) {
                   .join(' • ')
               }
             </span>
-            { followersCount === null || profile.followingsCount === null ?
-              <span className="truncate text-xs text-foreground/50">
-                Failed to get user follows counts
-              </span> :
-              <span className="truncate text-xs text-foreground/70">
-                {formatCompactCount(followersCount)} followers • {formatCompactCount(profile.followingsCount)} following
-              </span>
+            { isFollowsCountLoading ?
+              <Skeleton className="h-4 w-32" /> :
+              followsCount === null ?
+                <span className="truncate text-xs text-foreground/50">
+                  Failed to get user follows counts
+                </span> :
+                <span className="truncate text-xs text-foreground/70">
+                  {formatCompactCount(followsCount.followersCount)} followers • {formatCompactCount(followsCount.followingsCount)} following
+                </span>
             }
           </div>
         </div>
@@ -126,6 +158,7 @@ function UserProfileCard({ profile }: Props) {
               className="md:min-w-32 rounded-[6px] cursor-pointer
                 bg-primary hover:brightness-95 hover:bg-primary text-background text-[14px]"
               onClick={handleFollow}
+              disabled={isFollowsCountLoading}
             >
               {isFollowed ? "Unfollow" : "Follow"}
             </Button>
@@ -146,11 +179,6 @@ function UserProfileCard({ profile }: Props) {
       </div>
     </div>
   )
-}
-
-interface UserProfileBannerLabelParams {
-  text: string;
-  isMain: boolean;
 }
 
 export default UserProfileCard

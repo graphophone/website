@@ -1,6 +1,6 @@
 import UserMusic from "@/components/user/userMusic";
 import { isRequestError } from "@/lib/error";
-import { MyProfile } from "@/types/user/profile";
+import { UserProfile } from "@/types/user/profile";
 import { notFound } from "next/navigation";
 
 async function UserProfileMusicPage({ params }: { params: Promise<{ userId: number }> }) {
@@ -9,7 +9,7 @@ async function UserProfileMusicPage({ params }: { params: Promise<{ userId: numb
   if (isRequestError(res)) {
     notFound();
   }
-  const profile: MyProfile = await res.json();
+  const profile: UserProfile = await res.json();
 
   return <UserMusic profile={profile} />;
 }
