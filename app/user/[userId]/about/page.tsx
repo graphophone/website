@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { isRequestError } from '@/lib/error';
-import { Profile } from '@/types/user/profile';
+import { MyProfile } from '@/types/user/profile';
 import { notFound } from 'next/navigation';
 import React from 'react'
 
@@ -14,7 +14,7 @@ async function UserProfileAboutPage(props: Props) {
   if (isRequestError(res)) {
     notFound();
   }
-  const profile: Profile = await res.json();
+  const profile: MyProfile = await res.json();
 
   const sections = [
     { title: 'Full name', value: `${profile.firstName} ${profile.lastName}`.trim() },

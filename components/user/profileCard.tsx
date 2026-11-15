@@ -1,22 +1,48 @@
 "use client"
 
 import { UserContext } from "@/context/userContext";
-import { Profile } from "@/types/user/profile";
+import { UserProfile } from "@/types/user/profile";
 import Image from "next/image";
 import { useContext, useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import S3Image from "../s3Image";
 import { CaretDown, CaretUp } from "phosphor-react";
+import { formatCompactCount } from "@/lib/utils";
+import { followUserEndpoint } from "@/constants/api";
+import { ToastContext } from "@/context/toastContext";
+import { isRequestError } from "@/lib/error";
 
 interface Props {
-  profile: Profile;
+  profile: UserProfile;
 }
 
 function UserProfileCard({ profile }: Props) {
   const userContext = useContext(UserContext);
+  const toastContext = useContext(ToastContext);
   const [isBannerExpanded, setIsBannerExpanded] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [followersCount, setFollowersCount] = useState(profile.followersCount);
   const isOwner = userContext.user?.userId === profile.userId;
+
+  const handleFollow = async () => {
+    const response = await userContext.protectedFetch(followUserEndpoint(profile.userId), {
+      method: "PATCH",
+    });
+    if (isRequestError(response)) {
+      toastContext.show({
+        title: "Failed to follow user",
+        type: "error",
+      });
+      return;
+    }
+
+    const newIsFollowed = !isFollowed;
+    setIsFollowed(newIsFollowed);
+    setFollowersCount(currentCount =>
+      currentCount === null ? currentCount : currentCount + (newIsFollowed ? 1 : -1)
+    );
+  };
 
   const displayName = profile.firstName ?
     `${profile.firstName} ${profile.lastName}`.trimEnd() :
@@ -83,6 +109,14 @@ function UserProfileCard({ profile }: Props) {
                   .join(' • ')
               }
             </span>
+            { followersCount === null || profile.followingsCount === null ?
+              <span className="truncate text-xs text-foreground/50">
+                Failed to get user follows counts
+              </span> :
+              <span className="truncate text-xs text-foreground/70">
+                {formatCompactCount(followersCount)} followers • {formatCompactCount(profile.followingsCount)} following
+              </span>
+            }
           </div>
         </div>
         
@@ -91,8 +125,9 @@ function UserProfileCard({ profile }: Props) {
             <Button
               className="md:min-w-32 rounded-[6px] cursor-pointer
                 bg-primary hover:brightness-95 hover:bg-primary text-background text-[14px]"
+              onClick={handleFollow}
             >
-              Follow
+              {isFollowed ? "Unfollow" : "Follow"}
             </Button>
           }
 

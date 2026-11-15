@@ -5,7 +5,7 @@ export interface BasicProfile {
     followersCount?: number;
 }
 
-export interface Profile extends BasicProfile {
+export interface MyProfile extends BasicProfile {
     bannerUrl: string | null;
     firstName: string | null;
     lastName: string | null;
@@ -14,6 +14,11 @@ export interface Profile extends BasicProfile {
     city: string | null;
 }
 
-export interface SettingsProfile extends Profile {
+export interface UserProfile extends Omit<MyProfile, "followersCount"> {
+    followersCount: number | null;
+    followingsCount: number | null;
+}
+
+export interface SettingsProfile extends MyProfile {
     email: string;
 }

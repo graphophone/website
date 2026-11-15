@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import UserProfileCard from "@/components/user/profileCard";
 import UserProfileSections from "@/components/user/profileSections";
 import { isRequestError } from "@/lib/error";
-import { Profile } from "@/types/user/profile";
+import { UserProfile } from "@/types/user/profile";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -17,7 +17,7 @@ async function UserProfileLayout(props: Props) {
   if (isRequestError(res)) {
     notFound();
   }
-  const profile: Profile = await res.json();
+  const profile: UserProfile = await res.json();
   return (
     <div className="w-full flex flex-col gap-4.5">
       <Card className="w-full py-0 flex flex-col items-center justify-center">
