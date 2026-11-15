@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  addCommentEndpoint,
   addMusicToPlaylistEndpoint,
   likeMusicEndpoint,
   musicCommentsEndpoint,
@@ -10,6 +11,7 @@ import { PlayerContext } from "@/context/playerContext";
 import { UserContext } from "@/context/userContext";
 import { isRequestError } from "@/lib/error";
 import { FullMusicData } from "@/types/music/music";
+import { MusicComment } from "@/types/comment/comment";
 import React, { useContext, useEffect, useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { ToastContext } from "@/context/toastContext";
@@ -24,15 +26,6 @@ import { ChatCircle } from "phosphor-react";
 import MusicMenu from "./musicMenu";
 import MusicActionsRow from "./musicActionsRow";
 import { Input } from "../ui/input";
-
-interface MusicComment {
-  id: number;
-  content: string;
-  author?: {
-    displayName?: string;
-    username?: string;
-  };
-}
 
 const formatCreatedAt = (createdAt: number) =>
   new Intl.DateTimeFormat(undefined, {
@@ -113,10 +106,10 @@ function MusicData({ musicId }: { musicId: number }) {
     }
 
     setIsSubmittingComment(true);
-    const response = await userContext.protectedFetch(musicCommentsEndpoint(musicId), {
+    const response = await userContext.protectedFetch(addCommentEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content }),
+      body: JSON.stringify({ musicId: Number(musicId), content }),
     });
 
     if (isRequestError(response)) {
@@ -126,8 +119,8 @@ function MusicData({ musicId }: { musicId: number }) {
         type: "error",
       });
     } else {
-      const newComment = await response.json();
-      setComments(currentComments => [...currentComments, newComment]);
+      const newComment: MusicComment = await response.json();
+      setComments(currentComments => [newComment, ...currentComments]);
       setComment("");
     }
     setIsSubmittingComment(false);
@@ -287,13 +280,17 @@ function MusicData({ musicId }: { musicId: number }) {
                 ) : comments.length === 0 ? (
                   <p className="text-sm text-foreground">No comments yet.</p>
                 ) : comments.map(item => (
-                  <div className="rounded-md border p-2" key={item.id}>
-                    {item.author && (
-                      <p className="text-xs font-semibold">
-                        {item.author.displayName ?? item.author.username ?? "User"}
-                      </p>
-                    )}
-                    <p className="text-sm">{item.content}</p>
+                  <div className="flex flex-col gap-2 rounded-md border p-2" key={item.commentId}>
+                    <div className="flex items-center justify-between gap-2">
+                      {item.profile ?
+                        <UserChip profile={item.profile} /> :
+                        <span className="text-sm text-foreground/50">Failed to get user</span>
+                      }
+                      <span className="text-xs text-foreground/70">
+                        {formatCreatedAt(item.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-sm [overflow-wrap:anywhere] whitespace-pre-wrap">{item.content}</p>
                   </div>
                 ))}
               </div>
