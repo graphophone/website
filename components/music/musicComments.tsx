@@ -4,10 +4,9 @@ import { addCommentEndpoint, musicCommentsEndpoint } from "@/constants/api";
 import { ToastContext } from "@/context/toastContext";
 import { UserContext, type IUserContext } from "@/context/userContext";
 import { isRequestError } from "@/lib/error";
-import { formatCreatedAt } from "@/lib/utils";
 import type { CommentsPage, MusicComment } from "@/types/comment/comment";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import UserChip from "../user/userChip";
+import CommentCard from "./commentCard";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
@@ -16,7 +15,6 @@ const commentsTexts = {
   loadError: "Unable to load comments.",
   loadMoreError: "Unable to load more comments.",
   empty: "No comments yet.",
-  userError: "Failed to get user",
 };
 
 async function fetchCommentsPage(
@@ -99,6 +97,33 @@ function MusicComments({ musicId }: { musicId: number }) {
     return () => observer.disconnect();
   }, [isLoading, isLoadingNextPage, pageNumber, totalPages, userContext, musicId]);
 
+  const reloadFirstPage = async (newComment?: MusicComment) => {
+    try {
+      const data = await fetchCommentsPage(userContext, musicId, 1);
+      setComments(newComment ?
+        [newComment, ...withoutDuplicates([newComment], data.comments)] :
+        data.comments);
+      setTotalPages(data.totalPages);
+      setPageNumber(1);
+      setError(null);
+    } catch {
+      if (newComment) {
+        setComments(currentComments => [newComment, ...withoutDuplicates([newComment], currentComments)]);
+      }
+      setError(commentsTexts.loadError);
+    }
+  };
+
+  const updateComment = (commentId: number, content: string) => {
+    setComments(currentComments => currentComments.map(item =>
+      item.commentId === commentId ? { ...item, content } : item));
+  };
+
+  const removeComment = async (commentId: number) => {
+    setComments(currentComments => currentComments.filter(item => item.commentId !== commentId));
+    await reloadFirstPage();
+  };
+
   const handleCommentSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const content = comment.trim();
@@ -125,15 +150,7 @@ function MusicComments({ musicId }: { musicId: number }) {
 
     const newComment: MusicComment = await response.json();
     setComment("");
-    try {
-      const data = await fetchCommentsPage(userContext, musicId, 1);
-      setComments([newComment, ...withoutDuplicates([newComment], data.comments)]);
-      setTotalPages(data.totalPages);
-      setPageNumber(1);
-      setError(null);
-    } catch {
-      setComments(currentComments => [newComment, ...withoutDuplicates([newComment], currentComments)]);
-    }
+    await reloadFirstPage(newComment);
     setIsSubmittingComment(false);
   };
 
@@ -161,18 +178,12 @@ function MusicComments({ musicId }: { musicId: number }) {
           ) : (
             <>
               {comments.map(item => (
-                <div className="flex flex-col gap-2 rounded-md border p-2" key={item.commentId}>
-                  <div className="flex items-center justify-between gap-2">
-                    {item.profile ?
-                      <UserChip profile={item.profile} /> :
-                      <span className="text-sm text-foreground/50">{commentsTexts.userError}</span>
-                    }
-                    <span className="text-xs text-foreground/70">
-                      {formatCreatedAt(item.createdAt)}
-                    </span>
-                  </div>
-                  <p className="text-sm [overflow-wrap:anywhere] whitespace-pre-wrap">{item.content}</p>
-                </div>
+                <CommentCard
+                  key={item.commentId}
+                  comment={item}
+                  onUpdated={content => updateComment(item.commentId, content)}
+                  onDeleted={() => removeComment(item.commentId)}
+                />
               ))}
               <div ref={endOfListRef} className="flex min-h-8 w-full justify-center">
                 {isLoadingNextPage && <Spinner className="size-8" />}

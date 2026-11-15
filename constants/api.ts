@@ -50,6 +50,7 @@ export const requestMusicPlayEndpoint = (musicId: number) => `${musicBase}/${mus
 
 const commentsBase = '/api/comments';
 export const addCommentEndpoint = `${commentsBase}/`;
+export const commentEndpoint = (commentId: number) => `${commentsBase}/${commentId}`;
 export const musicCommentsEndpoint = (musicId: number, pageNumber: number) =>
         `${commentsBase}/music/${musicId}?pageNumber=${pageNumber}`;
 
