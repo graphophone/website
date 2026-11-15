@@ -2,10 +2,10 @@
 
 import Image from "next/image"
 import S3Image from "@/components/s3Image"
-import { BasicProfile } from "@/types/user/profile"
+import { MyProfile } from "@/types/user/profile"
 import MobileMenuLink from "./mobile-menu-link"
 
-function MobileProfileLink({ user }: { user: BasicProfile }) {
+function MobileProfileLink({ user }: { user: MyProfile }) {
     return (
         <MobileMenuLink href={`/user/${user.userId}`}>
             <div className="relative size-8 shrink-0 overflow-clip rounded-[6px]">

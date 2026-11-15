@@ -112,9 +112,9 @@ function UserProfileCard({ profile }: Props) {
         </div> : <></>
       }
 
-      <div className="py-2 px-4 md:px-16 w-full h-full flex items-center justify-between gap-3">
-        <div className="min-w-0 w-full h-full flex items-center gap-3 md:gap-4.5">
-          <div className="size-14 md:size-18 shrink-0 relative rounded-[6px] overflow-clip z-0">
+      <div className="py-2 px-4 md:px-16 w-full flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="min-w-0 w-full flex items-center gap-3 md:gap-4.5">
+          <div className="size-20 md:size-18 shrink-0 relative rounded-[6px] overflow-clip z-0">
             { profile.avatarUrl ?
               <S3Image
                 src={profile.avatarUrl}
@@ -146,16 +146,22 @@ function UserProfileCard({ profile }: Props) {
                   Failed to get user follows counts
                 </span> :
                 <span className="truncate text-xs text-foreground/70">
-                  {formatCompactCount(followsCount.followersCount)} followers • {formatCompactCount(followsCount.followingsCount)} following
+                  <Link href={`/user/${profile.userId}/followers`} className="hover:brightness-75">
+                    {formatCompactCount(followsCount.followersCount)} followers
+                  </Link>
+                  {" • "}
+                  <Link href={`/user/${profile.userId}/followings`} className="hover:brightness-75">
+                    {formatCompactCount(followsCount.followingsCount)} following
+                  </Link>
                 </span>
             }
           </div>
         </div>
         
-        <div className="shrink-0 flex flex-col md:flex-row gap-1.5">
+        <div className="w-full md:w-auto shrink-0 flex flex-col md:flex-row gap-1.5">
           { isOwner ? <></> :
             <Button
-              className="md:min-w-32 rounded-[6px] cursor-pointer
+              className="w-full md:w-auto md:min-w-32 rounded-[6px] cursor-pointer
                 bg-primary hover:brightness-95 hover:bg-primary text-background text-[14px]"
               onClick={handleFollow}
               disabled={isFollowsCountLoading}
@@ -165,9 +171,9 @@ function UserProfileCard({ profile }: Props) {
           }
 
           { isOwner ?
-            <Link href="/settings/profile">
+            <Link href="/settings/profile" className="w-full md:w-auto">
               <Button
-                className="md:min-w-32 rounded-[6px] cursor-pointer
+                className="w-full md:w-auto md:min-w-32 rounded-[6px] cursor-pointer
                   bg-foreground/85 hover:bg-foreground text-background text-[14px]"
               >
                 Manage profile

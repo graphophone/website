@@ -15,7 +15,7 @@ import { Card, CardContent } from "../ui/card";
 import { ToastContext } from "@/context/toastContext";
 import { useRouter } from "next/navigation";
 import { Spinner } from "../ui/spinner";
-import UserCard from "../user/userCard";
+import UserChip from "../user/userChip";
 import S3Image from "../s3Image";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
@@ -222,7 +222,7 @@ function MusicData({ musicId }: { musicId: number }) {
                 <span>No categories</span>
               )}
             </div>
-            <UserCard profile={musicData.uploader} withFollowButton={true} />
+            <UserChip profile={musicData.uploader} withFollowButton={true} />
           </div>
 
           {isUploaded && (

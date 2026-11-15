@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
 import S3Image from "../s3Image";
-import UserCard from "./userCard";
+import UserChip from "./userChip";
 import MusicMenu from "../music/musicMenu";
 import MusicActionsRow from "../music/musicActionsRow";
 
@@ -109,7 +109,7 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
               onDeleted={() => router.refresh()}
             />
           </div>
-          <UserCard profile={profile} withFollowButton={true} />
+          <UserChip profile={profile} withFollowButton={true} />
         </div>
 
         {isUploaded && (

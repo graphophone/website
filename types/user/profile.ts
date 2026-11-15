@@ -1,11 +1,14 @@
-export interface BasicProfile {
+export interface MyProfile {
     userId: number;
     username: string;
     avatarUrl: string | null;
-    followersCount?: number;
 }
 
-export interface UserProfile extends BasicProfile {
+export interface BasicProfile extends MyProfile {
+    followsCount?: FollowsCount | null;
+}
+
+export interface UserProfile extends MyProfile {
     bannerUrl: string | null;
     firstName: string | null;
     lastName: string | null;
@@ -18,6 +21,11 @@ export interface FollowsCount {
     followersCount: number;
     followingsCount: number;
     isFollowed: boolean;
+}
+
+export interface FollowsPage {
+    totalPages: number;
+    profiles: BasicProfile[];
 }
 
 export interface SettingsProfile extends UserProfile {

@@ -4,7 +4,7 @@ import { userMusicEndpoint } from "@/constants/api";
 import { UserContext, type IUserContext } from "@/context/userContext";
 import { isRequestError } from "@/lib/error";
 import type { UserMusic, UserMusicPage } from "@/types/music/userMusic";
-import type { BasicProfile } from "@/types/user/profile";
+import type { MyProfile } from "@/types/user/profile";
 import { useContext, useEffect, useRef, useState } from "react";
 import UserMusicCard from "./userMusicCard";
 import { Card } from "../ui/card";
@@ -19,12 +19,12 @@ async function fetchUserMusicPage(
     method: "GET",
   });
   if (isRequestError(response)) {
-    throw new Error("Unable to load this user's music.");
+    throw new Error();
   }
   return await response.json() as UserMusicPage;
 }
 
-function UserMusic({ profile }: { profile: BasicProfile }) {
+function UserMusic({ profile }: { profile: MyProfile }) {
   const userContext = useContext(UserContext);
   const [music, setMusic] = useState<UserMusic[]>([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -40,8 +40,8 @@ function UserMusic({ profile }: { profile: BasicProfile }) {
         const data = await fetchUserMusicPage(userContext, profile.userId, 1);
         setMusic(data.musicEntries);
         setTotalPages(data.totalPages);
-      } catch (error) {
-        setError(error instanceof Error ? error.message : "Unable to load this user's music.");
+      } catch {
+        setError("Unable to load this user's music.");
       } finally {
         setIsLoading(false);
       }
@@ -67,8 +67,8 @@ function UserMusic({ profile }: { profile: BasicProfile }) {
           setTotalPages(data.totalPages);
           setPageNumber(currentPage => currentPage + 1);
           setError(null);
-        } catch (error) {
-          setError(error instanceof Error ? error.message : "Unable to load more music.");
+        } catch {
+          setError("Unable to load more music.");
         } finally {
           setIsLoadingNextPage(false);
         }
@@ -92,9 +92,6 @@ function UserMusic({ profile }: { profile: BasicProfile }) {
           {music.map(item => <UserMusicCard key={item.id} music={item} profile={profile} />)}
           <div ref={endOfListRef} className="flex min-h-8 w-full justify-center">
             {isLoadingNextPage && <Spinner className="size-8" />}
-            {!error && !isLoadingNextPage && pageNumber >= totalPages && (
-              <p>that&apos;s all the music for user {profile.username}</p>
-            )}
           </div>
         </>
       )}

@@ -14,7 +14,7 @@ import { useContext, useState } from "react";
 import { Heart, ListPlus, Pause, Play, SkipBack, SkipForward } from "phosphor-react";
 import { Button } from "../ui/button";
 import S3Image from "../s3Image";
-import UserCard from "../user/userCard";
+import UserChip from "../user/userChip";
 import { useHorizontalSwipe } from "@/hooks/use-horizontal-swipe";
 
 const formatTime = (seconds: number) => {
@@ -107,7 +107,7 @@ function AudioPlayer() {
             {currentMusic.title}
           </Link>
           <div className="hidden shrink-0 md:block">
-            <UserCard profile={currentMusic.uploader} />
+            <UserChip profile={currentMusic.uploader} />
           </div>
         </div>
 

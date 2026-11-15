@@ -16,6 +16,10 @@ export const removeBannerEndpoint = `${userBase}/remove-image?imageType=banner`;
 export const notifyUploadBannerEndpoint = `${userBase}/notify-upload-image?imageType=banner`
 export const followsCountEndpoint = (userId: number) => `${userBase}/${userId}/follows-count`;
 export const followUserEndpoint = (userId: number) => `${userBase}/${userId}/follow`;
+export const userFollowersEndpoint = (userId: number, pageNumber: number) =>
+        `${userBase}/${userId}/followers?pageNumber=${pageNumber}`;
+export const userFollowingsEndpoint = (userId: number, pageNumber: number) =>
+        `${userBase}/${userId}/followings?pageNumber=${pageNumber}`;
 // to implement
 export const changePasswordEndpoint = `${userBase}/change-password`;
 export const deleteAccountEndpoint = `${userBase}/delete-account`;

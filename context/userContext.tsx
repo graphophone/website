@@ -3,11 +3,11 @@
 import { loginEndpoint, logoutEndpoint, meEndpoint, refreshEndpoint, signUpEndpoint } from "@/constants/api";
 import { isRequestError } from "@/lib/error";
 import { LoginForm, SignUpForm } from "@/types/auth/forms";
-import { BasicProfile } from "@/types/user/profile";
+import { MyProfile } from "@/types/user/profile";
 import React, { createContext, useEffect, useState } from "react";
 
 export interface IUserContext {
-    user: BasicProfile | null;
+    user: MyProfile | null;
     isLoading: boolean;
     login: (data: LoginForm) => Promise<number>,
     signUp: (data: SignUpForm) => Promise<number>,
@@ -40,7 +40,7 @@ export const UserContext = createContext<IUserContext>({
 })
 
 export function UserContextProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<BasicProfile | null>(null);
+    const [user, setUser] = useState<MyProfile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -136,7 +136,7 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
         if (isRequestError(res)) {
             setUser(null);
         } else {
-            const user: BasicProfile = await res.json();
+            const user: MyProfile = await res.json();
             setUser(user);
         }
 
