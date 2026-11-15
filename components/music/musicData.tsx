@@ -1,18 +1,16 @@
 "use client";
 
 import {
-  addCommentEndpoint,
   addMusicToPlaylistEndpoint,
   likeMusicEndpoint,
-  musicCommentsEndpoint,
   musicEndpoint,
 } from "@/constants/api";
 import { PlayerContext } from "@/context/playerContext";
 import { UserContext } from "@/context/userContext";
 import { isRequestError } from "@/lib/error";
+import { formatCreatedAt } from "@/lib/utils";
 import { FullMusicData } from "@/types/music/music";
-import { MusicComment } from "@/types/comment/comment";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { ToastContext } from "@/context/toastContext";
 import { useRouter } from "next/navigation";
@@ -25,12 +23,7 @@ import { Button } from "../ui/button";
 import { ChatCircle } from "phosphor-react";
 import MusicMenu from "./musicMenu";
 import MusicActionsRow from "./musicActionsRow";
-import { Input } from "../ui/input";
-
-const formatCreatedAt = (createdAt: number) =>
-  new Intl.DateTimeFormat(undefined, {
-    dateStyle: "medium",
-  }).format(new Date(createdAt * 1000));
+import MusicComments from "./musicComments";
 
 function MusicData({ musicId }: { musicId: number }) {
   const userContext = useContext(UserContext);
@@ -38,10 +31,6 @@ function MusicData({ musicId }: { musicId: number }) {
   const router = useRouter();
   const [musicData, setMusicData] = useState<FullMusicData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [comments, setComments] = useState<MusicComment[]>([]);
-  const [commentsError, setCommentsError] = useState<string | null>(null);
-  const [comment, setComment] = useState("");
-  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const toastContext = useContext(ToastContext);
   const isUploaded = musicData?.uploadStatus === "uploaded";
@@ -76,55 +65,6 @@ function MusicData({ musicId }: { musicId: number }) {
       setIsLoading(false);
     })();
   }, [musicId, router, toastContext, userContext]);
-
-  useEffect(() => {
-    if (!isUploaded) {
-      return;
-    }
-
-    (async () => {
-      const response = await userContext.protectedFetch(musicCommentsEndpoint(musicId), {
-        method: "GET",
-      });
-
-      if (isRequestError(response)) {
-        setCommentsError("Failed to load comments. Try again later.");
-        return;
-      }
-
-      const data = await response.json();
-      setComments(Array.isArray(data) ? data : data.comments ?? []);
-      setCommentsError(null);
-    })();
-  }, [isUploaded, musicId, toastContext, userContext]);
-
-  const handleCommentSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const content = comment.trim();
-    if (!content || isSubmittingComment) {
-      return;
-    }
-
-    setIsSubmittingComment(true);
-    const response = await userContext.protectedFetch(addCommentEndpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ musicId: Number(musicId), content }),
-    });
-
-    if (isRequestError(response)) {
-      toastContext.show({
-        title: "Failed to add comment",
-        description: "Try again later",
-        type: "error",
-      });
-    } else {
-      const newComment: MusicComment = await response.json();
-      setComments(currentComments => [newComment, ...currentComments]);
-      setComment("");
-    }
-    setIsSubmittingComment(false);
-  };
 
   const handleLike = async () => {
     const response = await userContext.protectedFetch(likeMusicEndpoint(musicId), {
@@ -251,51 +191,17 @@ function MusicData({ musicId }: { musicId: number }) {
           <span className="font-semibold">Created: </span>
           {formatCreatedAt(musicData.createdAt)}
         </span>
-        <section className="border-t pt-4">
-          <div className="mb-3 flex items-center gap-2">
+        <section className="flex flex-col gap-3 border-t pt-4">
+          <div className="flex items-center gap-2">
             <ChatCircle />
             <h2 className="text-xl font-semibold">Comments</h2>
           </div>
-          {!isUploaded ? (
+          {isUploaded ?
+            <MusicComments musicId={musicId} /> :
             <p className="text-sm text-foreground">
               No actions can be performed until this track is uploaded.
             </p>
-          ) : (
-            <>
-              <form className="mb-4 flex gap-2" onSubmit={handleCommentSubmit}>
-                <Input
-                  value={comment}
-                  onChange={event => setComment(event.target.value)}
-                  placeholder="Add a comment"
-                  className="text-foreground placeholder:text-foreground/60"
-                  disabled={isSubmittingComment}
-                />
-                <Button type="submit" disabled={isSubmittingComment || !comment.trim()}>
-                  Comment
-                </Button>
-              </form>
-              <div className="flex flex-col gap-2">
-                {commentsError ? (
-                  <p className="text-sm text-destructive">{commentsError}</p>
-                ) : comments.length === 0 ? (
-                  <p className="text-sm text-foreground">No comments yet.</p>
-                ) : comments.map(item => (
-                  <div className="flex flex-col gap-2 rounded-md border p-2" key={item.commentId}>
-                    <div className="flex items-center justify-between gap-2">
-                      {item.profile ?
-                        <UserChip profile={item.profile} /> :
-                        <span className="text-sm text-foreground/50">Failed to get user</span>
-                      }
-                      <span className="text-xs text-foreground/70">
-                        {formatCreatedAt(item.createdAt)}
-                      </span>
-                    </div>
-                    <p className="text-sm [overflow-wrap:anywhere] whitespace-pre-wrap">{item.content}</p>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+          }
         </section>
       </CardContent>
     </Card>

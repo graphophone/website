@@ -6,3 +6,8 @@ export interface MusicComment {
     content: string;
     createdAt: number;
 }
+
+export interface CommentsPage {
+    totalPages: number;
+    comments: MusicComment[];
+}

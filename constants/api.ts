@@ -42,7 +42,6 @@ export const editMusicEndpoint = (musicId: number) => `${musicBase}/${musicId}`;
 export const deleteMusicEndpoint = (musicId: number) => `${musicBase}/${musicId}`;
 // to implement
 export const addMusicToPlaylistEndpoint = (musicId: number) => `${musicBase}/${musicId}/playlist`;
-export const musicCommentsEndpoint = (musicId: number) => `${musicBase}/${musicId}/comments`;
 export const requestUploadMusicAudioEndpoint = (musicId: number) =>
         `${musicBase}/request-upload-audio/${musicId}`;
 export const notifyUploadMusicAudioEndpoint = (musicId: number) =>
@@ -51,6 +50,8 @@ export const requestMusicPlayEndpoint = (musicId: number) => `${musicBase}/${mus
 
 const commentsBase = '/api/comments';
 export const addCommentEndpoint = `${commentsBase}/`;
+export const musicCommentsEndpoint = (musicId: number, pageNumber: number) =>
+        `${commentsBase}/music/${musicId}?pageNumber=${pageNumber}`;
 
 const likesBase = '/api/likes';
 export const likeMusicEndpoint = (musicId: number) => `${likesBase}/${musicId}/like`;

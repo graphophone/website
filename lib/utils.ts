@@ -14,3 +14,9 @@ export function formatCompactCount(count: number) {
   }
   return count.toString();
 }
+
+export function formatCreatedAt(createdAt: number) {
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+  }).format(new Date(createdAt * 1000));
+}
