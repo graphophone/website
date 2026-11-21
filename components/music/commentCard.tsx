@@ -1,14 +1,13 @@
 "use client";
 
-import { commentEndpoint } from "@/constants/api";
+import { commentEndpoint, likeCommentEndpoint } from "@/constants/api";
 import { ToastContext } from "@/context/toastContext";
 import { UserContext } from "@/context/userContext";
 import { isRequestError } from "@/lib/error";
-import { formatCreatedAt } from "@/lib/utils";
-import type { MusicComment } from "@/types/comment/comment";
-import { useContext, useState } from "react";
-import { DotsThree, Pencil, Trash } from "phosphor-react";
-import UserChip from "../user/userChip";
+import { formatCompactCount, formatCreatedAt } from "@/lib/utils";
+import type { CommentEntry } from "@/types/comment/comment";
+import React, { useContext, useState } from "react";
+import { DotsThree, Heart, Pencil, Trash } from "phosphor-react";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -20,19 +19,21 @@ import { Textarea } from "../ui/textarea";
 import ConfirmDialog from "../confirmDialog";
 
 interface Props {
-  comment: MusicComment;
+  comment: CommentEntry;
+  header: React.ReactNode;
+  isOwner: boolean;
   onUpdated: (content: string) => void;
+  onLikeToggled: () => void;
   onDeleted: () => void;
 }
 
-function CommentCard({ comment, onUpdated, onDeleted }: Props) {
+function CommentCard({ comment, header, isOwner, onUpdated, onLikeToggled, onDeleted }: Props) {
   const userContext = useContext(UserContext);
   const toastContext = useContext(ToastContext);
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(comment.content);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const isOwner = comment.profile !== null && userContext.user?.userId === comment.profile.userId;
   const trimmedContent = content.trim();
 
   const handleEdit = () => {
@@ -71,6 +72,22 @@ function CommentCard({ comment, onUpdated, onDeleted }: Props) {
     setIsEditing(false);
   };
 
+  const handleLike = async () => {
+    const response = await userContext.protectedFetch(likeCommentEndpoint(comment.commentId), {
+      method: "PATCH",
+    });
+
+    if (isRequestError(response)) {
+      toastContext.show({
+        title: "Failed to like comment",
+        type: "error",
+      });
+      return;
+    }
+
+    onLikeToggled();
+  };
+
   const handleDelete = async () => {
     const response = await userContext.protectedFetch(commentEndpoint(comment.commentId), {
       method: "DELETE",
@@ -91,14 +108,24 @@ function CommentCard({ comment, onUpdated, onDeleted }: Props) {
   return (
     <div className="flex flex-col gap-2 rounded-md border p-2">
       <div className="flex items-center justify-between gap-2">
-        {comment.profile ?
-          <UserChip profile={comment.profile} /> :
-          <span className="text-sm text-foreground/50">Failed to get user</span>
-        }
+        {header}
         <div className="flex items-center gap-2">
           <span className="text-xs text-foreground/70">
             {formatCreatedAt(comment.createdAt)}
           </span>
+          <Button
+            className="shrink-0 cursor-pointer text-foreground"
+            variant="ghost"
+            size="sm"
+            onClick={handleLike}
+            aria-label={comment.isLiked ? "Liked" : "Like"}
+          >
+            <Heart
+              className={comment.isLiked ? "fill-red-500 text-red-500" : undefined}
+              weight={comment.isLiked ? "fill" : "regular"}
+            />
+            {formatCompactCount(comment.likesCount)}
+          </Button>
           {isOwner && (
             <DropdownMenu>
               <DropdownMenuTrigger

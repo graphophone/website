@@ -3,10 +3,12 @@
 import { addCommentEndpoint, musicCommentsEndpoint } from "@/constants/api";
 import { ToastContext } from "@/context/toastContext";
 import { UserContext, type IUserContext } from "@/context/userContext";
+import { withToggledLike, withoutDuplicates } from "@/lib/comment";
 import { isRequestError } from "@/lib/error";
-import type { CommentsPage, MusicComment } from "@/types/comment/comment";
+import type { MusicCommentEntry, MusicCommentsPage } from "@/types/comment/comment";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import CommentCard from "./commentCard";
+import UserChip from "../user/userChip";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
@@ -28,18 +30,13 @@ async function fetchCommentsPage(
   if (isRequestError(response)) {
     throw new Error();
   }
-  return await response.json() as CommentsPage;
-}
-
-function withoutDuplicates(currentComments: MusicComment[], newComments: MusicComment[]) {
-  const currentIds = new Set(currentComments.map(item => item.commentId));
-  return newComments.filter(item => !currentIds.has(item.commentId));
+  return await response.json() as MusicCommentsPage;
 }
 
 function MusicComments({ musicId }: { musicId: number }) {
   const userContext = useContext(UserContext);
   const toastContext = useContext(ToastContext);
-  const [comments, setComments] = useState<MusicComment[]>([]);
+  const [comments, setComments] = useState<MusicCommentEntry[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -97,19 +94,14 @@ function MusicComments({ musicId }: { musicId: number }) {
     return () => observer.disconnect();
   }, [isLoading, isLoadingNextPage, pageNumber, totalPages, userContext, musicId]);
 
-  const reloadFirstPage = async (newComment?: MusicComment) => {
+  const reloadFirstPage = async () => {
     try {
       const data = await fetchCommentsPage(userContext, musicId, 1);
-      setComments(newComment ?
-        [newComment, ...withoutDuplicates([newComment], data.comments)] :
-        data.comments);
+      setComments(data.comments);
       setTotalPages(data.totalPages);
       setPageNumber(1);
       setError(null);
     } catch {
-      if (newComment) {
-        setComments(currentComments => [newComment, ...withoutDuplicates([newComment], currentComments)]);
-      }
       setError(commentsTexts.loadError);
     }
   };
@@ -117,6 +109,11 @@ function MusicComments({ musicId }: { musicId: number }) {
   const updateComment = (commentId: number, content: string) => {
     setComments(currentComments => currentComments.map(item =>
       item.commentId === commentId ? { ...item, content } : item));
+  };
+
+  const toggleCommentLike = (commentId: number) => {
+    setComments(currentComments => currentComments.map(item =>
+      item.commentId === commentId ? withToggledLike(item) : item));
   };
 
   const removeComment = async (commentId: number) => {
@@ -148,9 +145,8 @@ function MusicComments({ musicId }: { musicId: number }) {
       return;
     }
 
-    const newComment: MusicComment = await response.json();
     setComment("");
-    await reloadFirstPage(newComment);
+    await reloadFirstPage();
     setIsSubmittingComment(false);
   };
 
@@ -181,7 +177,13 @@ function MusicComments({ musicId }: { musicId: number }) {
                 <CommentCard
                   key={item.commentId}
                   comment={item}
+                  header={item.profile ?
+                    <UserChip profile={item.profile} /> :
+                    <span className="text-sm text-foreground/50">Failed to get user</span>
+                  }
+                  isOwner={item.profile !== null && userContext.user?.userId === item.profile.userId}
                   onUpdated={content => updateComment(item.commentId, content)}
+                  onLikeToggled={() => toggleCommentLike(item.commentId)}
                   onDeleted={() => removeComment(item.commentId)}
                 />
               ))}

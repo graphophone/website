@@ -1,13 +1,28 @@
+import { ShortMusic } from "../music/music";
 import { MyProfile } from "../user/profile";
 
-export interface MusicComment {
+export interface CommentEntry {
     commentId: number;
-    profile: MyProfile | null;
     content: string;
+    likesCount: number;
+    isLiked: boolean;
     createdAt: number;
 }
 
-export interface CommentsPage {
+export interface MusicCommentEntry extends CommentEntry {
+    profile: MyProfile | null;
+}
+
+export interface MusicCommentsPage {
     totalPages: number;
-    comments: MusicComment[];
+    comments: MusicCommentEntry[];
+}
+
+export interface UserCommentEntry extends CommentEntry {
+    music: ShortMusic | null;
+}
+
+export interface UserCommentsPage {
+    totalPages: number;
+    comments: UserCommentEntry[];
 }

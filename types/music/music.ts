@@ -15,3 +15,8 @@ export interface FullMusicData {
     uploadStatus: string;
     createdAt: number,
 }
+
+export interface ShortMusic {
+    id: number;
+    title: string;
+}
