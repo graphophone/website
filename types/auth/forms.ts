@@ -22,12 +22,16 @@ export const signUpSchema = z.object({
         .max(16, "Username must be at most 16 characters"),
     email: z.email(),
     password: passwordSchema,
+    confirmPassword: z.string(),
     firstName: z.string()
         .max(16, "First name must be at most 16 characters")
         .optional(),
     lastName: z.string()
         .max(16, "Last name must be at most 16 characters")
         .optional(),
+}).refine(data => data.password === data.confirmPassword, {
+    error: "Passwords do not match",
+    path: ["confirmPassword"],
 });
 
 export type SignUpForm = z.infer<typeof signUpSchema>;

@@ -65,7 +65,13 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
     const signUp = async (data: SignUpForm) => {
         const res = await fetch(signUpEndpoint, {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+                username: data.username,
+                email: data.email,
+                password: data.password,
+                firstName: data.firstName,
+                lastName: data.lastName,
+            }),
             headers: {
                 "Content-Type": "application/json",
             },

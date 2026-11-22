@@ -27,6 +27,7 @@ function SignUp() {
       username: '',
       email: '',
       password: '',
+      confirmPassword: '',
       firstName: '',
       lastName: '',
     },
@@ -123,6 +124,41 @@ function SignUp() {
                     <InputGroupInput
                       {...field}
                       id="password"
+                      aria-invalid={fieldState.invalid}
+                      autoComplete="off"
+                      type={showPassword ? "text" : "password"}
+                      className="placeholder:text-foreground/50"
+                    />
+                    <InputGroupButton
+                      variant="link"
+                      className="cursor-pointer h-full p-2"
+                      onClick={() => setShowPassword(v => !v)}
+                    >
+                      { showPassword ?
+                        <EyeSlash color="var(--foreground)" /> :
+                        <Eye color="var(--foreground)" />
+                      }
+                    </InputGroupButton>
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="confirmPassword"
+              control={signUpForm.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="confirmPassword">
+                    Repeat password
+                  </FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      {...field}
+                      id="confirmPassword"
                       aria-invalid={fieldState.invalid}
                       autoComplete="off"
                       type={showPassword ? "text" : "password"}
