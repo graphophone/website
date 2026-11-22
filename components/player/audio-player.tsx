@@ -107,7 +107,10 @@ function AudioPlayer() {
             {currentMusic.title}
           </Link>
           <div className="hidden shrink-0 md:block">
-            <UserChip profile={currentMusic.uploader} />
+            {currentMusic.uploader ?
+              <UserChip profile={currentMusic.uploader} /> :
+              <span className="text-sm text-foreground/50">Failed to get user</span>
+            }
           </div>
         </div>
 

@@ -34,7 +34,7 @@ function MusicData({ musicId }: { musicId: number }) {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const toastContext = useContext(ToastContext);
   const isUploaded = musicData?.uploadStatus === "uploaded";
-  const isOwner = userContext.user?.userId === musicData?.uploader.userId;
+  const isOwner = !!musicData?.uploader && userContext.user?.userId === musicData.uploader.userId;
   const isCurrent = musicData !== null && currentMusic?.id === musicData.id;
   const description = musicData?.description ?? "";
   const hasLongDescription = description.length > 64;
@@ -155,7 +155,10 @@ function MusicData({ musicId }: { musicId: number }) {
                 <span>No categories</span>
               )}
             </div>
-            <UserChip profile={musicData.uploader} withFollowButton={true} />
+            {musicData.uploader ?
+              <UserChip profile={musicData.uploader} withFollowButton={true} /> :
+              <span className="text-sm text-foreground/50">Failed to get user</span>
+            }
           </div>
 
           {isUploaded && (

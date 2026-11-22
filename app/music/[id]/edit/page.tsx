@@ -38,7 +38,7 @@ function EditMusicPage() {
       }
 
       const data: FullMusicData = await response.json();
-      if (userContext.user?.userId !== data.uploader.userId) {
+      if (!data.uploader || userContext.user?.userId !== data.uploader.userId) {
         router.push(`/music/${id}`);
         return;
       }

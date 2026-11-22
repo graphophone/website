@@ -10,7 +10,7 @@ export interface FullMusicData {
     playCount: number;
     likeCount: number;
     isLiked: boolean,
-    uploader: BasicProfile;
+    uploader: BasicProfile | null;
     categories: CategoryData[];
     uploadStatus: string;
     createdAt: number,
