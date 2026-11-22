@@ -106,7 +106,7 @@ function CommentCard({ comment, header, isOwner, onUpdated, onLikeToggled, onDel
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-md border p-2">
+    <div className="flex flex-col gap-2 py-3">
       <div className="flex items-center justify-between gap-2">
         {header}
         <div className="flex items-center gap-2">

@@ -7,13 +7,12 @@ import S3Image from "../s3Image";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Card } from "../ui/card";
 
 function UserCard({ profile }: { profile: BasicProfile }) {
   const { followsCount, isFollowed, canFollow, toggleFollow } = useFollow(profile);
 
   return (
-    <Card className="w-full p-3 md:p-4">
+    <div className="w-full py-3 md:py-4">
       <div className="flex w-full min-w-0 items-center gap-3 md:gap-4">
         <Link
           href={`/user/${profile.userId}`}
@@ -67,7 +66,7 @@ function UserCard({ profile }: { profile: BasicProfile }) {
           </Button>
         )}
       </div>
-    </Card>
+    </div>
   );
 }
 

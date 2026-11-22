@@ -116,9 +116,11 @@ function UserFollows({ profile, type }: { profile: MyProfile; type: FollowsType 
             <p>{texts.empty(profile.username)}</p>
           ) : (
             <>
-              {profiles.map(item => (
-                <UserCard key={item.userId} profile={item} />
-              ))}
+              <div className="flex flex-col divide-y">
+                {profiles.map(item => (
+                  <UserCard key={item.userId} profile={item} />
+                ))}
+              </div>
               <div ref={endOfListRef} className="flex min-h-8 w-full justify-center">
                 {isLoadingNextPage && <Spinner className="size-8" />}
               </div>

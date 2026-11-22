@@ -1,4 +1,3 @@
-import { Card } from '@/components/ui/card';
 import { isRequestError } from '@/lib/error';
 import { UserProfile } from '@/types/user/profile';
 import { notFound } from 'next/navigation';
@@ -28,7 +27,7 @@ async function UserProfileAboutPage(props: Props) {
   ]
 
   return (
-    <Card className="w-full flex flex-col gap-4.5 px-4 md:px-16">
+    <div className="w-full flex flex-col gap-4.5">
       {sections.map((section, i) => (
         <UserProfileAboutSection
           key={i}
@@ -36,7 +35,7 @@ async function UserProfileAboutPage(props: Props) {
           value={section.value}
         />
       ))}
-    </Card>
+    </div>
   )
 }
 

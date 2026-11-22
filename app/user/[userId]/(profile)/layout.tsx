@@ -19,17 +19,15 @@ async function UserProfileLayout(props: Props) {
   }
   const profile: UserProfile = await res.json();
   return (
-    <div className="w-full flex flex-col gap-4.5">
-      <Card className="w-full py-0 flex flex-col items-center justify-center">
-        <UserProfileCard profile={profile} />
+    <Card className="w-full h-max py-0 gap-0 flex flex-col">
+      <UserProfileCard profile={profile} />
 
-        <UserProfileSections userId={userId} />
-      </Card>
+      <UserProfileSections userId={userId} />
 
-      <div className="w-full">
+      <div className="w-full px-4 py-4 md:px-16">
         {props.children}
       </div>
-    </div>
+    </Card>
   )
 }
 

@@ -15,7 +15,6 @@ import Link from "next/link";
 import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "../ui/badge";
-import { Card } from "../ui/card";
 import S3Image from "../s3Image";
 import UserChip from "./userChip";
 import MusicMenu from "../music/musicMenu";
@@ -75,7 +74,7 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
   };
 
   return (
-    <Card className="w-full p-3 md:p-4">
+    <div className="w-full py-3 md:py-4">
       <div className="grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-2 md:grid-rows-[auto_1fr] md:gap-x-4">
         <div className="relative size-20 shrink-0 overflow-clip rounded-[6px] md:row-span-2 md:size-36">
           {musicData.thumbnailUrl ? (
@@ -126,7 +125,7 @@ function UserMusicCard({ music, profile }: { music: UserMusic; profile: BasicPro
           />
         )}
       </div>
-    </Card>
+    </div>
   );
 }
 

@@ -9,7 +9,6 @@ import type { MyProfile } from "@/types/user/profile";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import CommentCard from "../music/commentCard";
-import { Card } from "../ui/card";
 import { Spinner } from "../ui/spinner";
 
 const commentsTexts = {
@@ -122,38 +121,40 @@ function UserComments({ profile }: { profile: MyProfile }) {
   }
 
   return (
-    <Card className="flex w-full flex-col gap-2 px-2 md:px-16">
+    <div className="flex w-full flex-col">
       {error && <p className="text-sm text-destructive">{error}</p>}
       {comments.length === 0 && !error ? (
         <p>{profile.username} hasn&apos;t left any comments yet</p>
       ) : (
         <>
-          {comments.map(item => (
-            <CommentCard
-              key={item.commentId}
-              comment={item}
-              header={item.music ?
-                <Link
-                  href={`/music/${item.music.id}`}
-                  className="min-w-0 truncate font-bold hover:brightness-75"
-                  title={item.music.title}
-                >
-                  {item.music.title}
-                </Link> :
-                <span className="text-sm text-foreground/50">Failed to get music</span>
-              }
-              isOwner={isOwner}
-              onUpdated={content => updateComment(item.commentId, content)}
-              onLikeToggled={() => toggleCommentLike(item.commentId)}
-              onDeleted={() => removeComment(item.commentId)}
-            />
-          ))}
+          <div className="flex flex-col divide-y">
+            {comments.map(item => (
+              <CommentCard
+                key={item.commentId}
+                comment={item}
+                header={item.music ?
+                  <Link
+                    href={`/music/${item.music.id}`}
+                    className="min-w-0 truncate font-bold hover:brightness-75"
+                    title={item.music.title}
+                  >
+                    {item.music.title}
+                  </Link> :
+                  <span className="text-sm text-foreground/50">Failed to get music</span>
+                }
+                isOwner={isOwner}
+                onUpdated={content => updateComment(item.commentId, content)}
+                onLikeToggled={() => toggleCommentLike(item.commentId)}
+                onDeleted={() => removeComment(item.commentId)}
+              />
+            ))}
+          </div>
           <div ref={endOfListRef} className="flex min-h-8 w-full justify-center">
             {isLoadingNextPage && <Spinner className="size-8" />}
           </div>
         </>
       )}
-    </Card>
+    </div>
   );
 }
 

@@ -167,26 +167,28 @@ function MusicComments({ musicId }: { musicId: number }) {
 
       {isLoading ?
         <div className="flex w-full justify-center"><Spinner className="size-8" /></div> :
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           {error && <p className="text-sm text-destructive">{error}</p>}
           {comments.length === 0 && !error ? (
             <p className="text-sm text-foreground">{commentsTexts.empty}</p>
           ) : (
             <>
-              {comments.map(item => (
-                <CommentCard
-                  key={item.commentId}
-                  comment={item}
-                  header={item.profile ?
-                    <UserChip profile={item.profile} /> :
-                    <span className="text-sm text-foreground/50">Failed to get user</span>
-                  }
-                  isOwner={item.profile !== null && userContext.user?.userId === item.profile.userId}
-                  onUpdated={content => updateComment(item.commentId, content)}
-                  onLikeToggled={() => toggleCommentLike(item.commentId)}
-                  onDeleted={() => removeComment(item.commentId)}
-                />
-              ))}
+              <div className="flex flex-col divide-y">
+                {comments.map(item => (
+                  <CommentCard
+                    key={item.commentId}
+                    comment={item}
+                    header={item.profile ?
+                      <UserChip profile={item.profile} /> :
+                      <span className="text-sm text-foreground/50">Failed to get user</span>
+                    }
+                    isOwner={item.profile !== null && userContext.user?.userId === item.profile.userId}
+                    onUpdated={content => updateComment(item.commentId, content)}
+                    onLikeToggled={() => toggleCommentLike(item.commentId)}
+                    onDeleted={() => removeComment(item.commentId)}
+                  />
+                ))}
+              </div>
               <div ref={endOfListRef} className="flex min-h-8 w-full justify-center">
                 {isLoadingNextPage && <Spinner className="size-8" />}
               </div>

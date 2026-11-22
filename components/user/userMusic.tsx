@@ -7,7 +7,6 @@ import type { UserMusic, UserMusicPage } from "@/types/music/userMusic";
 import type { MyProfile } from "@/types/user/profile";
 import { useContext, useEffect, useRef, useState } from "react";
 import UserMusicCard from "./userMusicCard";
-import { Card } from "../ui/card";
 import { Spinner } from "../ui/spinner";
 
 async function fetchUserMusicPage(
@@ -83,19 +82,21 @@ function UserMusic({ profile }: { profile: MyProfile }) {
   }
 
   return (
-    <Card className="flex w-full flex-col gap-4.5 px-2 md:px-16">
+    <div className="flex w-full flex-col">
       {error && <p className="text-sm text-destructive">{error}</p>}
       {music.length === 0 && !error ? (
         <p>{profile.username} hasn&apos;t uploaded any music yet</p>
       ) : (
         <>
-          {music.map(item => <UserMusicCard key={item.id} music={item} profile={profile} />)}
+          <div className="flex flex-col divide-y">
+            {music.map(item => <UserMusicCard key={item.id} music={item} profile={profile} />)}
+          </div>
           <div ref={endOfListRef} className="flex min-h-8 w-full justify-center">
             {isLoadingNextPage && <Spinner className="size-8" />}
           </div>
         </>
       )}
-    </Card>
+    </div>
   );
 }
 

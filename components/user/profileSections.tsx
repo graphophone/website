@@ -17,7 +17,7 @@ function UserProfileSections({ userId }: { userId: number }) {
     .split('/').at(0)!;
 
   return (
-    <div className="w-full flex items-center md:px-16 border-t">
+    <div className="w-full flex items-center md:px-16 border-y">
       {profileSections.map((section, i) => (
         <Link
           href={`/user/${userId}/${section.href}`}
