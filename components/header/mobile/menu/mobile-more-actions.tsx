@@ -12,7 +12,6 @@ import {
     UsersThree,
 } from "phosphor-react"
 import { UserContext } from "@/context/userContext"
-import { cn } from "@/lib/utils"
 import {
     Accordion,
     AccordionContent,
@@ -20,7 +19,6 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import MobileMenuButton from "./mobile-menu-button"
-import { mobileMenuItemClassName } from "./mobile-menu-item-styles"
 
 function MobileMoreActions() {
     const router = useRouter()
@@ -38,36 +36,38 @@ function MobileMoreActions() {
     return (
         <Accordion className="rounded-none border-0 border-t pt-1">
             <AccordionItem value="more-actions" className="data-open:bg-transparent">
-                <AccordionTrigger className={cn(mobileMenuItemClassName, "font-normal hover:no-underline **:data-[slot=accordion-trigger-icon]:text-foreground")}>
+                <AccordionTrigger className="h-11 cursor-pointer items-center gap-3 rounded-[6px] px-2 text-sm font-normal hover:bg-secondary hover:no-underline">
                     <span className="flex items-center gap-3">
                         <DotsThree size={20} weight="bold" />
                         More actions
                     </span>
                 </AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-1 pb-0 pl-4">
-                    <MobileMenuButton>
+                    <MobileMenuButton onClick={() => router.push(`/user/${userContext.user?.userId}/music`)}>
                         <MusicNote size={20} weight="fill" />
                         Uploads
                     </MobileMenuButton>
-                    <MobileMenuButton>
+                    <MobileMenuButton onClick={() => router.push(`/user/${userContext.user?.userId}/likes`)}>
                         <ThumbsUp size={20} weight="fill" />
                         Liked
                     </MobileMenuButton>
-                    <MobileMenuButton>
+                    <MobileMenuButton onClick={() => router.push(`/user/${userContext.user?.userId}/playlists`)}>
                         <Playlist size={20} weight="fill" />
                         Playlists
                     </MobileMenuButton>
-                    <MobileMenuButton>
+                    <MobileMenuButton onClick={() => router.push(`/user/${userContext.user?.userId}/followers`)}>
                         <UsersThree size={20} weight="fill" />
                         Followers
                     </MobileMenuButton>
-                    <MobileMenuButton>
+                    <MobileMenuButton onClick={() => router.push(`/user/${userContext.user?.userId}/comments`)}>
                         <ChatCircle size={20} weight="fill" />
                         Comments
                     </MobileMenuButton>
-                    <MobileMenuButton onClick={handleLogout} className="text-destructive">
-                        <SignOut size={20} />
-                        Logout
+                    <MobileMenuButton onClick={handleLogout}>
+                        <span className="flex items-center gap-3 text-destructive">
+                            <SignOut size={20} />
+                            Logout
+                        </span>
                     </MobileMenuButton>
                 </AccordionContent>
             </AccordionItem>

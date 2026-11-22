@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { SheetClose } from "@/components/ui/sheet"
-import { mobileMenuItemClassName } from "./mobile-menu-item-styles"
 
 interface Props {
     href: string
@@ -14,7 +13,7 @@ function MobileMenuLink({ href, children }: Props) {
         <SheetClose
             nativeButton={false}
             render={<Link href={href} />}
-            className={mobileMenuItemClassName}
+            className="flex h-11 w-full cursor-pointer items-center gap-3 rounded-[6px] px-2 text-left text-sm hover:bg-secondary"
         >
             {children}
         </SheetClose>

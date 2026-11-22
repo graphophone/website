@@ -30,23 +30,23 @@ export function ListAction() {
 
       <DropdownMenuContent className="w-50 rounded-[6px]" align="end">
         <DropdownMenuGroup>
-          <ListActionItem>
+          <ListActionItem onClick={() => router.push(`/user/${userContext.user?.userId}/music`)}>
             <MusicNote weight="fill" />
             <span className="text-sm">Uploads</span>
           </ListActionItem>
-          <ListActionItem>
+          <ListActionItem onClick={() => router.push(`/user/${userContext.user?.userId}/likes`)}>
             <ThumbsUp weight="fill" />
             <span className="text-sm">Liked</span>
           </ListActionItem>
-          <ListActionItem>
+          <ListActionItem onClick={() => router.push(`/user/${userContext.user?.userId}/playlists`)}>
             <Playlist weight="fill" />
             <span className="text-sm">Playlists</span>
           </ListActionItem>
-          <ListActionItem>
+          <ListActionItem onClick={() => router.push(`/user/${userContext.user?.userId}/followers`)}>
             <UsersThree weight="fill" />
             <span className="text-sm">Followers</span>
           </ListActionItem>
-          <ListActionItem>
+          <ListActionItem onClick={() => router.push(`/user/${userContext.user?.userId}/comments`)}>
             <ChatCircle weight="fill" />
             <span className="text-sm">Comments</span>
           </ListActionItem>

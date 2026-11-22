@@ -1,18 +1,18 @@
 "use client"
 
-import { cn } from "@/lib/utils"
 import { SheetClose } from "@/components/ui/sheet"
-import { mobileMenuItemClassName } from "./mobile-menu-item-styles"
 
 interface Props {
     children: React.ReactNode
     onClick?: () => void
-    className?: string
 }
 
-function MobileMenuButton({ children, onClick, className }: Props) {
+function MobileMenuButton({ children, onClick }: Props) {
     return (
-        <SheetClose onClick={onClick} className={cn(mobileMenuItemClassName, className)}>
+        <SheetClose
+            onClick={onClick}
+            className="flex h-11 w-full cursor-pointer items-center gap-3 rounded-[6px] px-2 text-left text-sm hover:bg-secondary"
+        >
             {children}
         </SheetClose>
     )
